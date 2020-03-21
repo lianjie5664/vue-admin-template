@@ -46,51 +46,58 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
-    }]
+    redirect: '/indexLib/list',
+    // children: [{
+    //   path: 'dashboard',
+    //   name: 'Dashboard',
+    //   component: () => import('@/views/dashboard/index'),
+    //   meta: { title: 'Dashboard', icon: 'dashboard' }
+    // }]
   },
 
+  // {
+  //   path: '/example',
+  //   component: Layout,
+  //   redirect: '/example/table',
+  //   name: 'Example',
+  //   meta: { title: 'Example', icon: 'example' },
+  //   children: [
+  //     {
+  //       path: 'table',
+  //       name: 'Table',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: 'Table', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'tree',
+  //       name: 'Tree',
+  //       component: () => import('@/views/tree/index'),
+  //       meta: { title: 'Tree', icon: 'tree' }
+  //     }
+  //   ]
+  // },
+
   {
-    path: '/example',
+    path: '/indexLib',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        path: 'list',
+        name: 'indexLibList',
+        component: () => import('@/views/indexLib/index'),
+        meta: { title: '指标库', icon: 'form' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
-      }
+        path: 'enter/:id(\\d+)',
+        name: 'indexLibEnter',
+        component: () => import('@/views/indexLib/enter'),
+        meta: { title: '编辑指标库', noCache: true, activeMenu: '/indexLib/list'  },
+        hidden: true
+      },
     ]
   },
 
-  {
-    path: '/form',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
-  },
-
-  {
+  /*{
     path: '/nested',
     component: Layout,
     redirect: '/nested/menu1',
@@ -158,7 +165,7 @@ export const constantRoutes = [
       }
     ]
   },
-
+  */
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]

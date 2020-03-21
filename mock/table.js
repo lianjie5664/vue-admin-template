@@ -3,8 +3,8 @@ import Mock from 'mockjs'
 const data = Mock.mock({
   'items|30': [{
     id: '@id',
-    title: '@sentence(10, 20)',
-    'status|1': ['published', 'draft', 'deleted'],
+    title: '@sentence(2, 3)',
+    'status|1': [0,1],
     author: 'name',
     display_time: '@datetime',
     pageviews: '@integer(300, 5000)'
