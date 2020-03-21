@@ -1,3 +1,4 @@
+@import './base.scss';
 @import './variables.scss';
 @import './mixin.scss';
 @import './transition.scss';
@@ -62,4 +63,8 @@ div:focus {
 // main-container global css
 .app-container {
   padding: 20px;
+}
+
+.hg-flex{
+  @include layout(flex);
 }

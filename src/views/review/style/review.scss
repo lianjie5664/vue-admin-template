@@ -1,0 +1,28 @@
+@import '~@/styles/base.scss';
+
+.professor-page{
+  .top-info{
+    @include layout-align(center);
+    .items{
+      @include layout(flex);
+      @include layout-items(center);
+    }
+    label{
+      width: 110px;
+    }
+    .el-input__inner{
+      border-radius: 0;
+      height: 35px;
+      line-height: 35px;
+    }
+    .to-button{
+
+    }
+    .el-button{
+      padding: 0 10px;
+      height: 35px;
+      line-height: 35px;
+      width: 70px;
+    }
+  }
+}

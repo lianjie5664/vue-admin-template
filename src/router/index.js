@@ -96,6 +96,26 @@ export const constantRoutes = [
       },
     ]
   },
+  {
+    path: '/review',
+    component: Layout,
+    // redirect: '/review/professor',
+    meta: { title: '专家评审', icon: 'form' },
+    children: [
+      {
+        path: '/review/professor',
+        name: 'professor',
+        component: () => import('@/views/review/professor'),
+        meta: { title: '专家评审', keepAlive: true }
+      },
+      {
+        path: '/review/result',
+        name: 'result',
+        component: () => import('@/views/review/result'),
+        meta: { title: '评审结果', keepAlive: true }
+      },
+    ]
+  },
 
   /*{
     path: '/nested',
