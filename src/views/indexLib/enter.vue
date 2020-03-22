@@ -13,7 +13,7 @@
                 </el-row>
                 <el-row :gutter="20" class="mt15">
                     <el-col :span="24">
-                        <el-table :data="statisticDatas" class="tableStyle" v-loading="leftTb" 
+                        <el-table :data="statisticDatas" class="tableStyle" v-loading="leftTb" style="height:calc(100vh - 160px);overflow-y:scroll"
                                   size="medium" :row-style="selectedHighlight" :row-class-name="rowClassNameHandler" @row-click="selectRow">
                             <el-table-column label="指标名称" align="left" show-overflow-tooltip>
                                 <template slot-scope="scope">
@@ -52,7 +52,7 @@
                             <el-table-column prop="description" label="详细说明"> </el-table-column>
                               <el-table-column label="操作" align="left">
                                 <template slot-scope="scope">
-                                    <el-button type="danger" size="small" plain>删除</el-button>
+                                    <el-button type="danger" size="small" plain @click="delPoint(scope.row.id)">删除</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -161,10 +161,9 @@ export default {
       pointAdd(params).then(res => {
         if(res.code == 1){
             notice(1,'添加成功！',1)
-            this.loadStatisticData()
+            this.getPoint(this.currentRow)
           }else{
             notice(0,'添加失败！',0)
-            this.loadStatisticData()
           }
           this.rightDialogVisble.v = false
       })
@@ -186,11 +185,25 @@ export default {
               this.loadStatisticData()
             }else{
               notice(0,'删除失败！'+ res.msg,0)
-              this.loadStatisticData()
             }
           })
         });
-      
+    },
+    delPoint(pointId){
+      this.$confirm('确定要删除吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+      }).then(() => {
+          pointDel({id:pointId}).then(res => {
+            if(res.code == 1){
+              notice(1,'删除成功！',1)
+              this.getPoint(this.currentRow)
+            }else{
+              notice(0,'删除失败！'+ res.msg,0)
+            }
+          })
+        });
     },
     _processLevelStatisticData(dataArray) {
       let self = this
