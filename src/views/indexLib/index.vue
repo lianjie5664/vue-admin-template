@@ -1,39 +1,55 @@
 <template>
     <div class="app-container">
         <el-row>
-            <el-button type="primary" icon="el-icon-plus" plain @click="showAwardForm">新增</el-button>
-            <el-button type="info" icon="el-icon-edit" plain>编辑</el-button>
+            <el-button type="primary" icon="el-icon-plus" plain @click="showAwardForm" size="small">新增</el-button>
+            <el-button type="info" icon="el-icon-edit" plain @click="editAwardForm" size="small">编辑</el-button>
         </el-row>
         <div class="table">
             <el-table
+                ref="multipleTable"
                 v-loading="listLoading"
                 :data="list"
                 element-loading-text="Loading"
                 border
                 fit
                 highlight-current-row
+                @selection-change="handleSelectionChange">
                 >
-                <el-table-column align="center" label="编号" width="95" header-align="center">
+                <el-table-column
+                    type="selection"
+                    width="55">
+                </el-table-column>
+                <el-table-column align="center" label="编号" width="95">
                     <template slot-scope="scope">
                     {{ scope.$index }}
                     </template>
                 </el-table-column>
-                <el-table-column label="奖项名称" header-align="center">
+                <el-table-column label="奖项名称" >
                     <template slot-scope="scope">
                     {{ scope.row.name }}
                     </template>
                 </el-table-column>
-                <el-table-column label="地区" align="center" header-align="center">
+                <el-table-column label="地区">
                     <template slot-scope="scope">
                     <span>{{ scope.row.area }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column label="描述" align="center" header-align="center">
+                <el-table-column label="描述">
                     <template slot-scope="scope">
                     {{ scope.row.description }}
                     </template>
                 </el-table-column>
-                 <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+                <el-table-column label="创建时间">
+                    <template slot-scope="scope">
+                    {{ scope.row.createDate }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="更新时间">
+                    <template slot-scope="scope">
+                    {{ scope.row.updateDate }}
+                    </template>
+                </el-table-column>
+                 <el-table-column label="操作" width="230" class-name="small-padding fixed-width">
                     <template slot-scope="{row}">
                         <el-button type="primary" size="mini">
                             <router-link :to="'enter/'+ row.id">配置奖项</router-link>
@@ -48,13 +64,13 @@
         <award-form
             :awardFormVisble="awardVisble"
             :formData="formData"
+            :selected="selectedRow"
             @close="awardVisble.v = false"
             @submit="handleAwardForm">
         </award-form>   
     </div>
 </template>
 <script>
-import { getList } from '@/api/table'
 import { awardSave,fetchAwardList,deleteAward } from '@/api/award'
 import {statusFilter} from '@/utils/filter'
 import AwardForm from './components/awardForm'
@@ -66,6 +82,7 @@ export default {
             list: null,
             listLoading: false,
             awardVisble:{v:false},
+            selectedRow:'',
             formData:{
                 awardList:[
                     {type:'Input',label:'奖项名称',prop:'name',placeholder:'请输入奖项名称',value:''},
@@ -116,7 +133,27 @@ export default {
                 })
                 }).catch(() => {
             });
-            
+        },
+        handleSelectionChange(selection){
+            if(selection.length > 1){
+                let del_row = selection.shift();
+                this.$refs.multipleTable.toggleRowSelection(del_row, false);
+            }
+            if(selection.length != 0){
+                this.selectedRow = selection[0].id
+            }
+        },
+        editAwardForm(){
+            if(this.selectedRow == ''){
+                this.$message.error('请选择一项编辑！')
+                return
+            }
+            let s = this.list.filter(item => item.id == this.selectedRow)
+            this.formData.awardList[0].value = s[0].name
+            this.formData.awardList[1].value = s[0].area
+            this.formData.awardList[2].value = s[0].description
+
+            this.awardVisble.v = true
         }
     }
 }
