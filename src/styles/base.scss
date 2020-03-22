@@ -1,0 +1,64 @@
+@mixin layout( $flex ){
+  display: $flex;
+}
+
+@mixin layout-flex( $num ){
+  flex: $num;
+}
+
+@mixin line-overflow( $line ){
+  display:-webkit-box;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  -webkit-line-clamp:$line;
+  -webkit-box-orient:vertical;
+}
+
+@mixin layout-direction( $direction ){
+  flex-direction: $direction;
+}
+
+@mixin layout-align( $align ){
+  justify-content: $align;
+}
+
+@mixin layout-items( $items ){
+  align-items: $items;
+}
+
+@mixin layout-wrap( $wrap ){
+  flex-wrap: $wrap;
+}
+
+@mixin layout-column( $column ){
+  flex: 0 0 $column;
+}
+
+@mixin layout-order( $num ){
+  order : $num;
+}
+
+/*marginTop*/
+@each $mt in 5,10,15,20,30 {
+  .mt#{$mt} {
+    margin-top: #{$mt}px!important;
+  }
+}
+/*marginBottom*/
+@each $mb in 5,10,15,20,30 {
+  .mb#{$mb} {
+    margin-bottom: #{$mb}px!important;
+  }
+}
+/*marginRight*/
+@each $mr in 5,10,15,20,30,40{
+  .mr#{$mr} {
+    margin-right: #{$mr}px!important;
+  }
+}
+/*marginLeft*/
+@each $ml in 5,10,15,20,25,30 {
+  .ml#{$ml} {
+    margin-left: #{$ml}px!important;
+  }
+}
