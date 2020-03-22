@@ -3,7 +3,7 @@
     <div class="top-info hg-flex mb20">
       <div class="items mr40">
         <label class="mr15">得分情况:</label>
-        <el-input v-model="formParams.professorName"></el-input>
+        <el-input v-model="formParams.scoreCondition"></el-input>
       </div>
       <div class="items">
         <label>评审人:</label>
@@ -17,26 +17,24 @@
       <el-table
         :data="tableData"
         row-key="id"
-        :default-expand-all="true"
         border
+        :default-expand-all="true"
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
-        <el-table-column
-          prop="id"
-          label="序号"
-          width="80">
-        </el-table-column>
         <el-table-column
           prop="name"
           label="评分项名称"
-          width="300">
+          width="350">
         </el-table-column>
         <el-table-column
           prop="cube"
+          width="180"
           label="类目分值">
         </el-table-column>
         <el-table-column
-          prop="score"
           label="得分">
+          <template slot-scope="scope">
+            <el-input-number v-model="formParams.numCon" controls-position="right" :precision="2" :step="0.05" :min="0" :max="1"></el-input-number>
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -50,7 +48,9 @@ export default {
   data () {
     return {
       formParams: {
-        professorName: ''
+        scoreCondition: '', // 得分情况
+        professorName: '', // 评审人
+        numCon: 0 // 系数
       },
       tableData: [{
         id: 1,
@@ -60,7 +60,7 @@ export default {
         children: [{
           id: 11,
           name: '质量战略',
-          cube: '120分',
+          cube: '100分',
           score: '60分'
         }, {
           id: 12,
@@ -76,12 +76,12 @@ export default {
       }, {
         id: 3,
         name: '品牌',
-        cube: '120分',
-        score: '60分',
+        cube: '1210分',
+        score: '40分',
         children: [{
           id: 31,
           name: '品牌建设',
-          cube: '120分',
+          cube: '130分',
           score: '60分'
         }, {
           id: 32,

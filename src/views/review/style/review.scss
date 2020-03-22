@@ -23,6 +23,46 @@
       height: 35px;
       line-height: 35px;
       width: 70px;
+      border-radius: 0;
+    }
+  }
+  .el-input-number{
+    width: 80px;
+    &.is-controls-right {
+      .el-input-number__decrease, .el-input-number__increase{
+        width: 25px;
+        border-radius: 0;
+        line-height: 14px;
+      }
+      .el-input-number__decrease{
+        bottom: 5px;
+      }
+      .el-input-number__increase{
+        top: 5px;
+      }
+      .el-input__inner{
+        text-align: left;
+        padding: 0 25px 0 10px;
+        border-radius: 0;
+        height: 30px;
+        line-height: 30px;
+      }
+    }
+  }
+  .table-list{
+    th{
+      color: #333;
+    }
+    td{
+      padding: 0;
+    }
+  }
+}
+
+.result-page{
+  .table-list{
+    td{
+      padding: 5px 0;
     }
   }
 }
