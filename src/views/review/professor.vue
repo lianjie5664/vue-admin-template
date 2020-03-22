@@ -3,11 +3,11 @@
     <div class="top-info hg-flex mb20">
       <div class="items mr40">
         <label class="mr15">得分情况:</label>
-        <el-input v-model="formParams.scoreCondition" :disabled="true" class="get-goal"></el-input>
+        <el-input v-model="formParams.scoreTotal" :disabled="true" class="get-goal"></el-input>
       </div>
       <div class="items">
         <label>评审人:</label>
-        <el-input v-model="formParams.professorName"></el-input>
+        <el-input v-model="formParams.gradeUserName"></el-input>
       </div>
       <div class="items ml30">
         <el-button type="primary" @click.stop="toCreate">提交</el-button>
@@ -28,11 +28,10 @@
         </el-table-column>
         <el-table-column
           prop="score"
-          width="200"
+          width="300"
           label="类目分值（分）">
         </el-table-column>
         <el-table-column
-          width="180"
           label="系数">
           <template slot-scope="scope">
             <el-input-number v-if="!scope.row.children"
@@ -41,15 +40,15 @@
               :precision="2"
               :step="0.05"
               :min="0" :max="1"
-              @change="handleNumCon(scope.row.calculate, scope.row.id)"></el-input-number>
+              @change="handleNumCon(scope.row)"></el-input-number>
           </template>
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           label="得分">
           <template slot-scope="scope">
             <span v-if="scope.row.children && +scope.row.parentId !== 0" class="score-item">{{scope.row.goal || 0}} 分</span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
     </div>
   </div>
@@ -64,8 +63,8 @@ export default {
   data () {
     return {
       formParams: {
-        scoreCondition: '', // 得分情况
-        professorName: '', // 评审人
+        scoreTotal: '', // 得分情况
+        gradeUserName: '', // 评审人
       },
       awardList: [], // 奖项列表
       loading: false, // 页面加载loading
@@ -76,7 +75,8 @@ export default {
         calculate: 0, // 系数
         score: '' // 分数
       },
-      paramArr: []
+      paramArr: [],
+      saveList: [] // 返回数据
     }
   },
   created () {
@@ -106,25 +106,27 @@ export default {
         }
       })
     },
-    handleNumCon (val, id) {
-      this.awardList.forEach(item => {
-        if (item.id === id) {
-          this.paramsList.id = item.id
-          this.paramsList.awardId = item.awardId
-          this.paramsList.parentId = item.parentId
-          this.paramsList.score = item.score
-          this.paramsList.calculate = val
-        }
-      })
+    // 数组去重
+    unique (arr) {
+      const res = new Map()
+      return arr.filter((arr) => !res.has(arr.id) && res.set(arr.id, 1))
+    },
+    handleNumCon (val) {
+      this.paramsList.calculate = val.calculate
+      this.paramsList.id = val.id
+      this.paramsList.awardId = val.awardId
+      this.paramsList.parentId = val.parentId
+      this.paramsList.score = val.score
       this.paramArr.push(this.paramsList)
-      this.paramArr = Array.from(new Set(this.paramArr))
-      console.log('handleNumCon++', val, id)
-      console.log('paramArr++', this.paramArr)
+      // this.paramArr = Array.from(new Set(this.paramArr))
+      console.log('paramAr11r++', this.paramArr)
     },
     // 提交
     toCreate () {
       toSave({data: this.paramArr}).then(res => {
         if (res && +res.code === 1) {
+          this.formParams.scoreTotal = res.data.scoreTotal
+          this.formParams.gradeUserName = res.data.gradeUserName
           this.$message.success('提交成功！')
         } else {
           this.$message.error('保存失败！')

@@ -8,3 +8,11 @@ export function toSave(data) {
     data
   })
 }
+
+export function getSaveSuccess(data) {
+  return request({
+    url: '/qaGrade/saveSuccessGet',
+    method: 'post',
+    data
+  })
+}
