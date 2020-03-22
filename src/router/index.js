@@ -97,6 +97,25 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/report',
+    component: Layout,
+    children: [
+      {
+        path: 'compile',
+        name: 'reportCompile',
+        component: () => import('@/views/report/index'),
+        meta: { title: '报告编制', icon: 'form' }
+      },
+      {
+        path: 'compile/:id',
+        name: 'compileEnter',
+        component: () => import('@/views/report/enter'),
+        meta: { title: '进入编制', noCache: true, activeMenu: '/report/compile'  },
+        hidden: true
+      },
+    ]
+  },
+  {
     path: '/review',
     component: Layout,
     // redirect: '/review/professor',

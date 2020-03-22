@@ -1,6 +1,6 @@
 <template>
     <div class="app-container">
-        <el-dialog title="新增奖项" :visible.sync="awardFormVisble.v" width="600px">
+        <el-dialog :title="selected == '' ?'新增奖项':'修改奖项'" :visible.sync="awardFormVisble.v" width="600px">
             <div class="demo-drawer__content">
                 <el-form status-icon label-width="100px" label-position="right" style="padding-bottom:40px" :model="formData" ref="awardAddForm">
                     <el-form-item v-for='(item,index) in formData.awardList' :label="item.label" :prop="'awardList.' + index + '.value'" :key='index'>
@@ -19,7 +19,8 @@
                 </el-form>
                 <div class="demo-drawer__footer">
                     <el-button @click="$emit('close')">取 消</el-button>
-                    <el-button type="primary" @click="submitForm('awardAddForm')" :loading="loading">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+                    <el-button type="primary" @click="submitForm('awardAddForm')" v-if="selected == ''" :loading="loading">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+                    <el-button type="primary" @click="editForm('awardAddForm')" v-else :loading="loading">{{ loading ? '修改中 ...' : '修 改' }}</el-button>
                 </div>
             </div>
         </el-dialog>
@@ -32,7 +33,7 @@ export default {
             loading:false,
         }
     },
-    props:['formData','awardFormVisble'],
+    props:['formData','awardFormVisble','selected'],
     methods: {
         handleClose(done) {
             if (this.loading) {
@@ -46,6 +47,18 @@ export default {
                     this.formData.awardList.map((v) => {
                         jsonArr[v.prop] = v.value ? v.value : ''
                     })
+                    this.$emit('submit',jsonArr)
+                }
+            })
+        },
+        editForm(formName){
+            this.$refs[formName].validate((valid) => {
+                let jsonArr = {}
+                if(valid){
+                    this.formData.awardList.map((v) => {
+                        jsonArr[v.prop] = v.value ? v.value : ''
+                    })
+                    jsonArr['id'] = this.selected
                     this.$emit('submit',jsonArr)
                 }
             })
