@@ -58,7 +58,7 @@ import { getList } from '@/api/table'
 import { awardSave,fetchAwardList,deleteAward } from '@/api/award'
 import {statusFilter} from '@/utils/filter'
 import AwardForm from './components/awardForm'
-
+import {notice} from '@/utils/tools'
 export default {
     components:{AwardForm},
     data(){
@@ -93,10 +93,10 @@ export default {
             awardSave(data).then(res =>{
                 if(res.code == 1){
                     this.awardVisble.v = false
-                    this.back(1,'奖项添加成功！',1)
+                    notice(1,'奖项添加成功！',1)
                     this.fetchList()
                 }else{
-                    this.back(1,'奖项添加成功！',1)
+                    notice(1,'奖项添加成功！',1)
                 }
             })
         },
@@ -108,22 +108,15 @@ export default {
             }).then(() => {
                 deleteAward({id:row.id}).then(res => {
                     if(res.code == 1){
-                        this.back(1,'奖项删除成功！',1)
+                        notice(1,'奖项删除成功！',1)
                         this.fetchList()
                     }else{
-                        this.back(0,'奖项删除失败！',0)
+                        notice(0,'奖项删除失败！',0)
                     }
                 })
                 }).catch(() => {
             });
             
-        },
-        back(title,msg,type){
-            this.$notify({
-                title: title == 1?'成功': '失败',
-                message: msg,
-                type: type == 1?'success':'error'
-            });
         }
     }
 }

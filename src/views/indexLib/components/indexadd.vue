@@ -21,7 +21,6 @@
                         <SelectTree v-if="item.type==='TreeSelect'"
                             :props="props"
                             :options="optionData"
-                            :value="valueId"
                             :clearable="isClearable"
                             :accordion="isAccordion"
                             @getValue="getValue($event)"
@@ -51,68 +50,10 @@ export default {
                 label: "name",
                 children: "children"
                 // disabled:true
-            },
-            list: [
-                { id: 1, parentcategoryid: 0, name: "一级菜单A"},
-                { id: 2, parentcategoryid: 0, name: "一级菜单B"},
-                { id: 3, parentcategoryid: 0, name: "一级菜单C" },
-                { id: 4, parentcategoryid: 1, name: "二级菜单A-A"},
-                { id: 5, parentcategoryid: 1, name: "二级菜单A-B" },
-                { id: 6, parentcategoryid: 2, name: "二级菜单B-A"},
-                { id: 7, parentcategoryid: 4, name: "三级菜单A-A-A"},
-                { id: 8, parentcategoryid: 7, name: "四级菜单A-A-A-A"},
-                { id: 9, parentcategoryid: 0, name: "一级菜单C" },
-                { id: 10, parentcategoryid: 0, name: "一级菜单end"},
-        //         {
-        //     "parentcategoryid": 0,
-        //     "edit": 0,
-        //     "undeployed": 1,
-        //     "deployed": 0,
-        //     "completed": 0,
-        //     "categoryName": "商业管理类",
-        //     "categoryid": 1105,
-        //   },
-        
-        //   {
-        //     "parentcategoryid": 1105,
-        //     "edit": 0,
-        //     "undeployed": 0,
-        //     "deployed": 0,
-        //     "completed": 0,
-        //     "categoryName": "合同模板管理",
-        //     "categoryid": 1902
-        //   },
-        //   {
-        //     "parentcategoryid": 1902,
-        //     "edit": 0,
-        //     "undeployed": 0,
-        //     "deployed": 0,
-        //     "completed": 20,
-        //     "categoryName": "菜单管理",
-        //     "categoryid": 1903
-        //   },
-        //   {
-        //     "parentcategoryid": 1902,
-        //     "edit": 0,
-        //     "undeployed": 0,
-        //     "deployed": 0,
-        //     "completed": 20,
-        //     "categoryName": "研发设计类",
-        //     "categoryid": 1904
-        //   },
-        //   {
-        //     "parentcategoryid": 1902,
-        //     "edit": 0,
-        //     "undeployed": 0,
-        //     "deployed": 0,
-        //     "completed": 20,
-        //     "categoryName": "招标材设类",
-        //     "categoryid": 1905
-        //   },
-            ],
+            }
         }
     },
-    props:['formData','dialog'],
+    props:['formData','dialog','list'],
     components:{SelectTree},
     methods: {
         handleClose(done) {
@@ -132,9 +73,7 @@ export default {
             })
         },
         getValue(value) {
-            // this.valueId = value;
-            // this.formData.formItemList.prop.sex = value
-            console.log(value);
+            this.formData.formItemList[1].value = value
         }
     },
     computed: {
@@ -143,9 +82,9 @@ export default {
             let cloneData = JSON.parse(JSON.stringify(this.list)); // 对源数据深度克隆
             return cloneData.filter(father => {
                 // 循环所有项，并添加children属性
-                let branchArr = cloneData.filter(child => father.id == child.parentcategoryid); // 返回每一项的子级数组
+                let branchArr = cloneData.filter(child => father.id == child.parentId); // 返回每一项的子级数组
                 branchArr.length > 0 ? (father.children = branchArr) : ""; //给父级添加一个children属性，并赋值
-                return father.parentcategoryid == 0; //返回第一层
+                return father.parentId == 0; //返回第一层
             });
         }
     },

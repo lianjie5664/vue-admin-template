@@ -6,12 +6,12 @@
                     <el-col :span="24">
                         <div class="grid-content">
                             <el-button type="primary" icon="el-icon-plus" plain size="mini" @click="showLeftModal">录入</el-button>
-                            <el-button type="info" icon="el-icon-edit" plain size="mini">编辑</el-button>
                             <el-button type="success" icon="el-icon-view" plain size="mini">查看</el-button>
+                            <el-button type="info" icon="el-icon-edit" plain size="mini">编辑</el-button>
                         </div>
                     </el-col>
                 </el-row>
-                <el-row :gutter="20" class="mt20">
+                <el-row :gutter="20" class="mt15">
                     <el-col :span="24">
                         <el-table :data="statisticDatas" class="tableStyle" v-loading="leftTb" 
                                   size="medium" :row-style="selectedHighlight" :row-class-name="rowClassNameHandler" @row-click="selectRow">
@@ -20,14 +20,14 @@
                                 <span :style="{marginLeft: scope.row.level * 23 + 'px'}">&ensp;</span>
                                 <i v-if="scope.row.showChildren" :class="{'categoryStyle el-icon-folder-opened ':scope.row.showChildren, 'categoryStyle el-icon-document-remove':!scope.row.hasChildren}" @click="onExpand(scope.row)" :style="{cursor:scope.row.hasChildren ? 'pointer' : 'normal'}"></i>
                                 <i v-else :class="{'categoryStyle el-icon-folder':scope.row.hasChildren, 'categoryStyle el-icon-document-remove':!scope.row.hasChildren}" @click="onExpand(scope.row)" :style="{cursor:scope.row.hasChildren ? 'pointer' : 'normal'}"></i>
-                                <span :data-level="scope.row.level" :style="{marginLeft: 4 + 'px'}">{{ scope.row.categoryName }}</span>
+                                <span :data-level="scope.row.level" :style="{marginLeft: 4 + 'px'}">{{ scope.row.name }}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="categoryid" label="指标等级" width="80" align="center"></el-table-column>
-                            <el-table-column prop="completed" label="分值" width="80" align="center"></el-table-column>
+                            <el-table-column prop="grade" label="指标等级" width="80" align="center"></el-table-column>
+                            <el-table-column prop="score" label="分值" width="80" align="center"></el-table-column>
                             <el-table-column label="操作" align="left">
                                 <template slot-scope="scope">
-                                    <el-button type="danger" size="small" plain>删除</el-button>
+                                    <el-button type="danger" icon="el-icon-delete" size="small" plain @click="delAwardCfg(scope.row.id)">删除</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -44,18 +44,16 @@
                         </div>
                     </el-col>
                 </el-row>
-                <el-row :gutter="20" class="mt20">
+                <el-row :gutter="20" class="mt15">
                     <el-col :span="24">
-                        <el-table :data="tableData" class='tableStyle' border v-loading="rightTb">
-                            <el-table-column prop="date" label="序号" width="180"></el-table-column>
-                            <el-table-column prop="name" label="关键点" width="180"></el-table-column>
-                            <el-table-column prop="address" label="详细说明"> </el-table-column>
-                            <el-table-column prop="address" label="操作"> 
-                                <el-table-column label="操作" align="left">
-                                    <template slot-scope="scope">
-                                        <el-button type="danger" size="small" plain>删除</el-button>
-                                    </template>
-                                </el-table-column>
+                        <el-table :data="tableData" class='tableStyle' border>
+                            <el-table-column prop="sort" label="序号" width="180"></el-table-column>
+                            <el-table-column prop="keyPoint" label="关键点" width="180"></el-table-column>
+                            <el-table-column prop="description" label="详细说明"> </el-table-column>
+                              <el-table-column label="操作" align="left">
+                                <template slot-scope="scope">
+                                    <el-button type="danger" size="small" plain>删除</el-button>
+                                </template>
                             </el-table-column>
                         </el-table>
                     </el-col>
@@ -66,6 +64,7 @@
             labelWidth = "80px"
             :formData="formData"
             :dialog="leftModalVisible"
+            :list="statisticDatas"
             @close="leftModalVisible.v = false"
             @submit="handleLeftForm"
             ></add-form>
@@ -80,52 +79,38 @@
 <script>
 import AddForm from './components/indexadd'
 import InfoForm from './components/infoadd'
-import { awardCfgList,awardCfgAdd,awardCfgDel,awardCfgUpt } from '@/api/award' 
+import { findListByAward,awardCfgAdd,awardCfgDel,awardCfgUpt,pointAdd,pointDel,getPoints } from '@/api/award' 
+import {notice} from '@/utils/tools'
 export default {
   name: 'ContractStatistic',
   components:{AddForm,InfoForm},
   data() {
-    let sexs=[{label:'男',value:'M'},{label:'女',value:'F'}]
+    let sexs=[{label:'顶级',value:'0'},{label:'女',value:'F'}]
     let intersts=[{label:'羽毛球',value:'badminton'},{label:'篮球',value:'basketball'}]
     return {
         statisticDatas: [],
         pastDays: 0,
-        currentRow:0,
-        rightTb:true,
-        leftTb:false,
+        currentRow: 0,
+        // rightTb:true,
+        leftTb:true,
         leftModalVisible:{v:false},
         rightDialogVisble:{v:false},
         awardId:this.$route.params.id,
         formData:{
             formItemList:[
                 {type:'Input',label:'指标名称',prop:'name',width:'180px',placeholder:'请输入指标名称',value:''},
-                {type:'TreeSelect',label:'上级指标库',prop:'sex',width:'310px',options:sexs,change:row=>'',placeholder:'请选择上级指标库',value:''},
-                {type:'Input',label:'指标等级',prop:'name1',width:'180px',placeholder:'请输入指标等级',value:''},
-                {type:'Input',label:'分值',prop:'age1',width:'180px',placeholder:'请输入分值',value:''},
-                {type:'TextArea',label:'指标内容',prop:'age11',width:'180px',placeholder:'请输入指标内容',value:''},
+                {type:'TreeSelect',label:'上级指标库',prop:'parentId',width:'310px',options:sexs,change:row=>'',placeholder:'请选择上级指标库',value:''},
+                {type:'Input',label:'指标等级',prop:'grade',width:'180px',placeholder:'请输入指标等级',value:''},
+                {type:'Input',label:'分值',prop:'score',width:'180px',placeholder:'请输入分值',value:''},
+                {type:'TextArea',label:'指标内容',prop:'content',width:'180px',placeholder:'请输入指标内容',value:''},
             ],
             rightItemList:[
-                {type:'TextArea',label:'关键点',prop:'age11',placeholder:'请输入关键点',value:''},
-                {type:'TextArea',label:'详细说明',prop:'age12',placeholder:'请输入详细说明',value:''},
+                {type:'Input',label:'序号',prop:'sort',placeholder:'请输入序号',value:''},
+                {type:'TextArea',label:'关键点',prop:'keyPoint',placeholder:'请输入关键点',value:''},
+                {type:'TextArea',label:'详细说明',prop:'description',placeholder:'请输入详细说明',value:''},
             ]
         },
-        tableData: [{
-            date: '1',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-            date: '2',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-            date: '3',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-            date: '4',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1516 弄'
-        }],
+        tableData: [],
     }
   },
  
@@ -138,10 +123,12 @@ export default {
   },
   methods: {
     selectRow(row){
-        this.currentRow = row.categoryid
+      console.log(row)
+      this.currentRow = row.id
+      this.getPoint(row.id)
     },
     selectedHighlight ({ row, rowIndex }) {
-        if (this.statisticDatas[rowIndex].categoryid == this.currentRow) {
+        if (this.statisticDatas[rowIndex].id == this.currentRow) {
             return {
                 "background-color": "rgba(198, 226, 255, 0.48)"
             }
@@ -151,15 +138,59 @@ export default {
         this.leftModalVisible.v = true
     },
     handleLeftForm(data){
-        awardCfgAdd(data).then(res =>{
-          console.log(res)
+        data.parentId == "" ? data.parentId = 0 : data.parentId = data.parentId
+         
+        let params = Object.assign({awardId:this.awardId},data)
+        awardCfgAdd(params).then(res =>{
+          if(res.code == 1){
+            notice(1,'添加成功！',1)
+            this.loadStatisticData()
+          }else{
+            notice(0,'添加失败！',0)
+            this.loadStatisticData()
+          }
+          this.leftModalVisible.v = false
         })
     },
     showInfoDialog(){
         this.rightDialogVisble.v = true
     },
     handleRightForm(data){
-        console.log(1,data)
+      if(this.standardId == 0) return 
+      let params = Object.assign({standardId:this.currentRow},data)
+      pointAdd(params).then(res => {
+        if(res.code == 1){
+            notice(1,'添加成功！',1)
+            this.loadStatisticData()
+          }else{
+            notice(0,'添加失败！',0)
+            this.loadStatisticData()
+          }
+          this.rightDialogVisble.v = false
+      })
+    },
+    getPoint(id){
+      getPoints({standardId:id}).then(res =>{
+        this.tableData = res.data
+      })
+    },
+    delAwardCfg(id){
+      this.$confirm('确定要删除吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+      }).then(() => {
+          awardCfgDel({id:id}).then(res => {
+            if(res.code == 1){
+              notice(1,'删除成功！',1)
+              this.loadStatisticData()
+            }else{
+              notice(0,'删除失败！'+ res.msg,0)
+              this.loadStatisticData()
+            }
+          })
+        });
+      
     },
     _processLevelStatisticData(dataArray) {
       let self = this
@@ -169,7 +200,7 @@ export default {
       for (let i = 0; i < dataArray.length; i++) {
         let item = dataArray[i]
         // 查找一级分类
-        if (item.parentcategoryid === 0) {
+        if (item.parentId === "0") {
           item['level'] = level
           resultArray.push(item)
           self._loadChildrenData(resultArray, dataArray, item, level + 1)
@@ -184,17 +215,17 @@ export default {
     //   let deployed = 0
     //   let undeployed = 0
     //   let edit = 0
-      let completed = 0
+      let score = 0
  
       for (let i = 0; i < originArray.length; i++) {
         let originItem = originArray[i]
         // 判断是否是item项的子项
-        if (originItem.parentcategoryid === item.categoryid) {
+        if (originItem.parentId === item.id.toString()) {
           item['hasChildren'] = true
-          item['showChildren'] = false
+          item['showChildren'] = true
  
           originItem['level'] = level
-          originItem['visible'] = false // 子项默认隐藏
+          originItem['visible'] = true // 子项默认隐藏
           originItem['hiddenByCategory'] = false
  
           resultArray.push(originItem)
@@ -209,14 +240,14 @@ export default {
         //   deployed += originItem.deployed
         //   undeployed += originItem.undeployed
         //   edit += originItem.edit
-          completed += originItem.completed
+          score += parseInt(originItem.score)
         }
       }
       // 计算子栏目统计合计
     //   item.deployed += deployed
     //   item.undeployed += undeployed
     //   item.edit += edit
-      item.completed += completed
+      // item.score += score
     },
  
     search() {
@@ -227,23 +258,23 @@ export default {
     loadStatisticData() {
       let self = this
       let params = {
-        pastDays: self.pastDays
+        awardId: this.awardId
       }
-      this.getAwardCfgList({}).then((res) => {
-        let resultArray = self._processLevelStatisticData(res.data)
+      findListByAward(params).then(res=> {
+        let result = res.data
+        let resultArray = self._processLevelStatisticData(result)
         self.statisticDatas = resultArray
+        this.leftTb = false
       })
-      // let result = []
     },
     async getAwardCfgList(params){
-      const res = await awardCfgList(params)
+      const res = await findListByAward(params)
       return res
     },
     rowClassNameHandler({ row, rowIndex }) {
-      // console.log(row['visible'])
-      let className = 'pid-' + row.parentcategoryid
+      let className = 'pid-' + row.parentId
       if (
-        row.parentcategoryid !== 0 &&
+        row.parentId !== "0" &&
         (row['visible'] !== true || row['hiddenByCategory'] === true)
       ) {
         className += ' hiddenRow'
@@ -263,7 +294,7 @@ export default {
       let dataArray = []
       for (let i = 0; i < self.statisticDatas.length; i++) {
         let tempItem = self.statisticDatas[i]
-        if (tempItem.parentcategoryid === item.categoryid) {
+        if (tempItem.parentId === item.id) {
           if (isFirstLevlChildren) {
             tempItem['visible'] = !tempItem['visible']
           }
@@ -290,8 +321,12 @@ export default {
     .hiddenRow {
         display: none;
     }
-  // .categoryStyle{
-  //     color: rgb(92, 157, 253);
-  // }
+    .tableStyle{
+        width: 100%;
+        box-shadow: 0 0 10px rgba(216,216,216,.5);
+    }
+    .mt15{
+      margin-top: 15px;
+    }
 }
 </style>

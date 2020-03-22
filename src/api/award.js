@@ -33,15 +33,6 @@ export function findListByAward(data) {
   })
 }
 
-// 指标库列表
-export function awardCfgList(data) {
-  return request({
-    url: '/qaAward/list',
-    method: 'post',
-    data
-  })
-}
-
 //新增指标库项
 export function awardCfgAdd(data) {
   return request({
@@ -59,6 +50,37 @@ export function awardCfgDel(data) {
     data
   })
 }
+
+//新增关键点
+export function pointAdd(data) {
+  return request({
+    url: '/qaStandardKeyPoints/save',
+    method: 'post',
+    data
+  })
+}
+
+//删除关键点
+export function pointDel(data) {
+  return request({
+    url: '/qaStandardKeyPoints/delete',
+    method: 'post',
+    data
+  })
+}
+
+//查询关键点
+export function getPoints(data) {
+  return request({
+    url: '/qaStandardKeyPoints/findListByStandardId',
+    method: 'post',
+    data
+  })
+}
+
+
+
+
 
 
 
