@@ -13,9 +13,9 @@
                 </el-row>
                 <el-row :gutter="20" class="mt20">
                     <el-col :span="24">
-                        <el-table :data="statisticDatas" border class="tableStyle" v-loading="leftTb" 
+                        <el-table :data="statisticDatas" class="tableStyle" v-loading="leftTb" 
                                   size="medium" :row-style="selectedHighlight" :row-class-name="rowClassNameHandler" @row-click="selectRow">
-                            <el-table-column label="指标名称" width="460" align="left" show-overflow-tooltip>
+                            <el-table-column label="指标名称" align="left" show-overflow-tooltip>
                                 <template slot-scope="scope">
                                 <span :style="{marginLeft: scope.row.level * 23 + 'px'}">&ensp;</span>
                                 <i v-if="scope.row.showChildren" :class="{'categoryStyle el-icon-folder-add ':scope.row.showChildren, 'categoryStyle el-icon-document-remove':!scope.row.hasChildren}" @click="onExpand(scope.row)" :style="{cursor:scope.row.hasChildren ? 'pointer' : 'normal'}"></i>
@@ -38,7 +38,7 @@
                 <el-row :gutter="20">
                     <el-col :span="24">
                         <div class="grid-content">
-                            <el-button type="primary" icon="el-icon-plus" plain size="mini">录入</el-button>
+                            <el-button type="primary" icon="el-icon-plus" plain size="mini" @click="showInfoDialog">录入</el-button>
                             <el-button type="info" icon="el-icon-edit" plain size="mini">编辑</el-button>
                             <el-button type="success" icon="el-icon-view" plain size="mini">查看</el-button>
                         </div>
@@ -62,25 +62,30 @@
                 </el-row>
             </el-col>
         </el-row>
-        <add-form ref="leftForm"
-            labelWidth = '80px' 
-            :addForm = "addForm"
+        <add-form
+            labelWidth = "80px"
+            :formData="formData"
             :dialog="leftModalVisible"
             @close="leftModalVisible.v = false"
             @submit="handleLeftForm"
             ></add-form>
+        <info-form
+            :dialogFormVisible="rightDialogVisble"
+            :formData="formData"
+            @close="rightDialogVisble.v = false"
+            @submit="handleRightForm">
+        </info-form>    
     </div>
 </template>
 <script>
 import AddForm from './components/indexadd'
+import InfoForm from './components/infoadd'
 export default {
   name: 'ContractStatistic',
-  components:{AddForm},
+  components:{AddForm,InfoForm},
   data() {
     let sexs=[{label:'男',value:'M'},{label:'女',value:'F'}]
-    let sexProps={label:'label',value:'value'}
     let intersts=[{label:'羽毛球',value:'badminton'},{label:'篮球',value:'basketball'}]
-    let interstProps={label:'label',value:'value'}
     return {
         statisticDatas: [],
         pastDays: 0,
@@ -88,14 +93,20 @@ export default {
         rightTb:true,
         leftTb:false,
         leftModalVisible:{v:false},
-        rightModalVisible:false,
-        addForm:[
-            {type:'Input',label:'指标名称：',prop:'name',width:'180px',placeholder:'请输入指标名称'},
-            {type:'Select',label:'上级指标库：',prop:'sex',width:'180px',options:sexs,props:sexProps,change:row=>'',placeholder:'请选择上级指标库'},
-            {type:'Input',label:'指标等级：',prop:'name1',width:'180px',placeholder:'请输入指标等级'},
-            {type:'Input',label:'分值：',prop:'age1',width:'180px',placeholder:'请输入分值'},
-            {type:'TextArea',label:'指标内容：',prop:'age11',width:'180px',placeholder:'请输入指标内容'},
-        ],
+        rightDialogVisble:{v:false},
+        formData:{
+            formItemList:[
+                {type:'Input',label:'指标名称',prop:'name',width:'180px',placeholder:'请输入指标名称',value:''},
+                {type:'TreeSelect',label:'上级指标库',prop:'sex',width:'310px',options:sexs,change:row=>'',placeholder:'请选择上级指标库',value:''},
+                {type:'Input',label:'指标等级',prop:'name1',width:'180px',placeholder:'请输入指标等级',value:''},
+                {type:'Input',label:'分值',prop:'age1',width:'180px',placeholder:'请输入分值',value:''},
+                {type:'TextArea',label:'指标内容',prop:'age11',width:'180px',placeholder:'请输入指标内容',value:''},
+            ],
+            rightItemList:[
+                {type:'TextArea',label:'关键点',prop:'age11',placeholder:'请输入关键点',value:''},
+                {type:'TextArea',label:'详细说明',prop:'age12',placeholder:'请输入详细说明',value:''},
+            ]
+        },
         tableData: [{
             date: '1',
             name: '王小虎',
@@ -135,9 +146,14 @@ export default {
     showLeftModal(){
         this.leftModalVisible.v = true
     },
-    handleLeftForm(form){
-        // let { form1 } = form
-        console.log(form)
+    handleLeftForm(data){
+        console.log(data)
+    },
+    showInfoDialog(){
+        this.rightDialogVisble.v = true
+    },
+    handleRightForm(data){
+        console.log(1,data)
     },
     _processLevelStatisticData(dataArray) {
       let self = this

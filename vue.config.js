@@ -29,14 +29,29 @@ module.exports = {
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
-  devServer: {
-    port: port,
-    open: true,
-    overlay: {
-      warnings: false,
-      errors: true
-    },
-    before: require('./mock/mock-server.js')
+  // devServer: {
+  //   port: port,
+  //   open: true,
+  //   overlay: {
+  //     warnings: false,
+  //     errors: true
+  //   },
+  //   before: require('./mock/mock-server.js')
+  // },
+  devServer:{
+    port:'8081',
+    proxy: {
+      '/api': {
+        // target: 'http://xmfapi.cecicloud.com/api',
+        target: 'http://localhost:8080/little_bee/api',
+        ws: true, // 使用的是http协议则设置为false，https协议则设置为true
+        secure:false,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
+    }
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that

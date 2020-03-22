@@ -88,10 +88,10 @@ export const constantRoutes = [
         meta: { title: '指标库', icon: 'form' }
       },
       {
-        path: 'enter/:id(\\d+)',
+        path: 'enter/:id',
         name: 'indexLibEnter',
         component: () => import('@/views/indexLib/enter'),
-        meta: { title: '编辑指标库', noCache: true, activeMenu: '/indexLib/list'  },
+        meta: { title: '配置指标库', noCache: true, activeMenu: '/indexLib/list'  },
         hidden: true
       },
     ]
