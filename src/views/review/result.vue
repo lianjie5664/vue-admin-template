@@ -3,7 +3,7 @@
     <div class="top-info hg-flex mb20">
       <div class="items mr40">
         <label class="mr15">得分情况:</label>
-        <el-input v-model="formParams.scoreCondition"></el-input>
+        <el-input v-model="formParams.scoreCondition" class="get-goal"></el-input>
       </div>
       <div class="items">
         <label>评审人:</label>
@@ -33,7 +33,8 @@
         <el-table-column
           label="得分">
           <template slot-scope="scope">
-            <span>系数: <span>0.5</span></span>
+            <span v-if="scope.row.children" class="score-item">1233 分</span>
+            <span v-else>系数: <span class="cient-item">0.5</span></span>
           </template>
         </el-table-column>
       </el-table>
