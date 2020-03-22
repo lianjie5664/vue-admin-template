@@ -18,8 +18,8 @@
                             <el-table-column label="指标名称" align="left" show-overflow-tooltip>
                                 <template slot-scope="scope">
                                 <span :style="{marginLeft: scope.row.level * 23 + 'px'}">&ensp;</span>
-                                <i v-if="scope.row.showChildren" :class="{'categoryStyle el-icon-folder-add ':scope.row.showChildren, 'categoryStyle el-icon-document-remove':!scope.row.hasChildren}" @click="onExpand(scope.row)" :style="{cursor:scope.row.hasChildren ? 'pointer' : 'normal'}"></i>
-                                <i v-else :class="{'categoryStyle el-icon-folder-add':scope.row.hasChildren, 'categoryStyle el-icon-document-remove':!scope.row.hasChildren}" @click="onExpand(scope.row)" :style="{cursor:scope.row.hasChildren ? 'pointer' : 'normal'}"></i>
+                                <i v-if="scope.row.showChildren" :class="{'categoryStyle el-icon-folder-opened ':scope.row.showChildren, 'categoryStyle el-icon-document-remove':!scope.row.hasChildren}" @click="onExpand(scope.row)" :style="{cursor:scope.row.hasChildren ? 'pointer' : 'normal'}"></i>
+                                <i v-else :class="{'categoryStyle el-icon-folder':scope.row.hasChildren, 'categoryStyle el-icon-document-remove':!scope.row.hasChildren}" @click="onExpand(scope.row)" :style="{cursor:scope.row.hasChildren ? 'pointer' : 'normal'}"></i>
                                 <span :data-level="scope.row.level" :style="{marginLeft: 4 + 'px'}">{{ scope.row.categoryName }}</span>
                                 </template>
                             </el-table-column>
@@ -80,6 +80,7 @@
 <script>
 import AddForm from './components/indexadd'
 import InfoForm from './components/infoadd'
+import { awardCfgList,awardCfgAdd,awardCfgDel,awardCfgUpt } from '@/api/award' 
 export default {
   name: 'ContractStatistic',
   components:{AddForm,InfoForm},
@@ -94,6 +95,7 @@ export default {
         leftTb:false,
         leftModalVisible:{v:false},
         rightDialogVisble:{v:false},
+        awardId:this.$route.params.id,
         formData:{
             formItemList:[
                 {type:'Input',label:'指标名称',prop:'name',width:'180px',placeholder:'请输入指标名称',value:''},
@@ -131,7 +133,9 @@ export default {
     let self = this
     self.loadStatisticData()
   },
- 
+  created(){
+     
+  },
   methods: {
     selectRow(row){
         this.currentRow = row.categoryid
@@ -147,7 +151,9 @@ export default {
         this.leftModalVisible.v = true
     },
     handleLeftForm(data){
-        console.log(data)
+        awardCfgAdd(data).then(res =>{
+          console.log(res)
+        })
     },
     showInfoDialog(){
         this.rightDialogVisble.v = true
@@ -223,58 +229,16 @@ export default {
       let params = {
         pastDays: self.pastDays
       }
-        let result = [
-          {
-            "parentcategoryid": 0,
-            "edit": 0,
-            "undeployed": 1,
-            "deployed": 0,
-            "completed": 0,
-            "categoryName": "商业管理类",
-            "categoryid": 1105,
-          },
-        
-          {
-            "parentcategoryid": 1105,
-            "edit": 0,
-            "undeployed": 0,
-            "deployed": 0,
-            "completed": 0,
-            "categoryName": "合同模板管理",
-            "categoryid": 1902
-          },
-          {
-            "parentcategoryid": 1902,
-            "edit": 0,
-            "undeployed": 0,
-            "deployed": 0,
-            "completed": 20,
-            "categoryName": "菜单管理",
-            "categoryid": 1903
-          },
-          {
-            "parentcategoryid": 1902,
-            "edit": 0,
-            "undeployed": 0,
-            "deployed": 0,
-            "completed": 20,
-            "categoryName": "研发设计类",
-            "categoryid": 1904
-          },
-          {
-            "parentcategoryid": 1902,
-            "edit": 0,
-            "undeployed": 0,
-            "deployed": 0,
-            "completed": 20,
-            "categoryName": "招标材设类",
-            "categoryid": 1905
-          },
-        ]
-        let resultArray = self._processLevelStatisticData(result)
+      this.getAwardCfgList({}).then((res) => {
+        let resultArray = self._processLevelStatisticData(res.data)
         self.statisticDatas = resultArray
+      })
+      // let result = []
     },
- 
+    async getAwardCfgList(params){
+      const res = await awardCfgList(params)
+      return res
+    },
     rowClassNameHandler({ row, rowIndex }) {
       // console.log(row['visible'])
       let className = 'pid-' + row.parentcategoryid
@@ -319,36 +283,15 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
-    .el-table--enable-row-hover .el-table__body tr:hover>td{
-        background-color: rgba(198, 226, 255, 0.48) !important;
-    }
-    .tableStyle{
-        width: 100%;
-        box-shadow: 0 0 10px rgba(216,216,216,.5);
-    }
-    .categoryStyle{
-        color: rgb(92, 157, 253);
-    }
-    .el-table__row{
-    cursor:pointer;
-}
+
+<style lang="less">
 .statistics {
     padding: 10px;
     .hiddenRow {
         display: none;
     }
-    .searchForm{
-        padding: 10px;
-        span.label{
-            margin-right: 10px;
-        }
-        span.attention{
-            color: #e50021;
-        }
-    }
-}
-.mt20{
-    margin-top:20px;
+  // .categoryStyle{
+  //     color: rgb(92, 157, 253);
+  // }
 }
 </style>
