@@ -14,6 +14,18 @@ import router from './router'
 
 import '@/icons' // icon
 import '@/permission' // permission control
+import './assets/iconfont/iconfont.css'
+
+import permission from './directive/permission'
+
+import VueElementExtends from 'vue-element-extends'
+import 'vue-element-extends/lib/index.css'
+
+Vue.use(VueElementExtends)
+
+Vue.use(permission)
+ 
+
 
 
 /**

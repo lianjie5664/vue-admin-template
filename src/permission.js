@@ -8,9 +8,16 @@ import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
+// 验证是否有权限
+function hasPermission(roles, permissionRoles) {
+  if (roles.indexOf('admin') >= 0) return true // admin permission passed directly
+  if (!permissionRoles) return true
+  return roles.some(role => permissionRoles.indexOf(role) >= 0)
+}
+
 const whiteList = ['/login'] // no redirect whitelist
 
-router.beforeEach(async(to, from, next) => {
+router.beforeEach((to, from, next) => {
   // start progress bar
   NProgress.start()
 
@@ -26,27 +33,47 @@ router.beforeEach(async(to, from, next) => {
       next({ path: '/' })
       NProgress.done()
     } else {
-      const hasGetUserInfo = store.getters.name
-      if (hasGetUserInfo) {
-        next()
+      // debugger
+      if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
+        store.dispatch('user/getInfo').then(res => { // 拉取user_info
+            router.addRoutes(store.getters.routers) // 动态添加可访问路由表
+            next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+        }).catch((err) => {
+          store.dispatch('user/logout').then(() => {
+            Message.error(err || 'Verification failed, please login again')
+            next(`/login?redirect=${to.path}`)
+          })
+        })
       } else {
-        try {
-          // get user info
-          await store.dispatch('user/getInfo')
-
-          next()
-        } catch (error) {
-          // remove token and go to login page to re-login
-          await store.dispatch('user/resetToken')
-          Message.error(error || 'Has Error')
-          next(`/login?redirect=${to.path}`)
-          NProgress.done()
-        }
+        next()
+        // 没有动态改变权限的需求可直接next() 删除下方权限判断 ↓
+        // if (hasPermission(store.getters.roles, to.meta.perms)) {
+        //   next()
+        // } else {
+        //   next({ path: '/401', replace: true, query: { noGoBack: true }})
+        // }
+        // 可删 ↑
       }
+      // const hasGetUserInfo = store.getters.name
+      // if (hasGetUserInfo) {
+      //   next()
+      // } else {
+      //   try {
+      //     // get user info
+      //     await store.dispatch('user/getInfo')
+
+      //     next()
+      //   } catch (error) {
+      //     // remove token and go to login page to re-login
+      //     await store.dispatch('user/resetToken')
+      //     Message.error(error || 'Has Error')
+      //     next(`/login?redirect=${to.path}`)
+      //     NProgress.done()
+      //   }
+      // }
     }
   } else {
     /* has no token*/
-
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
       next()

@@ -24,3 +24,51 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function userList(data) {
+  return request({
+    url: '/user/list',
+    method: 'post',
+    data
+  })
+}
+
+export function changeUserPwd(data) {
+  return request({
+    url: '/user/changePassword',
+    method: 'post',
+    data
+  })
+}
+
+export function saveUser(data) {
+  return request({
+    url: '/user/save',
+    method: 'post',
+    data
+  })
+}
+
+export function lockUser(data) {
+  return request({
+    url: '/user/lock',
+    method: 'post',
+    data
+  })
+}
+
+export function activationUser(data) {
+  return request({
+    url: '/user/activate',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteUser(data) {
+  return request({
+    url: '/user/delete',
+    method: 'post',
+    data
+  })
+}

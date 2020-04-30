@@ -1,6 +1,6 @@
 <template>
     <div class="app-container">
-        <el-dialog title="录入" :visible.sync="dialogFormVisible.v" width="600px">
+        <el-dialog :title=" types == '0' ? '录入关键点' : '修改关键点'" :visible.sync="dialogFormVisible.v" width="600px">
             <div class="demo-drawer__content">
                 <el-form status-icon label-width="100px" label-position="right" style="padding-bottom:40px" :model="formData" ref="rightForm">
                     <el-form-item v-for='(item,index) in formData.rightItemList' :label="item.label" :prop="'rightItemList.' + index + '.value'" :key='index'>
@@ -19,7 +19,8 @@
                 </el-form>
                 <div class="demo-drawer__footer">
                     <el-button @click="$emit('close')">取 消</el-button>
-                    <el-button type="primary" @click="submitForm('rightForm')" :loading="loading">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+                    <el-button type="primary" v-if="types == 0 " @click="submitForm('rightForm')" :loading="loading">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+                    <el-button type="primary" v-else @click="submitForm('rightForm')" :loading="loading">{{ loading ? '提交中 ...' : '修 改' }}</el-button>
                 </div>
             </div>
         </el-dialog>
@@ -32,7 +33,7 @@ export default {
             loading:false,
         }
     },
-    props:['formData','dialogFormVisible'],
+    props:['formData','dialogFormVisible','types'],
     methods: {
         handleClose(done) {
             if (this.loading) {
@@ -49,7 +50,10 @@ export default {
                     this.$emit('submit',jsonArr)
                 }
             })
-        }
+        },
+        created() {
+            alert(1)
+        },
     }
 }
 </script>

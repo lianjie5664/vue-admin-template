@@ -42,6 +42,15 @@ export function awardCfgAdd(data) {
   })
 }
 
+//修改指标库项
+export function awardCfgModify(data) {
+  return request({
+    url: '/qaStandard/save',
+    method: 'post',
+    data
+  })
+}
+
 //删除指标库项
 export function awardCfgDel(data) {
   return request({
@@ -78,8 +87,32 @@ export function getPoints(data) {
   })
 }
 
+// 新增动态表单
+export function saveDynamicForm(data) {
+  return request({
+    url: '/qaStandard/updateFormStyle',
+    method: 'post',
+    data
+  })
+}
+// 报告编制保存
+export function savaQaRept(data) {
+  return request({
+    url: '/qaReportCompile/save',
+    method: 'post',
+    data
+  })
+}
 
+//评审列表
 
+export function reportList(data) {
+  return request({
+    url: '/qaReportCompile/list',
+    method: 'post',
+    data
+  })
+}
 
 
 

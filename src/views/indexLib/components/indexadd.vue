@@ -1,7 +1,7 @@
 <template>
     <div class="app-container">
         <el-drawer
-            title="录入"
+            :title=" types == '0' ? '录入指标项' : '修改指标项'"
             :visible.sync="dialog.v"
             custom-class="demo-drawer" size="450px">
             <div class="demo-drawer__content">
@@ -18,68 +18,81 @@
                             <el-option v-for="op in item.options" :label="op.label" :value="op.value" :key="op.value"></el-option>
                         </el-select>
                         <el-input v-if="item.type==='TextArea'" type="textarea" v-model="item.value" :placeholder="item.placeholder"></el-input>
-                        <SelectTree v-if="item.type==='TreeSelect'"
+                        <!-- <SelectTree v-if="item.type==='TreeSelect'"
                             :props="props"
                             :options="optionData"
                             :clearable="isClearable"
-                            :accordion="isAccordion"
+                            :accordion="accordion"
+                            :value="valueId"
                             @getValue="getValue($event)"
-                            />
+                            /> -->
+                            <treeselect v-if="item.type==='TreeSelect'"
+                                :options="optionData"
+                                :disable-branch-nodes="true"
+                                :show-count="true"
+                                v-model="selectValue"
+                                @select="selectNode"
+                                placeholder="Where are you from?"
+                                />
                     </el-form-item>
                 </el-form>
                 <div class="demo-drawer__footer">
                     <el-button @click="$emit('close')">取 消</el-button>
-                    <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+                    <el-button type="primary" @click="submitForm('ruleForm',types)" :loading="loading">{{ loading ? '提交中 ...' : '保  存' }}</el-button>
                 </div>
             </div>
         </el-drawer>
     </div>
 </template>
 <script>
-import SelectTree from "@/components/TreeSelect/index.vue";
+import Treeselect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 export default {
     data(){
         return {
             loading:false,
             isClearable: true, // 可清空（可选）
-            isAccordion: true, // 可收起（可选）
-            valueId: 1, // 初始ID（可选）
-            props: {
-                // 配置项（必选）
-                value: "id",
-                label: "name",
-                children: "children"
-                // disabled:true
-            }
+            accordion: true, // 可收起（可选）
+            rowSelect: {},
+            selectValue:''
         }
     },
-    props:['formData','dialog','list'],
-    components:{SelectTree},
+    props:['formData','dialog','list','types','row'],
+    components:{Treeselect},
     methods: {
         handleClose(done) {
             if (this.loading) {
                 return;
             }
         },
-        submitForm(formName){
+        submitForm(formName,types){
             this.$refs[formName].validate((valid) => {
                 let jsonArr = {}
                 if(valid){
                     this.formData.formItemList.map((v) => {
                         jsonArr[v.prop] = v.value ? v.value : ''
                     })
-                    this.$emit('submit',jsonArr)
+                    // console.log(Object.assign(jsonArr,{types:types}))
+                    // return 
+                    this.$emit('submit',Object.assign(jsonArr,{types:types}))
                 }
             })
         },
-        getValue(value) {
-            this.formData.formItemList[1].value = value
+        selectNode(node,instanceId) {
+            this.rowSelect = node
+            this.formData.formItemList[1].value = node.id
         }
     },
     computed: {
         /* 转树形数据 */
         optionData() {
+            this.selectValue = this.row.id
+            this.rowSelect = this.row
+            this.formData.formItemList[1].value = this.row.id
             let cloneData = JSON.parse(JSON.stringify(this.list)); // 对源数据深度克隆
+            cloneData.map((v) =>{
+                v.label = v.name
+            })
             return cloneData.filter(father => {
                 // 循环所有项，并添加children属性
                 let branchArr = cloneData.filter(child => father.id == child.parentId); // 返回每一项的子级数组
@@ -87,7 +100,7 @@ export default {
                 return father.parentId == 0; //返回第一层
             });
         }
-    },
+    }
 }
 </script>
 <style lang="scss" scoped>

@@ -14,7 +14,7 @@
                             @change="item.change(item[item.prop])" :style="{ width: item.width }">
                             <el-option v-for="op in item.options" :label="op.label" :value="op.value" :key="op.value"></el-option>
                         </el-select>
-                        <el-input v-if="item.type==='TextArea'" type="textarea" v-model="item.value" :placeholder="item.placeholder"></el-input>
+                        <el-input v-if="item.type==='TextArea'" type="textarea" :rows="6" v-model="item.value" :placeholder="item.placeholder"></el-input>
                     </el-form-item>
                 </el-form>
                 <div class="demo-drawer__footer">

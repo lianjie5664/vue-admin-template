@@ -1,6 +1,22 @@
 @import '~@/styles/base.scss';
 
 .professor-page{
+  position: relative;
+  .box_fixed{
+    width: 100%;
+    height: 85px;
+    margin: 0 auto;
+    line-height: 85px;
+    background: #fff;
+    box-shadow: 0 0 10px #ccc;
+  }
+  .is_fixed{
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1002;
+    box-shadow: 0 0 10px #ccc;
+  }
   .top-info{
     @include layout-align(center);
     .items{
@@ -9,6 +25,9 @@
     }
     label{
       width: 110px;
+      color: #666;
+      font-size: 16px;
+      font-weight: 700;
     }
     .el-input__inner{
       border-radius: 0;
@@ -61,15 +80,20 @@
       color: #333;
     }
     td{
-      padding: 0;
+      padding: 6px;
     }
     td:first-child .cell{
       padding: 7px 0 7px 10px;
     }
   }
   .score-item{
-    color: red;
-    font-size: 16px;
+    color: rgb(7, 209, 7);
+    font-size: 24px;
+    font-weight: 700;
+    span{
+      font-size: 16px;
+    }
+    
   }
 }
 

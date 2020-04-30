@@ -62,3 +62,34 @@
     margin-left: #{$ml}px!important;
   }
 }
+
+.router-link-active > li{
+  background: rgb(20, 39, 133) !important;
+}
+.el-scrollbar i{
+  color:rgb(191, 203, 217);
+}
+
+.el-table--enable-row-hover .el-table__body tr:hover>td{
+  background-color: #273EB0 !important;
+  color: #fff;
+  cursor: pointer;
+}
+.el-table--medium td{
+  padding:8px 0 !important;
+}
+.el-table td, .el-table th{
+  padding:8px 0;
+}
+.el-button--primary{
+  background: #273EB0 ;
+  border-color: #273EB0;
+}
+.el-button--primary:hover{
+  background: rgb(66, 90, 209) ;
+  border-color: rgb(66, 90, 209);
+}
+.el-scrollbar__wrap
+{
+  overflow-x: hidden;
+}

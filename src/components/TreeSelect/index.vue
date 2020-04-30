@@ -1,24 +1,27 @@
 <template>
-  <el-select :value="valueTitle" :clearable="clearable" @clear="clearHandle">
-    <el-input
-      class="selectInput"
-      :placeholder="placeholder"
-      v-model="filterText">
-    </el-input>
+<div>
+    <el-select :value="valueTitle" :clearable="clearable" @clear="clearHandle">
+      <el-input
+        class="selectInput"
+        :placeholder="placeholder"
+        v-model="filterText">
+      </el-input>
 
-    <el-option :value="valueTitle" :label="valueTitle" class="options">
-      <el-tree  id="tree-option"
-        ref="selectTree"
-        :accordion="accordion"
-        :data="options"
-        :props="props"
-        :node-key="props.value"    
-        :default-expanded-keys="defaultExpandedKey"
-        :filter-node-method="filterNode"
-        @node-click="handleNodeClick">
-      </el-tree>
-    </el-option>
-  </el-select>
+      <el-option :value="valueTitle" :label="valueTitle" class="options">
+        <el-tree  id="tree-option"
+          ref="selectTree"
+          :accordion="accordion"
+          :data="options"
+          :props="props"
+          :node-key="props.value"    
+          :default-expanded-keys="defaultExpandedKey"
+          :filter-node-method="filterNode"
+          @node-click="handleNodeClick">
+        </el-tree>
+      </el-option>
+    </el-select>
+</div>
+  
 </template>
 
 <script>
@@ -43,7 +46,7 @@ export default {
     },
     /* 初始值 */
     value:{
-      type: Number,
+      type: String,
       default: ()=>{ return null }
     },
     /* 可清空选项 */
@@ -70,6 +73,7 @@ export default {
     }
   },
   mounted(){
+    console.log(1111,this.$store)
     this.initHandle()
   },
   methods: {
