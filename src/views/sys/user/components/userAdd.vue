@@ -27,7 +27,7 @@
                 </el-col>
                 <el-col :span="12">
                 <el-form-item label="用户角色" prop="roleIdList">
-                    <el-select v-model="userForm.roleIdList" multiple size="small" style="width:100%;" placeholder="请选择用户角色">
+                    <el-select v-model="userForm.roleIdList" size="small" style="width:100%;" placeholder="请选择用户角色">
                         <el-option
                         v-for="item in rolearr"
                         :key="item.value"

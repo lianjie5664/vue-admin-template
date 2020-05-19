@@ -65,7 +65,7 @@
                 </div>
                 <h3>二、企业（组织）获得管理体系认证情况：</h3>
                 <el-row :gutter="10" v-for="(item,index) in formData.certification" :key="index">
-                    <el-col :span="14">
+                    <el-col :span="18">
                         <el-form-item :label="item.label">
                             <el-radio-group v-model="item.value">
                                 <el-radio :label="opt.label" v-for="(opt,index) in item.options" :key="index">{{opt.name}}</el-radio>
@@ -73,7 +73,7 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="6">
-                        <el-date-picker v-model="formData.time" type="date" size="small" placeholder="认证时间"></el-date-picker>
+                        <el-date-picker style="width:100%;" v-model="formData.time" type="date" size="small" placeholder="认证时间"></el-date-picker>
                     </el-col>
                 </el-row>
                 <h3>三、企业（组织）获得质量荣誉情况：</h3>
@@ -81,14 +81,14 @@
                     <el-col :span="8">
                         <el-row :gutter="10">
                             <el-col :span="6">
-                                <div class="lh32 ml60">
+                                <div class="lh32">
                                     <el-checkbox v-model="formData.checked">{{i.label}}</el-checkbox>
                                 </div>
                             </el-col>
                         </el-row>
                     </el-col>
                     <el-col :span="10">
-                        <el-row :gutter="24">
+                        <el-row :gutter="10">
                             <el-col :span="8">
                                 <div class="time">获奖时间：</div>
                             </el-col>
