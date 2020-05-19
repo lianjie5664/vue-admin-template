@@ -88,4 +88,20 @@ Modern browsers and Internet Explorer 10+.
 
 [MIT](https://github.com/PanJiaChen/vue-admin-template/blob/master/LICENSE) license.
 
-Copyright (c) 2017-present PanJiaChen
+
+
+静态路由格式
+  // let menuList = [
+    //   {"id":7,"title":"指标库","parentId":0,"path":"indexLib","icon":"el-icon-s-data","hidden": false,"alwaysShow":true},
+    //   {"id":8,"title":"奖项列表","parentId":7,"path":"indexLib/index","href":"indexLib/index","icon":"el-icon-trophy-1","hidden": false,"alwaysShow":true},
+    //   {"id":4,"title":"配置奖项","parentId":7,"path":"indexLib/enter/:id","href":"indexLib/enter","icon":"book","hidden": true,"alwaysShow":true},
+
+    //   {"id":5,"title":"报告编制","parentId":0,"path":"report","icon":"el-icon-edit","hidden": false,"visiable":false},
+    //   {"id":9,"title":"报告编制","parentId":5,"path":"report/index","icon":"el-icon-edit","href":"report/index","hidden": false},
+    //   {"id":6,"title":"进入编制","parentId":5,"path":"report/compile/:id","href":"report/compile","icon":"el-icon-edit","hidden": true},
+
+    //   {"id":1,"title":"系统管理","name":"sys","parentId":0,"path":"sys","icon":"el-icon-setting","hidden": false,"alwaysShow":true},
+    //   {"id":2,"title":"菜单管理","name":"menu","icon":"el-icon-menu","parentId":1,"path":"sys/menu","href":"sys/menu/index","hidden": false,"alwaysShow":true},
+    //   {"id":2,"title":"角色管理","name":"role","icon":"el-icon-bangzhu","parentId":1,"path":"sys/role","href":"sys/role/index","hidden": false,"alwaysShow":true},
+    //   {"id":3,"title":"用户管理","name":"user","icon":"el-icon-user","parentId":1,"path":"sys/user","href":"sys/user/index","hidden": false,"alwaysShow":true},
+    // ],menuRouters =[]

@@ -49,6 +49,12 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/indexLib/list',
   },
+  // {
+  //   path: '/compile/:id',
+  //   // component: () => import('@/views/compile/' + window.location.hash.split('/')[2]+'.vue'),
+  //   component: () => import('@/views/compile/85eaf3d0965d4f03bfac14a75331f134.vue'),
+  //   hidden: true
+  // },
 
   // {
   //   path: '/indexLib',

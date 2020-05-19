@@ -27,12 +27,12 @@
                 </el-col>
                 <el-col :span="12">
                 <el-form-item label="用户角色" prop="roleIdList">
-                    <el-select v-model="userForm.roleIdList" size="small" style="width:100%;" placeholder="请选择用户角色">
+                    <el-select v-model="userForm.roleIdList" multiple size="small" style="width:100%;" placeholder="请选择用户角色">
                         <el-option
-                            v-for="item in role"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
+                        v-for="item in rolearr"
+                        :key="item.value"
+                        :label="item.name"
+                        :value="item.id">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -113,12 +113,6 @@ export default {
                 {id:3,value: '101080003',label: '专家' },
                 {id:4,value: '101080004',label: '企业用户' }
             ],
-            role:[
-                {value: '97bb673217d642f3ac81e940189b8756',label: '超级管理员' },
-                {value: '97bb673217d642f3ac81e940189b8758',label: '专家1' },
-                {value: '97bb673217d642f3ac81e940189b8759',label: '企业管理员1' },
-                {value: '97bb673217d642f3ac81e940189b8746',label: '政府人员1' }
-            ],
             userForm:{
                 loginName:'',
                 name:'',
@@ -169,6 +163,10 @@ export default {
         show: {
             type: Boolean,
             default: false
+        },
+        rolearr:{
+            type:Array,
+            default:[]
         },
         modalType:{
             type:Number,

@@ -10,7 +10,7 @@
                     <el-input v-model="formParams.nickname" size="small" placeholder="用户名称"></el-input>
                 </el-col>
                 <el-col :span="6">
-                    <el-button type="primary" size="small" v-hasPermi="['system:menu:query']">查询用户</el-button>
+                    <el-button type="primary" size="small">查询用户</el-button>
                 </el-col>
             </el-row>
             <div class="user-oprate-group">
@@ -58,6 +58,7 @@
             :show.sync="userAddModal"
             :modalType="modalType"
             :userModel="user"
+            :rolearr ="rolearr"
             @userAdd ="handleSaveUser"
             @userModify ="handleUserModify"
             ></user-add>
@@ -67,6 +68,7 @@
 import UserTable from './components/userTable'
 import UserAdd from './components/userAdd'
 import {notice} from '@/utils/tools'
+import { roleList } from '@/api/role'
 import { userList,changeUserPwd ,saveUser,activationUser,lockUser,deleteUser} from "@/api/user"
 export default {
     data(){
@@ -89,6 +91,7 @@ export default {
                 passwordRepeat:''
             },
             users:[],
+            rolearr:[],
 
             listLoading:false,
             selectedRow :{},
@@ -238,10 +241,18 @@ export default {
                     notice(0,'修改失败！',0)
                 }
             })
+        },
+        getRoleList(){
+            roleList({}).then((res) => {
+                if(res.code == 1){
+                    this.rolearr = res.data
+                }
+            })
         }
     },
     created(){
         this.getUserList(this.currentPage,this.pageSize)
+        this.getRoleList()
     }
 }
 </script>

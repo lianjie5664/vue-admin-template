@@ -8,7 +8,6 @@
                             <el-button type="primary" icon="el-icon-plus" plain size="mini" @click="showLeftModal">录入</el-button>
                             <!-- <el-button type="success" icon="el-icon-view" plain size="mini" @click="getLeftRow">查看</el-button> -->
                             <el-button type="info" icon="el-icon-edit" plain size="mini" @click="editLeftRow">编辑</el-button>
-                            <el-button type="warning" icon="el-icon-setting" plain size="mini" @click="showSaveForm">配置表单</el-button>
                         </div>
                     </el-col>
                 </el-row>
@@ -24,13 +23,7 @@
                                 <span :data-level="scope.row.level" :style="{marginLeft: 4 + 'px'}">{{ scope.row.name }}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="grade" label="指标等级" width="180" align="center">
-                                <template slot-scope="scope">
-                                    <span v-if="scope.row.grade == 1">一级指标</span>
-                                    <span v-if="scope.row.grade == 2">二级指标</span>
-                                    <span v-if="scope.row.grade == 3">三级指标</span>
-                                </template>
-                            </el-table-column>
+                            <el-table-column prop="grade" label="指标等级" width="180" align="center"></el-table-column>
                             <el-table-column prop="score" label="分值" width="80" align="center"></el-table-column>
                             <el-table-column label="操作" width="120" align="left">
                                 <template slot-scope="scope">
@@ -47,6 +40,7 @@
                         <div class="grid-content">
                             <el-button type="primary" icon="el-icon-plus" plain size="mini" @click="showInfoDialog">录入</el-button>
                             <el-button type="info" icon="el-icon-edit" plain size="mini" @click="editKeyPoint">编辑</el-button>
+                            <el-button type="warning" icon="el-icon-setting" plain size="mini" @click="showSaveForm">配置表单</el-button>
                         </div>
                     </el-col>
                 </el-row>
@@ -148,7 +142,7 @@ export default {
                 {type:'Input',label:'指标名称',prop:'name',width:'180px',placeholder:'请输入指标名称',value:''},
                 {type:'TreeSelect',label:'上级指标库',prop:'parentId',width:'310px',change:row=>'',placeholder:'请选择上级指标库',value:''},
                 {type:'Select',label:'指标等级',prop:'grade',width:'180px',change:row=>'',options:[
-                {value: 1,label: '一级指标' },{value: 2,label: '二级指标' },{value: 3,label: '三级指标' }],placeholder:'请输入指标等级',value:''},
+                  {value: '一级指标',label: '一级指标' },{value: '二级指标',label: '二级指标' },{value: '三级指标',label: '三级指标' }],placeholder:'请输入指标等级',value:''},
                 {type:'Input',label:'分值',prop:'score',width:'180px',placeholder:'请输入分值',value:''},
                 {type:'TextArea',label:'指标内容',prop:'content',width:'180px',placeholder:'请输入指标内容',value:''},
             ],

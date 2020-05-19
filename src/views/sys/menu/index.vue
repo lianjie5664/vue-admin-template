@@ -14,52 +14,51 @@
             </el-form>
         </div>
         <!--表格树内容栏-->
-        <el-table :data="menuList" stripe size="mini" style="width: 100%;"
+        <el-table :data="optionData" stripe size="mini" style="width: 100%;"
             rowKey="id" v-loading="loading" element-loading-text="加载中">
             <el-table-column prop="name" label="菜单名称" :show-overflow-tooltip="true" width="160"></el-table-column>
-            </table-tree-column>
             <el-table-column header-align="center" align="center" label="图标">
                 <template slot-scope="scope">
-                    <i :class="scope.row.icon || ''"></i>
+                    <i :class="scope.row.icon"></i>
                 </template>
             </el-table-column>
             <el-table-column prop="type" header-align="center" align="center" label="类型">
                 <template slot-scope="scope">
-                <el-tag v-if="scope.row.type === 0" size="small">目录</el-tag>
-                <el-tag v-else-if="scope.row.type === 1" size="small" type="success">菜单</el-tag>
-                <el-tag v-else-if="scope.row.type === 2" size="small" type="info">按钮</el-tag>
+                <el-tag v-if="scope.row.type === '101100001'" size="small">目录</el-tag>
+                <el-tag v-else-if="scope.row.type === '101100002'" size="small" type="success">菜单</el-tag>
+                <el-tag v-else-if="scope.row.type === '101100003'" size="small" type="info">按钮</el-tag>
                 </template>
             </el-table-column>
-            <el-table-column 
-                prop="parentName" header-align="center" align="center" width="120" label="上级菜单">
+            <el-table-column prop="parentName" header-align="center" align="center" width="120" label="上级菜单">
             </el-table-column>
             <el-table-column
-                prop="path" header-align="center" align="center" width="150" 
-                :show-overflow-tooltip="true" label="菜单path">
+                prop="href" header-align="center" align="center" width="150" 
+                :show-overflow-tooltip="true" label="组件路径">
             </el-table-column>
             <el-table-column
-                prop="perms" header-align="center" align="center" width="150" 
+                prop="permission" header-align="center" align="center" width="150" 
                 :show-overflow-tooltip="true" label="授权标识">
             </el-table-column>
             <el-table-column
-                prop="orderNum" header-align="center" align="center" label="排序">
+                prop="sort" header-align="center" align="center" label="排序">
             </el-table-column>
             <el-table-column
                 fixed="right" header-align="center" align="center" width="185" label="操作">
                 <template slot-scope="scope">
                     <el-button icon="el-icon-edit" type="primary" size="small" plain @click="handleEdit(scope.row)">编辑</el-button>
-                    <el-button icon="el-icon-delete" type="danger" size="small" plain>删除</el-button>
+                    <el-button icon="el-icon-delete" type="danger" size="small" plain @click="handleDel(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
         <!-- menu add edit component -->
-        <menu-add :dataForm="dataForm" :show.sync="dialogVisible" :menuOptions="menuOptions"></menu-add>
+        <menu-add :dataForm="dataForm" @save="handleSaveMenu" :show.sync="dialogVisible" :menuOptions="menuOptions"></menu-add>
     </div>
 </template>
 <script>
 import TableTreeColumn from "@/views/common/TableTreeColumn";
 import MenuAdd from '@/views/sys/menu/components/menuAdd'
 import { handleTree } from '@/utils/tools'
+import {menuList,menuSave,menuDel} from '@/api/menu'
 export default {
     data(){
         return {
@@ -69,17 +68,17 @@ export default {
             loading: false,
             menuList: [],
             dialogVisible: false,
-            menuTypeList: ["目录", "菜单", "按钮"],
             dataForm: {
                 id: 0,
                 type: 1,
                 name: "",
                 parentId: 0,
                 parentName: "",
-                path: "",
+                href: "",
                 perms: "",
                 orderNum: 0,
                 icon: "",
+                hidden:0
             },
             menuOptions:[]
         }
@@ -88,92 +87,73 @@ export default {
     methods:{
         handleAddMenu(){
             this.dialogVisible = true;
+            this.getMenuList()
             this.dataForm = {
-                id: 0,
-                type: 1,
+                // id: 1,
+                type: "101100002",
                 name: "",
                 parentId: 0,
-                parentName: "",
-                path: "",
-                perms: "",
+                href: "",
+                permission: "",
                 sort: 0,
                 icon: "",
+                hidden:0
             }
         },
         handleEdit(row) {
             this.dialogVisible = true;
-            Object.assign(this.dataForm, row);
+            this.dataForm = row;
+        },
+        handleDel(row){
+            this.$confirm('确定要删除吗?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                menuDel({id:row.id}).then((res) =>{
+                    if(res.code == 1){
+                        this.getMenuList()
+                    }
+                })
+                }).catch(() => {
+            });
+        },
+        getMenuList(){
+            menuList({}).then((res) =>{
+                res.data.map((v) =>{
+                    v.label = v.name
+                })
+                let menuTree = handleTree(res.data, "id")
+                this.menuList = menuTree
+                this.menuOptions = []
+                const menu = { id: 0, label: '顶级项', children: [] }
+                menu.children = menuTree
+                this.menuOptions.push(menu)
+            })
+        },
+        handleSaveMenu(data){
+            menuSave(data).then((res) =>{
+                if(res.code == 1){
+                    this.getMenuList()
+                }
+                this.dialogVisible = false
+            })
         },
     },
+    computed: {
+        /* 转树形数据 */
+        optionData() {
+            let cloneData = JSON.parse(JSON.stringify(this.menuList)); // 对源数据深度克隆
+            return cloneData.filter(father => {
+                // 循环所有项，并添加children属性
+                let branchArr = cloneData.filter(child => father.id == child.parentId); // 返回每一项的子级数组
+                branchArr.length > 0 ? (father.children = branchArr) : ""; //给父级添加一个children属性，并赋值
+                return father.parentId == 0; //返回第一层
+            });
+        }
+    },
     created(){
-        let menuList = [
-            {id: 1,label: "系统管理",parentId: 0},
-            {id: 2,label: "用户管理",parentId: 1},
-            {id: 3,label: "2方法",parentId: 1},
-            {id: 4,label: "3试试",parentId: 1},
-            {id: 5,label: "4规格",parentId: 1},
-            {id: 6,label: "5哈哈",parentId: 1},
-        ]
-        const menu = { id: 0, label: '顶级栏目', children: [] };
-        menu.children = handleTree(menuList, "id");
-        this.menuOptions.push(menu);
-        this.menuList = [
-            {
-                createBy: null,
-                createTime: null,
-                delFlag: 0,
-                icon: "el-icon-setting",
-                id: 1,
-                lastUpdateBy: null,
-                lastUpdateTime: null,
-                level: 0,
-                name: "系统管理",
-                sort: 0,
-                parentId: 0,
-                parentName: null,
-                perms: null,
-                type: 0,
-                path: null,
-                children:[
-                    {
-                        createBy: null,
-                        createTime: null,
-                        delFlag: 0,
-                        icon: "el-icon-service",
-                        id: 2,
-                        lastUpdateBy: null,
-                        lastUpdateTime: null,
-                        level: 1,
-                        name: "用户管理",
-                        sort: 1,
-                        parentId: 1,
-                        parentName: "系统管理",
-                        perms: null,
-                        type: 1,
-                        path: "/sys/user",
-                        children:[
-                            {
-                                createBy: null,
-                                createTime: null,
-                                delFlag: 0,
-                                icon: null,
-                                id: 9,
-                                lastUpdateBy: null,
-                                lastUpdateTime: null,
-                                level: 2,
-                                name: "查看",
-                                sort: 0,
-                                parentId: 2,
-                                parentName: "用户管理",
-                                perms: "sys:user:view",
-                                type: 2,
-                                path: null
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
+        this.getMenuList()
     }
 }
 </script>
