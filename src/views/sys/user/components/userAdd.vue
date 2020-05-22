@@ -26,8 +26,8 @@
                 </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                <el-form-item label="用户角色" prop="roleIdList">
-                    <el-select v-model="userForm.roleIdList" size="small" style="width:100%;" placeholder="请选择用户角色">
+                <el-form-item label="用户角色" prop="roleId">
+                    <el-select v-model="userForm.roleId" size="small" style="width:100%;" placeholder="请选择用户角色">
                         <el-option
                         v-for="item in rolearr"
                         :key="item.value"
@@ -117,7 +117,7 @@ export default {
                 loginName:'',
                 name:'',
                 passWord:'',
-                roleIdList:'',
+                roleId:'',
                 userType:'',
                 mobile:'',
                 phone:'',
@@ -137,7 +137,7 @@ export default {
                 passWordRepeat: [
                     { required: true, validator: validatePass2, trigger: 'blur' }
                 ],
-                roleIdList: [
+                roleId: [
                     { required: true, message: '请选择用户角色', trigger: 'change' }
                 ],
                 userType: [

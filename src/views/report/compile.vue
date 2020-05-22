@@ -1,7 +1,7 @@
 <template>
     <div class="statistics common-content">
         <el-row :gutter="20">
-            <el-col :span="12">
+            <el-col :span="8">
                 <el-row :gutter="20" class="mt15">
                     <el-col :span="24">
                       <div style="height:calc(100vh - 100px);padding:4px;box-shadow: 0 0 10px 2px rgba(30,13,4,.15);">
@@ -17,30 +17,30 @@
                                   </template>
                               </el-table-column>
                               <el-table-column prop="grade" label="指标等级" width="150" align="center"></el-table-column>
-                              <el-table-column prop="score" label="分值" width="200" align="center"></el-table-column>
+                              <el-table-column prop="score" label="分值" width="80" align="center"></el-table-column>
                           </el-table>
                         </el-scrollbar><!-- /滚动条 -->
                         </div>
                     </el-col>
                 </el-row>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="16">
                 <el-row :gutter="20" class="mt15" v-loading="loading" v-if="!keyPointShow">
                   <div class="rightbox" v-if="noDataVisible">
                     <el-scrollbar style="height: 100%;"> <!-- 滚动条 -->
                       <div class="parentTitle">{{currentTitle}}</div>
-                      <dynamic-component :name="rowCpt"></dynamic-component>
-                      <div style="height:80px;"></div>
+                      <dynamic-component :name="rowCpt" :aid="currentRow" :awardId="awardId"></dynamic-component>
+                      <!-- <div style="height:80px;"></div>
                         <div class="opt">
                             <el-button type="primary" icon="el-icon-position" @click="savePoints">提交保存</el-button>
-                        </div>
+                        </div> -->
                     </el-scrollbar><!-- /滚动条 -->
                   </div>
                   <div class="rightbox" v-else>
                     <el-scrollbar style="height: 100%;"> <!-- 滚动条 -->
                       <div class="parentTitle">{{currentTitle}}</div>
                       <!-- <img src="../../assets/imgs/noData.png" class="imgs" alt="" v-show="noDataVisible"> -->
-                     <dynamic-component :name="rowCpt"></dynamic-component>
+                     <dynamic-component :name="rowCpt" :aid="currentRow"></dynamic-component>
                     </el-scrollbar><!-- /滚动条 -->
                   </div>
                 </el-row>

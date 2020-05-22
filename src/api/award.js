@@ -113,6 +113,15 @@ export function reportList(data) {
     data
   })
 }
+// 获取编制详情
+export function getReptCompileDetail(data) {
+  return request({
+    url: '/qaReportCompile/getReportCompile',
+    method: 'post',
+    data
+  })
+}
+
 
 
 

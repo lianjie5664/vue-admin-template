@@ -22,6 +22,7 @@ import VueElementExtends from 'vue-element-extends'
 import 'vue-element-extends/lib/index.css'
 
 Vue.use(VueElementExtends)
+Vue.prototype.$EventBus = new Vue()
 
 Vue.use(permission)
  

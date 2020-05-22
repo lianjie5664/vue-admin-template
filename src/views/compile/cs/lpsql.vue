@@ -1,5 +1,5 @@
 <template>
-    <div class="compile-wrap">
+    <div class="lpsql-wrap">
         <el-row :gutter="10">
             <el-col :span="3">
                 <el-button style="width:100%;" round plain icon="el-icon-document-add" :size="size" @click="addTable">新建</el-button>
@@ -63,7 +63,7 @@
                             <td class="ipt32" v-for="(iqa,idx) in item.qa" :key="idx">
                                 <el-row :gutter="10">
                                     <el-col :span="18">
-                                        <input type="text" v-model="item.qa[idx]" placeholder="请输入年份" class="noborIpt">
+                                        <input type="text" maxlength="4" v-model="item.qa[idx]" placeholder="请输入年份" class="noborIpt">
                                     </el-col>
                                     <el-col :span="3" class="lh23">年</el-col>
                                 </el-row>
@@ -98,9 +98,16 @@
                 </el-col>
             </el-row>
         </div>
+        <div style="height:80px;"></div>
+        <div class="submit-box">
+            <el-button type="primary" @click="handleSubmit">提交保存</el-button>
+        </div>
     </div>
 </template>
 <script>
+import './cs.less'
+import {savaQaRept,getReptCompileDetail} from '@/api/award' 
+import {notice} from '@/utils/tools'
 export default {
     data(){
         return {
@@ -110,6 +117,7 @@ export default {
             ],
         }
     },
+    props:['id','awardId'],
     methods:{
         addRow(index){
             let model = {mti:'',lote:'',dal:'',ial:''}
@@ -129,79 +137,36 @@ export default {
                 firstClassRate:['','',''],
                 qualifiedRate:['','',''],
             }
+            // console.log(JSON.parse(JSON.stringify(this.formData)))
             this.formData.push(muban)
         },
         delTable(index){
             this.formData.splice(index,1)
         },
-        submitData(){
-            console.log(this.formData)
+        handleSubmit(){
+            let data = {
+                awardId:this.awardId,
+                standardId:this.id,
+                description:this.formData
+            }
+            savaQaRept(data).then( res => {
+                if(res.code == 1){
+                    notice(1,'保存成功！',1)
+                }else{
+                    notice(0,'保存失败，请重试！',0)
+                }
+            })
+        },
+        getDetail(){
+            getReptCompileDetail({standardId:this.id}).then((res) =>{
+                if(res.code == 1){
+                    this.formData = JSON.parse(res.data.description)
+                }
+            })
         }
+    },
+    created(){
+        this.getDetail()
     }
 }
 </script>
-<style lang="less" scoped>
-    .compile-wrap{
-        padding: 0 15px;
-        .mutiTable{
-            margin-top: 25px;
-            border: dashed 1px #ccc;
-            padding:15px;
-            .table-title{
-                font-size: 14px;
-                color: #666;
-                line-height: 32px;
-            }
-            .dataintable{
-                margin-top: 15px;
-                border-collapse: collapse;
-                border: 1px solid #ddd;
-                width: 100%;
-                .ipt32{
-                    margin-top: 10px;
-                }
-                .lh23{
-                    line-height: 23px;
-                }
-                .th{
-                    vertical-align: baseline;
-                    padding: 15px 10px;
-                    background-color: #eee;
-                    border-right: 1px solid #ddd;
-                    text-align: center;
-                    color: #666;
-                    border-bottom: solid 1px #ddd;
-                    font-size: 14px;
-                    font-weight: 700;
-                }
-                td{
-                    vertical-align: middle;
-                    padding: 10px;
-                    border: 1px solid #ddd;
-                    text-align: center;
-                    font-size: 14px;
-                }
-                .noborIpt{
-                    height:100%;
-                    width:100%;
-                    border: none;
-                    outline:none;
-                }
-                .pointer{
-                    cursor: pointer;
-                }
-                .red{
-                    color: rgb(241, 18, 18);
-                }
-                .green{
-                    color: rgb(15, 150, 15);
-                }
-            }
-        }
-        
-        
-        // .mt25{
-        //     margin-top: 25px;
-        // }
-    }
-</style>

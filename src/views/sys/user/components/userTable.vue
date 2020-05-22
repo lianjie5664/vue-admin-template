@@ -31,7 +31,7 @@
             </el-table-column>
             <el-table-column label="用户角色">
                 <template slot-scope="scope">
-                    {{ scope.row.roleNames }}
+                    {{ scope.row.roleName }}
                 </template>
             </el-table-column>
             <el-table-column label="用户类型">

@@ -1,8 +1,7 @@
 <template>
     <div>
         <transition mode="out-in">
-            <component :is="comp"></component>
-            {{name}}
+            <component :is="comp" :id="ids" :awardId="awardId"></component>
         </transition>
     </div>
 </template>
@@ -11,9 +10,10 @@ export default {
   data () {
     return {
     //   compName: this.name
+        // ids:''
     }
   },
-  props: ['name'],
+  props: ['name','aid','awardId'],
   computed: {
     comp() {
         try{
@@ -30,6 +30,12 @@ export default {
         }catch(err){
             console.log(err)
         }
+    },
+    ids(){
+        return this.aid
+    },
+    awardIds(){
+        return this.awardId
     }
   },
 }

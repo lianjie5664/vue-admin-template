@@ -5,8 +5,9 @@
                 <th  v-for="(item,index) in formData.head" :key="index">
                     <div v-if="item.name != ''">{{item.name}}</div>
                     <div v-else style="position:relative;">
-                        <input type="text" style="width:80px;" placeholder="年份" v-model="item.value">
-                        <span style="position:absolute;right:20%;top:15%;">年</span>
+                        <input type="text" style="width:65px;" placeholder="年份" v-model="item.value">
+                        <span style="position:abso3
+                        lute;right:20%;top:15%;">年</span>
                     </div>
                 </th>
             </thead>
@@ -18,7 +19,7 @@
                     <td><input type="text" v-model="i.v1" class="noborIpt"></td>
                     <td><input type="text" v-model="i.v2" class="noborIpt"></td>
                     <td><input type="text" v-model="i.v3" class="noborIpt"></td>
-                    <td>{{i.ranking}}</td>
+                    <td><input type="text" v-model="i.ranking" class="noborIpt"></td>
                 </tr>
             </tbody>
         </table>
@@ -40,7 +41,7 @@ export default {
                     {name:'省内同行业排名',value:'',ext:''},
                 ],
                 body:[
-                    {sort:1,name:'总资产额',unit:'万元',v1:'1',v2:'2',v3:'3',ranking:''},
+                    {sort:1,name:'总资产额',unit:'万元',v1:'',v2:'',v3:'',ranking:''},
                     {sort:2,name:'主营业务收入',unit:'万元',v1:'',v2:'',v3:'',ranking:''},
                     {sort:3,name:'投资收益',unit:'万元',v1:'',v2:'',v3:'',ranking:''},
                     {sort:4,name:'营业外收入',unit:'万元',v1:'',v2:'',v3:'',ranking:''},
@@ -61,10 +62,14 @@ export default {
                     {sort:19,name:'新产品产值率',unit:'%',v1:'',v2:'',v3:'',ranking:''},
                     {sort:20,name:'万元总产值综合能耗',unit:'吨/万元',v1:'',v2:'',v3:'',ranking:''},
                     {sort:21,name:'万元总产值综合能耗年下降率',unit:'%',v1:'',v2:'',v3:'',ranking:''},
-                    {sort:22,name:'安全指标',unit:'',v1:'',v2:'',v3:'',ranking:''}
+                    {sort:22,name:'安全指标',unit:'/',v1:'',v2:'',v3:'',ranking:''}
                 ]
             }
         }
+    },
+    props:['id'],
+    created(){
+           console.log(this.id)
     }
 }
 </script>

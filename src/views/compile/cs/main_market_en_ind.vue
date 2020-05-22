@@ -3,13 +3,13 @@
         <table class="dataTable">
             <tbody>
                 <tr>
-                    <td colspan="2" class="cener">主导产品名称</td>
+                    <td colspan="2" class="center" style="width:200px;">主导产品名称</td>
                     <td><input type="text" v-model="formData.mp.m1" class="noborIpt"></td>
                     <td><input type="text" v-model="formData.mp.m2" class="noborIpt"></td>
                     <td><input type="text" v-model="formData.mp.m3" class="noborIpt"></td>
                 </tr>
                 <tr>
-                    <td rowspan="3" class="cener w50">市场占有份额</td>
+                    <td rowspan="3" class="center w50">市场占有份额</td>
                     <td><input type="text" placeholder="输入年份" maxlength="4" v-model="formData.ms.z1" class="dateIpt">年</td>
                     <td><input type="text" v-model="formData.ms.z2" class="noborIpt"></td>
                     <td><input type="text" v-model="formData.ms.z3" class="noborIpt"></td>
@@ -28,7 +28,7 @@
                     <td><input type="text" v-model="formData.ms.z12" class="noborIpt"></td>
                 </tr>
                 <tr>
-                    <td rowspan="3" class="cener w50">顾客满意程度</td>
+                    <td rowspan="3" class="center w50">顾客满意程度</td>
                     <td><input type="text" placeholder="输入年份" maxlength="4" v-model="formData.cl.c1" class="dateIpt">年</td>
                     <td><input type="text" v-model="formData.cl.c2" class="noborIpt"></td>
                     <td><input type="text" v-model="formData.cl.c3" class="noborIpt"></td>
@@ -47,7 +47,7 @@
                     <td><input type="text" v-model="formData.cl.c12" class="noborIpt"></td>
                 </tr>
                 <tr>
-                    <td rowspan="3" class="cener w50">顾客忠诚程度</td>
+                    <td rowspan="3" class="center w50">顾客忠诚程度</td>
                     <td><input type="text" placeholder="输入年份" maxlength="4" v-model="formData.cs.e1" class="dateIpt">年</td>
                     <td><input type="text" v-model="formData.cs.e2" class="noborIpt"></td>
                     <td><input type="text" v-model="formData.cs.e3" class="noborIpt"></td>
@@ -66,7 +66,7 @@
                     <td><input type="text" v-model="formData.cs.e12" class="noborIpt"></td>
                 </tr>
                 <tr>
-                    <td colspan="2" rowspan="5" class="cener">环境指标</td>
+                    <td colspan="2" rowspan="5" class="center">环境指标</td>
                     <td class="gray"><input type="text" placeholder="输入年份" maxlength="4" v-model="formData.ei.e1" class="dateIpt">年</td>
                     <td class="gray"><input type="text" placeholder="输入年份" maxlength="4" v-model="formData.ei.e2" class="dateIpt">年</td>
                     <td class="gray"><input type="text" placeholder="输入年份" maxlength="4" v-model="formData.ei.e3" class="dateIpt">年</td>

@@ -1,5 +1,5 @@
 <template>
-    <div class="compile-wrap">
+    <div class="baseInfo3-wrap">
         <el-form ref="formData" :model="formData" label-width="180px">
             <el-row>
                 <el-col :span="22">
@@ -172,16 +172,23 @@
                 </el-col>
             </el-row>
         </el-form>
+        <div style="height:80px;"></div>
+        <div class="submit-box">
+            <el-button type="primary" @click="handleSubmit">提交保存</el-button>
+        </div>
     </div>
 </template>
 <script>
+import './cs.less'
+import {savaQaRept,getReptCompileDetail} from '@/api/award' 
+import {notice} from '@/utils/tools'
 export default {
     name:'baseInfo3',
     data(){
         return {
             size:'small',
             formData:{
-                v1:'1',
+                v1:'',
                 honor:[
                     {options:[{label:1,name:'国家级'},{label:2,name:'省部级'}],chk:{label:'省级以上工程质量奖',value:true},v1:2,ipt1:'',ipt2:'',ipt3:''},
                     {chk:{label:'省级以上高新技术产品',value:true},ipt1:'',ipt2:''},
@@ -189,7 +196,7 @@ export default {
                     {ipt1:'',ipt2:'',options:[{label:1,name:'中国名牌'},{label:2,name:'湖南名片'},{label:3,name:'驰名商标'},{label:4,name:'著明商标'}],chk:{label:'省级以上品牌荣誉',value:false}},
                     {ipt1:'',ipt2:'',chk:{label:'省级以上工程质量奖',value:0}},
                     {multiline:[
-                        {ipt1:{label:'认证名称：',value:''},ipt2:{label:'获证产品名称：',value:''},ipt3:{label:'获证时间：',value:''},chk:{label:'强制性认证',value:true}},
+                        {ipt1:{label:'认证名称：',value:''},ipt2:{label:'获证产品名称：',value:''},ipt3:{label:'获证时间：',value:''},chk:{label:"强制性认证",value:true}},
                         {ipt1:{label:'认证名称：',value:''},ipt2:{label:'获证产品名称：',value:''},ipt3:{label:'获证时间：',value:''},chk:{label:'生产（制造）许可证',value:false}},
                         {ipt1:{label:'认证名称：',value:''},ipt2:{label:'获证产品名称：',value:''},ipt3:{label:'获证时间：',value:''},chk:{label:'其他（证书名称）',value:false}},
                     ]},
@@ -197,34 +204,34 @@ export default {
                 ]
             }
         }
+    },
+    props:['id','awardId'],
+    methods:{
+        handleSubmit(){
+            let data = {
+                awardId:this.awardId,
+                standardId:this.id,
+                description:this.formData
+            }
+            savaQaRept(data).then( res => {
+                if(res.code == 1){
+                    notice(1,'保存成功！',1)
+                }else{
+                    notice(0,'保存失败，请重试！',0)
+                }
+            })
+        },
+        getDetail(){
+            getReptCompileDetail({standardId:this.id}).then((res) =>{
+                if(res.code == 1){
+                    this.formData = Object.assign({},this.formData,JSON.parse(res.data.description))
+                    console.log(this.formData)
+                }
+            })
+        }
+    },
+    created(){
+        this.getDetail()
     }
 }
 </script>
-<style lang="less" scoped>
-    .compile-wrap{
-        padding: 0 15px;
-        h3{
-            font-size: 16px;
-            margin-top:20px;
-            color: #666;
-        }
-        .item{
-            line-height: 32px;
-            font-size: 14px;
-            margin-top: 15px;
-            color:#666;
-        }
-        .section{
-            padding: 15px;
-            background: #eee;
-            margin-bottom: 15px;
-            min-width:750px;
-        }
-        .mt45{
-            margin-top: 45px;
-        }
-        .el-form-item{
-            margin-bottom: 0;
-        }
-    }
-</style>
