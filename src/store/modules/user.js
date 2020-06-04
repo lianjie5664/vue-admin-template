@@ -111,6 +111,7 @@ const actions = {
           })
          }
         menuRouters = sortKey(menuRouters,'sort')
+
         commit('SET_ROUTERS', menuRouters)
         resolve(data)
       }).catch(error => {

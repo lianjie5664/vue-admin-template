@@ -44,10 +44,22 @@ export const constantRouterMap = [
     hidden: true
   },
 
+  // {
+  //   path: '/',
+  //   component: Layout,
+  //   redirect: '/indexLib/index',
+  // },
+
   {
     path: '/',
     component: Layout,
-    redirect: '/indexLib/index',
+    redirect: '/dashboard',
+    children: [{
+      path: 'dashboard',
+      name: 'Dashboard',
+      component: () => import('@/views/homepage/index'),
+      meta: { title: '系统首页', icon: 'el-icon-s-home' }
+    }]
   },
   // {
   //   path: '/compile/:id',
