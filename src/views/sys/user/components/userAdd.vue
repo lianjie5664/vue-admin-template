@@ -7,23 +7,13 @@
                 style="margin-top:20px;">
                 <el-col :span="12">
                     <el-form-item label="登录账号" prop="loginName">
-                        <el-input v-model="userForm.loginName" size="small" placeholder="请输入登录账号" autocomplete="off"></el-input>
+                        <el-input v-model="userForm.loginName" size="small" placeholder="请输入登录账号" disabled autocomplete="off"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="用户名称" prop="name">
                         <el-input v-model="userForm.name" size="small" placeholder="请输入用户名称" autocomplete="off"></el-input>
                     </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                <el-form-item label="登录密码" prop="passWord">
-                    <el-input v-model="userForm.passWord" size="small" type="password" placeholder="请输入登录密码" autocomplete="off"></el-input>
-                </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                 <el-form-item label="重复密码" prop="passWordRepeat">
-                    <el-input v-model="userForm.passWordRepeat" size="small" type="password" placeholder="请输入再次输入登录密码" autocomplete="off"></el-input>
-                </el-form-item>
                 </el-col>
                 <el-col :span="12">
                 <el-form-item label="用户角色" prop="roleId">
@@ -116,7 +106,6 @@ export default {
             userForm:{
                 loginName:'',
                 name:'',
-                passWord:'',
                 roleId:'',
                 userType:'',
                 mobile:'',

@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-// 提交
+// 保存/修改 专家评审
 export function toSave(data) {
   return request({
     url: '/qaGrade/save',
@@ -16,3 +16,4 @@ export function getSaveSuccess(data) {
     data
   })
 }
+

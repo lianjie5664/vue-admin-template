@@ -30,17 +30,13 @@
                     <el-scrollbar style="height: 100%;"> <!-- 滚动条 -->
                       <div class="parentTitle">{{currentTitle}}</div>
                       <dynamic-component :name="rowCpt" :aid="currentRow" :awardId="awardId"></dynamic-component>
-                      <!-- <div style="height:80px;"></div>
-                        <div class="opt">
-                            <el-button type="primary" icon="el-icon-position" @click="savePoints">提交保存</el-button>
-                        </div> -->
                     </el-scrollbar><!-- /滚动条 -->
                   </div>
                   <div class="rightbox" v-else>
                     <el-scrollbar style="height: 100%;"> <!-- 滚动条 -->
                       <div class="parentTitle">{{currentTitle}}</div>
                       <!-- <img src="../../assets/imgs/noData.png" class="imgs" alt="" v-show="noDataVisible"> -->
-                     <dynamic-component :name="rowCpt" :aid="currentRow"></dynamic-component>
+                     <dynamic-component :name="rowCpt" :aid="currentRow" :awardId="awardId"></dynamic-component>
                     </el-scrollbar><!-- /滚动条 -->
                   </div>
                 </el-row>
@@ -56,7 +52,7 @@
                         </div>
                         <div style="height:80px;"></div>
                           <div class="opt">
-                              <el-button type="primary" icon="el-icon-position" @click="handleSaveQaRept">提交保存111</el-button>
+                              <el-button type="primary" icon="el-icon-position" @click="handleSaveQaRept">提交保存</el-button>
                           </div>
                       </el-col>
                     </el-scrollbar><!-- /滚动条 -->

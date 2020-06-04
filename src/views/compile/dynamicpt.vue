@@ -1,7 +1,7 @@
 <template>
     <div>
         <transition mode="out-in">
-            <component :is="comp" :id="ids" :awardId="awardId"></component>
+            <component :is="comp" :id="ids" :awardId="awardId" :key="ids"></component>
         </transition>
     </div>
 </template>
@@ -9,8 +9,7 @@
 export default {
   data () {
     return {
-    //   compName: this.name
-        // ids:''
+  
     }
   },
   props: ['name','aid','awardId'],

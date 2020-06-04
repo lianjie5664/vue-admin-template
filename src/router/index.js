@@ -47,7 +47,7 @@ export const constantRouterMap = [
   {
     path: '/',
     component: Layout,
-    redirect: '/indexLib/list',
+    redirect: '/indexLib/index',
   },
   // {
   //   path: '/compile/:id',

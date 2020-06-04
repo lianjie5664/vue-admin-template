@@ -43,8 +43,8 @@
               :step="0.05"
               :min="0" :max="1"
               @change="handleNumCon(scope.row)"></el-input-number> -->
-              <el-progress v-if="scope.row.grade == '二级指标' && scope.row.score != ''" :text-inside="true" :stroke-width="20" :percentage="scope.row.groupScore || 0" :format="format" status="success"></el-progress>
-              <el-row type="flex" v-if="scope.row.grade == '三级指标' && scope.row.score != ''" >
+              <el-progress v-if="scope.row.grade == 2 && scope.row.score != ''" :text-inside="true" :stroke-width="20" :percentage="scope.row.groupScore || 0" :format="format" status="success"></el-progress>
+              <el-row type="flex" v-if="scope.row.grade == 3 && scope.row.score != ''" >
                   <el-col :span="18">
                     <el-slider v-if="!scope.row.children"
                     v-model="scope.row.calculate"
@@ -101,7 +101,7 @@ export default {
       },
       awardList: [], // 奖项列表
       awardId: this.$route.query.awardId,
-      companyId:this.$route.query.companyId,
+      reportUserId:this.$route.query.reportUserId,
       isFixed: false,
       loading: false, // 页面加载loading
       paramsList: {
@@ -165,24 +165,32 @@ export default {
       })
     },
     handleNumCon (row) {
+      // let cloneData = this.optionData
+      // cloneData.filter(father => {
+      //   // 循环所有项，并添加children属性
+      //   let branchArr = father.children.filter(child => father.id == child.parentId && child.score !="")  // 返回每一项的子级数组
+      //   console.log('baranarr',branchArr)
+      //   let finalArr = branchArr.filter(child => father.id == child.parentId),totalScore = 0
+      //   finalArr.map((item) => {
+      //     let sortArr = []
+      //     for(let i=0;i<item.children.length;i++){
+      //       sortArr.push(parseFloat(item.children[i].score * item.children[i].calculate))
+      //     }
+      //     item.groupScore = this.calcuMedian(sortArr)
+      //     totalScore += this.calcuMedian(sortArr)
+      //     console.log('分割线================')
+      //   })
+      //   father.totalScore = totalScore
+      // })
+      // this.awardList = cloneData
       let cloneData = this.optionData
-      cloneData.filter(father => {
-        // 循环所有项，并添加children属性
-        let branchArr = father.children.filter(child => father.id == child.parentId && child.score !="")  // 返回每一项的子级数组
-        console.log('baranarr',branchArr)
-        let finalArr = branchArr.filter(child => father.id == child.parentId),totalScore = 0
-        finalArr.map((item) => {
-          let sortArr = []
-          for(let i=0;i<item.children.length;i++){
-            sortArr.push(parseFloat(item.children[i].score * item.children[i].calculate))
-          }
-          item.groupScore = this.calcuMedian(sortArr)
-          totalScore += this.calcuMedian(sortArr)
-          console.log('分割线================')
-        })
-        father.totalScore = totalScore
-      })
-      this.awardList = cloneData
+      let filterCate =  cloneData.filter(father => father.score != "")
+      let subArr = {}
+      subArr.awardId = this.awardId
+      subArr.reportUserId = this.reportUserId
+      subArr.scoreSituation = filterCate
+      console.log(2222,subArr)
+      this.subScore(subArr)
     },
     calcuMedian(data){
       let result =  data.sort(function(a,b){
@@ -200,6 +208,11 @@ export default {
           return result[parseInt(result.length/2)];//奇数个取最中间那个数
       }
     }, 
+    subScore(arr){
+      toSave(arr).then(res => {
+        console.log(res)
+      })
+    },
     // 提交
     toCreate () {
       console.log(111,this.optionData)

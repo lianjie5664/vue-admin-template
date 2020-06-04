@@ -1,8 +1,8 @@
 <template>
     <div class="app-container">
         <el-row>
-            <el-button type="primary" icon="el-icon-plus" plain @click="showAwardForm" size="small">新增</el-button>
-            <el-button type="info" icon="el-icon-edit" plain @click="editAwardForm" size="small">编辑</el-button>
+            <el-button type="primary" icon="el-icon-plus" plain @click="showAwardForm" size="small" v-hasPermi="['lib:list:add']">新增</el-button>
+            <el-button type="info" icon="el-icon-edit" plain @click="editAwardForm" size="small" v-hasPermi="['lib:list:edit']">编辑</el-button>
         </el-row>
         <div class="table">
             <el-table
@@ -51,10 +51,10 @@
                 </el-table-column>
                  <el-table-column label="操作" width="230" class-name="small-padding fixed-width">
                     <template slot-scope="{row}">
-                        <el-button type="primary" size="mini">
+                        <el-button type="primary" size="mini" v-hasPermi="['lib:list:config']">
                             <router-link :to="'enter/'+ row.id">配置奖项</router-link>
                         </el-button>
-                        <el-button size="mini" type="danger" @click="handleDelAward(row)">
+                        <el-button size="mini" type="danger" v-hasPermi="['lib:list:delete']" @click="handleDelAward(row)">
                             删除
                         </el-button>
                     </template>

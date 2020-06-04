@@ -5,7 +5,7 @@
                 <th  v-for="(item,index) in formData.head" :key="index">
                     <div v-if="item.name != ''">{{item.name}}</div>
                     <div v-else style="position:relative;">
-                        <input type="text" style="width:65px;" placeholder="年份" v-model="item.value">
+                        <input type="text" maxlength="4" style="width:65px;" placeholder="年份" v-model="item.value">
                         <span style="position:abso3
                         lute;right:20%;top:15%;">年</span>
                     </div>
@@ -23,10 +23,16 @@
                 </tr>
             </tbody>
         </table>
+        <div style="height:80px;"></div>
+        <div class="submit-box">
+            <el-button type="primary" @click="handleSubmit">提交保存</el-button>
+        </div>
     </div>
 </template>
 <script>
 import './cs.less'
+import {savaQaRept,getReptCompileDetail} from '@/api/award' 
+import {notice} from '@/utils/tools'
 export default {
     data(){
         return {
@@ -67,9 +73,33 @@ export default {
             }
         }
     },
-    props:['id'],
+    props:['id','awardId'],
+     methods:{
+        handleSubmit(){
+            let data = {
+                awardId:this.awardId,
+                standardId:this.id,
+                description:this.formData
+            }
+            savaQaRept(data).then( res => {
+                if(res.code == 1){
+                    notice(1,'保存成功！',1)
+                }else{
+                    notice(0,'保存失败，请重试！',0)
+                }
+            })
+        },
+        getDetail(){
+            getReptCompileDetail({standardId:this.id}).then((res) =>{
+                if(res.code == 1){
+                    this.formData = Object.assign({},this.formData,JSON.parse(res.data.description))
+                    console.log(this.formData)
+                }
+            })
+        }
+    },
     created(){
-           console.log(this.id)
+        this.getDetail()
     }
 }
 </script>
