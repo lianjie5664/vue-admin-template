@@ -14,10 +14,10 @@
     "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml"
   },
   "dependencies": {
+    "@antv/g2": "^4.0.9",
     "@riophae/vue-treeselect": "^0.4.0",
     "axios": "0.18.1",
     "e-icon-picker": "^1.0.4",
-    "echarts": "^4.8.0",
     "element-ui": "2.13.0",
     "gemini-scrollbar": "^1.5.3",
     "js-cookie": "2.2.0",
