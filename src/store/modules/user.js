@@ -95,12 +95,22 @@ const actions = {
                   meta: { id: m.id, title: m.name, icon:m.icon, fullPath: m.path },
                   hidden: m.hidden == '0'? false : true ,
                   name: m.name,
-                  alwaysShow:m.alwaysShow == 1 ? true : false
+                  alwaysShow:m.alwaysShow == 1 ? true : false,
+                  sort:m.sort
               }
               menuRouters.push(module)
           }
         })
         convertTree(menuRouters,menuList) //用递归填充
+
+        function sortKey(array,key){
+          return array.sort(function(a,b){
+           var x = a[key];
+           var y = b[key];
+           return ((x<y)?-1:(x>y)?1:0)
+          })
+         }
+        menuRouters = sortKey(menuRouters,'sort')
         commit('SET_ROUTERS', menuRouters)
         resolve(data)
       }).catch(error => {
