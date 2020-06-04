@@ -95,7 +95,7 @@ const actions = {
                   meta: { id: m.id, title: m.name, icon:m.icon, fullPath: m.path },
                   hidden: m.hidden == '0'? false : true ,
                   name: m.name,
-                  alwaysShow:true
+                  alwaysShow:m.alwaysShow == 1 ? true : false
               }
               menuRouters.push(module)
           }

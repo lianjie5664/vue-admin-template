@@ -34,37 +34,28 @@
         <el-table-column
           width="300"
           align="center"
-          label="得分">
+          label="得分系数">
           <template slot-scope="scope">
-            <!-- <el-input-number v-if="!scope.row.children"
-              v-model="scope.row.calculate"
-              controls-position="right"
-              :precision="2"
-              :step="0.05"
-              :min="0" :max="1"
-              @change="handleNumCon(scope.row)"></el-input-number> -->
-              <el-progress v-if="scope.row.grade == 2 && scope.row.score != ''" :text-inside="true" :stroke-width="20" :percentage="scope.row.groupScore || 0" :format="format" status="success"></el-progress>
-              <el-row type="flex" v-if="scope.row.grade == 3 && scope.row.score != ''" >
-                  <el-col :span="18">
-                    <el-slider v-if="!scope.row.children"
-                    v-model="scope.row.calculate"
-                    :min="0" :max="1"
-                    @change="handleNumCon(scope.row)"
-                    :step="0.05">
-                  </el-slider>
+            <el-row type="flex" v-if="scope.row.grade == 3 && scope.row.score != ''" >
+                <el-col :span="18">
+                  <el-slider v-if="!scope.row.children"
+                  v-model="scope.row.calculate"
+                  :min="0" :max="1"
+                  @change="handleNumCon(scope.row)"
+                  :step="0.05">
+                </el-slider>
+            </el-col>
+              <el-col :span="6" style="line-height:35px;border：solid 1px red;padding-left:8px;">
+                <div>{{scope.row.calculate}}</div>
               </el-col>
-                <el-col :span="6" style="line-height:35px;border：solid 1px red;padding-left:8px;">
-                  <div>{{scope.row.calculate}}</div>
-                </el-col>
-              </el-row>
+            </el-row>
           </template>
         </el-table-column>
         <el-table-column
-          prop="score1"
           align="center"
           label="备注">
            <template slot-scope="scope">
-             <el-input v-model="scope.row.summary" placeholder="请输入备注"></el-input>
+              <el-input v-model="scope.row.summary" v-if="scope.row.grade == 3" placeholder="请输入备注"></el-input>
             </template>
         </el-table-column>
         <el-table-column
@@ -72,8 +63,8 @@
           width="150"
           align="center"
           label="查看">
-           <template>
-             <el-button type="text" size="small">查看详情</el-button>
+          <template slot-scope="scope">
+              <el-button type="text" size="small" @click="detail(scope.row)">查看详情</el-button>
             </template>
         </el-table-column>
         <!-- <el-table-column
@@ -84,26 +75,67 @@
         </el-table-column> -->
       </el-table>
     </div>
+
+    <!-- 内容详情 -->
+    <el-drawer
+      title="详情"
+      size="40%"
+      :visible.sync="drawer"
+      :direction="direction">
+      <div v-if="dynamicpt.grade == 3">
+        <div class="content" v-for="(item,index) in keyPointCompileList" :key="index">
+          <div class="title">{{index + 1 +'）'}}{{item.keyPoint}}</div>
+          <vue-ueditor-wrap v-model="item.content" :config="myConfig"></vue-ueditor-wrap>
+        </div>
+      </div>
+      <div v-else>
+        <dynami-cpt :name="dynamicpt.name" :aid="dynamicpt.aid" :awardId="dynamicpt.awardId"></dynami-cpt>   
+      </div>
+    </el-drawer>
   </div>
 </template>
 
 <script>
 import './style/review.scss'
-import { findListByAward } from '@/api/award'
-import { toSave } from '@/api/review'
+import { findListByAward,getPoints } from '@/api/award'
+import { toSave,getReviewResult } from '@/api/review'
+import DynamiCpt from '@/views/compile/dynamicpt'
+import VueUeditorWrap from 'vue-ueditor-wrap'
 
 export default {
   data () {
     return {
-      formParams: {
-        scoreTotal: 0, // 得分情况
-        gradeUserName: '', // 评审人
-      },
+      // formParams: {
+      //   scoreTotal: 0, // 得分情况
+      //   gradeUserName: '', // 评审人
+      // },
       awardList: [], // 奖项列表
       awardId: this.$route.query.awardId,
       reportUserId:this.$route.query.reportUserId,
       isFixed: false,
       loading: false, // 页面加载loading
+      totalScore:0,
+      drawer:false,
+      direction: 'rtl',
+      dynamicpt:{
+        name:'',
+        aid:'',
+        awardId:'',
+        grade:0
+      },
+      keyPointCompileList:[],
+      myConfig: {
+          // 编辑器不自动被内容撑高
+          autoHeightEnabled: false,
+          // 初始容器高度
+          initialFrameHeight: 240,
+          // 初始容器宽度
+          initialFrameWidth: '100%',
+          // 上传文件接口（这个地址是我为了方便各位体验文件上传功能搭建的临时接口，请勿在生产环境使用！！！）
+          serverUrl: 'http://35.201.165.105:8000/controller.php',
+          // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
+          UEDITOR_HOME_URL: '/Ueditor/'
+      },
       paramsList: {
         id: '',
         awardId: '',
@@ -115,8 +147,11 @@ export default {
       saveList: [] // 返回数据
     }
   },
+  components:{DynamiCpt,VueUeditorWrap},
   created () {
-    this.getAward()
+    this.getAward().then(()=>{
+      this.getData()
+    })
   },
   mounted(){
     window.addEventListener('scroll',this.initHeight);
@@ -135,14 +170,6 @@ export default {
         return father.parentId == 0   //返回第一层
       })
     },
-    totalScore(){
-      let score = 0
-      this.awardList.map((item) => {
-        if(item.totalScore != undefined)
-          score += item.totalScore
-        })
-      return score
-    }
   },
   methods: {
     initHeight () {
@@ -153,78 +180,60 @@ export default {
       window.removeEventListener('scroll', this.handleScroll)
     },
     // 获取奖项评分列表
-    getAward () {
+    async getAward () {
       this.loading = true
-      // let awardId = '476a8c26654a446bbdd7bc82c2dfa0b3'
-      // let awardId = 'f603d02b076f4f9e80a56fd8c3ddd985'
-      findListByAward({awardId: this.awardId}).then(res => {
+      await findListByAward({awardId: this.awardId}).then(res => {
         if (res && res.data && res.data[0]) {
           this.loading = false
           this.awardList = res.data
         }
       })
     },
+    detail(row){
+      console.log(row)
+      this.dynamicpt.name = row.formStyle.component
+      this.dynamicpt.aid = row.id
+      this.dynamicpt.awardId = row.awardId
+      this.dynamicpt.grade = row.grade
+      if(row.grade == 3){
+        this.getPoints(row.id)
+      }
+      this.drawer = true
+    },
+    getPoints(id){
+      getPoints({standardId:id}).then(res =>{
+        if(res.code == 1){
+          this.keyPointCompileList = res.data.reportCompile
+        }
+      })
+    },
+    getData(){
+      getReviewResult({awardId:this.awardId,reportUserId:this.reportUserId,gradeUserId:1}).then(res => {
+        // console.log(res)
+        let data =res.data , totalScore = 0
+        data.map((v)=>{
+          v.calculate = Number(v.calculate)
+          // if(v.goal !=""){
+            console.log(v.goal + ',')
+            totalScore += Number(v.goal)
+          // }
+        })
+        this.totalScore = totalScore
+        this.awardList = res.data
+      })
+    },
     handleNumCon (row) {
-      // let cloneData = this.optionData
-      // cloneData.filter(father => {
-      //   // 循环所有项，并添加children属性
-      //   let branchArr = father.children.filter(child => father.id == child.parentId && child.score !="")  // 返回每一项的子级数组
-      //   console.log('baranarr',branchArr)
-      //   let finalArr = branchArr.filter(child => father.id == child.parentId),totalScore = 0
-      //   finalArr.map((item) => {
-      //     let sortArr = []
-      //     for(let i=0;i<item.children.length;i++){
-      //       sortArr.push(parseFloat(item.children[i].score * item.children[i].calculate))
-      //     }
-      //     item.groupScore = this.calcuMedian(sortArr)
-      //     totalScore += this.calcuMedian(sortArr)
-      //     console.log('分割线================')
-      //   })
-      //   father.totalScore = totalScore
-      // })
-      // this.awardList = cloneData
       let cloneData = this.optionData
       let filterCate =  cloneData.filter(father => father.score != "")
       let subArr = {}
       subArr.awardId = this.awardId
       subArr.reportUserId = this.reportUserId
       subArr.scoreSituation = filterCate
-      console.log(2222,subArr)
       this.subScore(subArr)
     },
-    calcuMedian(data){
-      let result =  data.sort(function(a,b){
-           if (a>b) {
-              return 1;
-          }else if(a<b){
-              return -1
-          }else{
-             return 0;
-         }    
-     })
-      if(result.length%2===0){ //判断数字个数是奇数还是偶数
-          return ((result[result.length/2]+result[result.length/2-1])/2);//偶数个取中间两个数的平均数
-      }else{
-          return result[parseInt(result.length/2)];//奇数个取最中间那个数
-      }
-    }, 
     subScore(arr){
       toSave(arr).then(res => {
         console.log(res)
-      })
-    },
-    // 提交
-    toCreate () {
-      console.log(111,this.optionData)
-      return
-      toSave({data: this.paramArr}).then(res => {
-        if (res && +res.code === 1) {
-          this.formParams.scoreTotal = res.data.scoreTotal
-          this.formParams.gradeUserName = res.data.gradeUserName
-          this.$message.success('提交成功！')
-        } else {
-          this.$message.error('保存失败！')
-        }
       })
     },
     format(percentage) {

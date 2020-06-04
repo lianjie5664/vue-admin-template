@@ -45,8 +45,7 @@
                  <el-table-column label="操作" width="230" class-name="small-padding fixed-width">
                     <template slot-scope="{row}">
                         <el-button type="primary" size="mini">
-                            <router-link :to="{path:'/review/professor',query:{awardId:row.awardId,reportUserId:row.createUserId}}">评审</router-link>
-                            <!-- <router-link :to="'/review/professor/'+ row.awardId">评审</router-link> -->
+                            <router-link :to="{path:'/review/professor',query:{awardId:row.awardId,reportUserId:row.createUserId,gradeUserId:row.gradeUserId}}">评审</router-link>
                         </el-button>
                         <el-button size="mini" type="success" @click="handleDelAward(row)">
                             评审结果
@@ -136,18 +135,6 @@ export default {
             if(selection.length != 0){
                 this.selectedRow = selection[0].id
             }
-        },
-        editAwardForm(){
-            if(this.selectedRow == ''){
-                this.$message.error('请选择一项编辑！')
-                return
-            }
-            let s = this.list.filter(item => item.id == this.selectedRow)
-            this.formData.awardList[0].value = s[0].name
-            this.formData.awardList[1].value = s[0].area
-            this.formData.awardList[2].value = s[0].description
-
-            this.awardVisble.v = true
         },
         current_change(currentPage){
             this.fetchList(currentPage,this.pageSize);

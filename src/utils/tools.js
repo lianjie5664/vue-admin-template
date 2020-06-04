@@ -57,7 +57,8 @@ export function handleTree(data, id, parentId, children, rootId) {
 				  component: _import(m.href),  //href ---> component
 				  meta: { id: m.id, title: m.name, icon:m.icon, fullPath: r.meta.fullPath + '/' + m.path },
 				  hidden:m.hidden == '0'? false : true ,
-				  name:m.name
+				  name:m.name,
+				//   alwaysShow: m.alwaysShow == 1 ? true : false
 			  }
 			  r.children.push(menu)
 		  }

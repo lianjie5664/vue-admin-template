@@ -56,6 +56,10 @@
                 <el-form-item label="是否可见" v-if="dataForm.type !== '101100003' && dataForm.type !== '101100001'">
                      <el-checkbox v-model="dataForm.hidden" true-label="1" false-label="0">勾选后菜单将不显示在左侧菜单列表中，默认false</el-checkbox>
                 </el-form-item>
+                <el-form-item label="是否可见" v-if="dataForm.type !== '101100003' && dataForm.type !== '101100001'">
+                     <el-checkbox v-model="dataForm.alwaysShow" true-label="1" false-label="0">始终显示根菜单</el-checkbox>
+                </el-form-item>
+                
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button size="small"  @click="dialogVisible = false">取消</el-button>

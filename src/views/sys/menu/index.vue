@@ -78,7 +78,8 @@ export default {
                 perms: "",
                 orderNum: 0,
                 icon: "",
-                hidden:0
+                hidden:0,
+                alwaysShow:0
             },
             menuOptions:[]
         }

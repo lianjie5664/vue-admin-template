@@ -17,3 +17,12 @@ export function getSaveSuccess(data) {
   })
 }
 
+export function getReviewResult(data) {
+  return request({
+    url: '/qaGrade/get',
+    method: 'post',
+    data
+  })
+}
+
+
