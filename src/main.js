@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import echarts from 'echarts'
 
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
@@ -23,9 +24,10 @@ import 'vue-element-extends/lib/index.css'
 
 Vue.use(VueElementExtends)
 Vue.prototype.$EventBus = new Vue()
+Vue.prototype.$echarts = echarts
 
 Vue.use(permission)
- 
+
 
 
 
