@@ -1,17 +1,6 @@
 <template>
     <div class="app-container">
-        <el-row>
-            <el-button type="primary" icon="el-icon-plus" plain @click="showAwardForm" size="small" v-hasPermi="['lib:list:add']">新增</el-button>
-            <el-button type="info" icon="el-icon-edit" plain @click="editAwardForm" size="small" v-hasPermi="['lib:list:edit']">编辑</el-button>
-        </el-row>
         <div class="table">
-            <div class="award-item" v-for="(item,index) in list" :key="index">
-                <p class="title">{{item.name}}</p>
-                <p class="desc">{{item.description}}</p>
-                <p class="options">1</p>
-            </div>
-        </div>
-        <!-- <div class="table">
             <el-table
                 ref="multipleTable"
                 v-loading="listLoading"
@@ -22,70 +11,66 @@
                 highlight-current-row
                 @selection-change="handleSelectionChange">
                 >
-                <el-table-column
-                    type="selection"
-                    width="55">
-                </el-table-column>
                 <el-table-column align="center" label="编号" width="95">
                     <template slot-scope="scope">
                     {{ scope.$index }}
                     </template>
                 </el-table-column>
-                <el-table-column label="奖项名称" >
+                <el-table-column label="奖项类型">
                     <template slot-scope="scope">
-                    {{ scope.row.name }}
+                        {{ scope.row.awardName }}
                     </template>
                 </el-table-column>
-                <el-table-column label="地区">
+                <el-table-column label="分数">
                     <template slot-scope="scope">
-                    <span>{{ scope.row.area }}</span>
+                        {{scope.row.gradeTotal}}
                     </template>
                 </el-table-column>
-                <el-table-column label="描述">
+                 <el-table-column label="编制人">
                     <template slot-scope="scope">
-                    {{ scope.row.description }}
+                    {{ scope.row.createUserName }}
                     </template>
                 </el-table-column>
-                <el-table-column label="创建时间">
+                <el-table-column label="编制时间">
                     <template slot-scope="scope">
                     {{ scope.row.createDate }}
                     </template>
                 </el-table-column>
-                <el-table-column label="更新时间">
+                <el-table-column label="评审时间">
                     <template slot-scope="scope">
-                    {{ scope.row.updateDate }}
+                    {{ scope.row.gradeDate }}
                     </template>
                 </el-table-column>
+                
                  <el-table-column label="操作" width="230" class-name="small-padding fixed-width">
                     <template slot-scope="{row}">
-                        <el-button type="primary" size="mini" v-hasPermi="['lib:list:config']">
-                            <router-link :to="'enter/'+ row.id">配置奖项</router-link>
+                        <el-button type="primary" size="mini">
+                            <router-link :to="{path:'/review/professor',query:{awardId:row.awardId,reportUserId:row.createUserId,gradeUserId:row.gradeUserId}}">自评</router-link>
                         </el-button>
-                        <el-button size="mini" type="danger" v-hasPermi="['lib:list:delete']" @click="handleDelAward(row)">
-                            删除
-                        </el-button>
+                        <!-- <el-button size="mini" type="success" @click="handleDelAward(row)">
+                            评审结果
+                        </el-button> -->
                     </template>
                 </el-table-column>
             </el-table>
-        </div> -->
-        <award-form
-            :awardFormVisble="awardVisble"
-            :formData="formData"
-            :selected="selectedRow"
-            @close="awardVisble.v = false"
-            @submit="handleAwardForm">
-        </award-form>   
+            <el-pagination class="pageStyle"
+                :page-size="pageSize"
+                layout="total,prev, pager, next"
+                @current-change="current_change"
+                :total="total">
+            </el-pagination>
+        </div>
     </div>
 </template>
 <script>
-import { awardSave,fetchAwardList,deleteAward } from '@/api/award'
-import {statusFilter} from '@/utils/filter'
-import AwardForm from './components/awardForm'
+import { reportList } from '@/api/award'
 import {notice} from '@/utils/tools'
 export default {
-    components:{AwardForm},
     data(){
         return {
+            pageSize:10,
+            total:0,
+            currentPage:1,
             list: null,
             listLoading: false,
             awardVisble:{v:false},
@@ -100,14 +85,15 @@ export default {
         }
     },
     created() {
-        this.fetchList()
+        this.fetchList(this.currentPage,this.pageSize)
     },
     methods: {
-        fetchList() {
+        fetchList(currentPage,pageSize) {
             this.listLoading = true
-            fetchAwardList().then(response => {
+            reportList({pageNo:currentPage,pageSize:pageSize}).then(response => {
                 this.list = response.data.data
                 this.listLoading = false
+                this.total = response.data.count
             })
         },
         showAwardForm(){
@@ -150,47 +136,19 @@ export default {
                 this.selectedRow = selection[0].id
             }
         },
-        editAwardForm(){
-            if(this.selectedRow == ''){
-                this.$message.error('请选择一项编辑！')
-                return
-            }
-            let s = this.list.filter(item => item.id == this.selectedRow)
-            this.formData.awardList[0].value = s[0].name
-            this.formData.awardList[1].value = s[0].area
-            this.formData.awardList[2].value = s[0].description
-
-            this.awardVisble.v = true
+        current_change(currentPage){
+            this.fetchList(currentPage,this.pageSize);
         }
     }
 }
 </script>
-<style lang="less" scoped>
+<style scoped>
     .table{
         margin-top:20px;
-        box-shadow: -5px 0 15px rgba(0,0,0,.1);
-        // background: linear-gradient(130deg,#aa6aff,#706dff);
-        .award-item{
-            width: 50%;
-            .title{
-                width: 100%;
-                font-size: 24px;
-                color: #000;
-                font-weight: 440;
-                margin-bottom: 0;
-            }
-            .desc{
-                margin-top: 2%;
-                margin-bottom: 0;
-                opacity: .5;
-                font-size: 1.14em;
-                color: #6a7b8c;
-                max-height: 30px;
-            }
-            .options{
-                width: 91.84%;
-                display: flex;
-            }
-        }
     }
+    .pageStyle{
+        margin-top:20px;
+        float: right;
+    }
+    
 </style>

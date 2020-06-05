@@ -7,7 +7,7 @@
                 style="margin-top:20px;">
                 <el-col :span="12">
                     <el-form-item label="登录账号" prop="loginName">
-                        <el-input v-model="userForm.loginName" size="small" placeholder="请输入登录账号" disabled autocomplete="off"></el-input>
+                        <el-input v-model="userForm.loginName" size="small" placeholder="请输入登录账号" :disabled="modalType == 1" autocomplete="off"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
