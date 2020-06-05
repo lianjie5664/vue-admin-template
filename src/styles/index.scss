@@ -65,3 +65,16 @@ div:focus {
 .hg-flex{
   @include layout(flex);
 }
+
+.flex-one{
+  @include layout-flex(1);
+}
+.toright {
+  text-align: right;
+}
+.toleft {
+  text-align: left;
+}
+.tocenter{
+  text-align: center;
+}
