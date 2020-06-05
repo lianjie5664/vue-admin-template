@@ -25,7 +25,7 @@ Vue.use(VueElementExtends)
 Vue.prototype.$EventBus = new Vue()
 
 Vue.use(permission)
- 
+
 
 
 
