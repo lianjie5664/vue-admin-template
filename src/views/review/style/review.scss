@@ -120,9 +120,14 @@
 .el-drawer__container ::-webkit-scrollbar{
   display: none;
 }
-.submit-box{
-  display: none;
+.el-drawer__body{
+  position: relative;
+  z-index:9999999;
+  .submit-box{
+    display: none;
+  }
 }
+
 .content{
   padding:20px;
 }

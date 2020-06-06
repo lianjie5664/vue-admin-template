@@ -23,12 +23,12 @@
                 </el-table-column>
                 <el-table-column label="分数">
                     <template slot-scope="scope">
-                        {{scope.row.gradeTotal}}
+                        {{scope.row.total}}
                     </template>
                 </el-table-column>
                  <el-table-column label="编制人">
                     <template slot-scope="scope">
-                    {{ scope.row.createUserName }}
+                    {{ scope.row.reportUserName }}
                     </template>
                 </el-table-column>
                 <el-table-column label="编制时间">
@@ -45,7 +45,7 @@
                  <el-table-column label="操作" width="230" class-name="small-padding fixed-width">
                     <template slot-scope="{row}">
                         <el-button type="primary" size="mini">
-                            <router-link :to="{path:'/review/professor',query:{awardId:row.awardId,reportUserId:row.createUserId,gradeUserId:row.gradeUserId}}">自评</router-link>
+                            <router-link :to="{path:'/creview/professor',query:{awardId:row.awardId}}">自评</router-link>
                         </el-button>
                         <!-- <el-button size="mini" type="success" @click="handleDelAward(row)">
                             评审结果
@@ -63,7 +63,7 @@
     </div>
 </template>
 <script>
-import { reportList } from '@/api/award'
+import { getOwnList } from '@/api/review'
 import {notice} from '@/utils/tools'
 export default {
     data(){
@@ -90,7 +90,7 @@ export default {
     methods: {
         fetchList(currentPage,pageSize) {
             this.listLoading = true
-            reportList({pageNo:currentPage,pageSize:pageSize}).then(response => {
+            getOwnList({pageNo:currentPage,pageSize:pageSize}).then(response => {
                 this.list = response.data.data
                 this.listLoading = false
                 this.total = response.data.count
@@ -99,31 +99,13 @@ export default {
         showAwardForm(){
             this.awardVisble.v = true
         },
-        handleAwardForm(data){
-            awardSave(data).then(res =>{
-                if(res.code == 1){
-                    this.awardVisble.v = false
-                    notice(1,'奖项添加成功！',1)
-                    this.fetchList()
-                }else{
-                    notice(1,'奖项添加成功！',1)
-                }
-            })
-        },
-        handleDelAward(row){
+        handleDel(row){
             this.$confirm('确定要删除吗?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                deleteAward({id:row.id}).then(res => {
-                    if(res.code == 1){
-                        notice(1,'奖项删除成功！',1)
-                        this.fetchList()
-                    }else{
-                        notice(0,'奖项删除失败！',0)
-                    }
-                })
+                
                 }).catch(() => {
             });
         },

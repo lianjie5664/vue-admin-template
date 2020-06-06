@@ -15,6 +15,16 @@
                         <el-input v-model="userForm.name" size="small" placeholder="请输入用户名称" autocomplete="off"></el-input>
                     </el-form-item>
                 </el-col>
+                <el-col :span="12" v-if="modalType == 0">
+                    <el-form-item label="密码" prop="passWord">
+                        <el-input type="password" v-model="userForm.passWord" size="small" placeholder="请输入用户名称" autocomplete="off"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12" v-if="modalType == 0">
+                    <el-form-item label="确认密码" prop="passWordRepeat">
+                        <el-input type="password" v-model="userForm.passWordRepeat" size="small" placeholder="请输入用户名称" autocomplete="off"></el-input>
+                    </el-form-item>
+                </el-col>
                 <el-col :span="12">
                 <el-form-item label="用户角色" prop="roleId">
                     <el-select v-model="userForm.roleId" size="small" style="width:100%;" placeholder="请选择用户角色">
@@ -184,6 +194,7 @@ export default {
     watch: {
         show () {
             this.visible = this.show;
+            console.log(this.userModel)
             this.userForm = this.userModel
         }
     }

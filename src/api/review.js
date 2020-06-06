@@ -25,4 +25,30 @@ export function getReviewResult(data) {
   })
 }
 
+export function getOwnList(data) {
+  return request({
+    url: '/qaReportCompile/listForOwn',
+    method: 'post',
+    data
+  })
+}
+
+export function saveOwn(data) {
+  return request({
+    url: '/qaGradeOwn/save',
+    method: 'post',
+    data
+  })
+}
+
+export function getOwnReviewResult(data) {
+  return request({
+    url: '/qaGradeOwn/get',
+    method: 'post',
+    data
+  })
+}
+
+
+
 

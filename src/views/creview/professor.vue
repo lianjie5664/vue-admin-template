@@ -10,7 +10,7 @@
         <el-input v-model="formParams.gradeUserName"></el-input>
       </div> -->
       <div class="items ml30">
-        <el-button type="primary" @click.stop="toCreate">提交</el-button>
+        <el-button type="primary" @click="subScore" round :loading="btnLoading">提交评审</el-button>
       </div>
     </div>
     <div class="table-list">
@@ -98,7 +98,7 @@
 <script>
 import './style/review.scss'
 import { findListByAward,getPoints } from '@/api/award'
-import { toSave,getReviewResult } from '@/api/review'
+import { saveOwn,getOwnReviewResult } from '@/api/review'
 import DynamiCpt from '@/views/compile/dynamicpt'
 import VueUeditorWrap from 'vue-ueditor-wrap'
 
@@ -111,11 +111,11 @@ export default {
       // },
       awardList: [], // 奖项列表
       awardId: this.$route.query.awardId,
-      reportUserId:this.$route.query.reportUserId,
       isFixed: false,
       loading: false, // 页面加载loading
       totalScore:0,
       drawer:false,
+      btnLoading:false,
       direction: 'rtl',
       dynamicpt:{
         name:'',
@@ -123,6 +123,7 @@ export default {
         awardId:'',
         grade:0
       },
+      submitData:[],
       keyPointCompileList:[],
       myConfig: {
           // 编辑器不自动被内容撑高
@@ -190,7 +191,6 @@ export default {
       })
     },
     detail(row){
-      console.log(row)
       this.dynamicpt.name = row.formStyle.component
       this.dynamicpt.aid = row.id
       this.dynamicpt.awardId = row.awardId
@@ -208,32 +208,38 @@ export default {
       })
     },
     getData(){
-      getReviewResult({awardId:this.awardId,reportUserId:this.reportUserId,gradeUserId:1}).then(res => {
+      getOwnReviewResult({awardId:this.awardId}).then(res => {
+      // debugger
         // console.log(res)
-        let data =res.data , totalScore = 0
-        data.map((v)=>{
+        let data = res.data.scoreSituationArray 
+        data.map((v)=>{  
           v.calculate = Number(v.calculate)
-          // if(v.goal !=""){
-            totalScore += Number(v.goal)
-          // }
         })
-        this.totalScore = totalScore
-        this.awardList = res.data
+        this.totalScore = res.data.total
+        this.awardList = data
+        let subArr = {}
+        subArr.awardId = this.awardId
+        subArr.scoreSituation = data
+        this.submitData = subArr
+        console.log(this.submitData )
       })
     },
     handleNumCon (row) {
       let cloneData = this.optionData
       let filterCate =  cloneData.filter(father => father.score != "")
-      let subArr = {}
+       let subArr = {}
       subArr.awardId = this.awardId
-      subArr.reportUserId = this.reportUserId
       subArr.scoreSituation = filterCate
-      this.subScore(subArr)
+      this.submitData = subArr
+      // this.subScore(subArr)
     },
-    subScore(arr){
-      toSave(arr).then(res => {
+    subScore(){
+      this.btnLoading = true
+      saveOwn(this.submitData).then(res => {
         if(res.code == 1){
           this.getData()
+          this.btnLoading = false
+          this.$message.success('评审成功！')
         }
       })
     },

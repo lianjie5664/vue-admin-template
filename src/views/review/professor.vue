@@ -113,6 +113,7 @@ export default {
       awardList: [], // 奖项列表
       awardId: this.$route.query.awardId,
       reportUserId:this.$route.query.reportUserId,
+      gradeUserId:this.$route.query.gradeUserId,
       isFixed: false,
       loading: false, // 页面加载loading
       totalScore:0,
@@ -210,7 +211,7 @@ export default {
       })
     },
     getData(){
-      getReviewResult({awardId:this.awardId,reportUserId:this.reportUserId,gradeUserId:1}).then(res => {
+      getReviewResult({awardId:this.awardId,reportUserId:this.reportUserId,gradeUserId:this.gradeUserId}).then(res => {
         let data = res.data.scoreSituationArray 
         data.map((v)=>{  
           v.calculate = Number(v.calculate)
@@ -240,7 +241,7 @@ export default {
         if(res.code == 1){
           this.getData()
           this.btnLoading = false
-          this.$message.success('提交成功！')
+          this.$message.success('评审成功！')
         }
       })
     },

@@ -18,6 +18,8 @@
     box-shadow: 0 0 10px #ccc;
   }
   .top-info{
+    position: fixed;
+    z-index: 999999;
     @include layout-align(center);
     .items{
       @include layout(flex);
@@ -38,11 +40,10 @@
 
     }
     .el-button{
-      padding: 0 10px;
+      padding: 0 20px;
       height: 35px;
       line-height: 35px;
-      width: 70px;
-      border-radius: 0;
+      // width: 70px;
     }
     .get-goal{
       .el-input__inner{
@@ -121,8 +122,12 @@
 .el-drawer__container ::-webkit-scrollbar{
   display: none;
 }
-.submit-box{
-  display: none;
+.el-drawer__body{
+  position: relative;
+  z-index:9999999;
+  .submit-box{
+    display: none;
+  }
 }
 .content{
   padding:20px;
