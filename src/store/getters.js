@@ -8,5 +8,6 @@ const getters = {
   permissions: state => state.user.permissions,
   permission_routers: state => state.user.routers,  //路由列表
   routers: state => state.user.routers,
+  roleId: state => state.user.roleId
 }
 export default getters

@@ -14,6 +14,7 @@
     "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml"
   },
   "dependencies": {
+    "@antv/data-set": "^0.11.4",
     "@antv/g2": "^4.0.9",
     "@riophae/vue-treeselect": "^0.4.0",
     "axios": "0.18.1",

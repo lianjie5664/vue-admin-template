@@ -1,5 +1,8 @@
 <template>
   <div class="login-container">
+    <div class="logo-img">
+      <img :src="logoImg" alt="">
+    </div>
     <div class="login-box-container">
       <div class="login-title">
         <h2>企业成熟度智能评价系统</h2>
@@ -53,6 +56,7 @@ export default {
   name: 'Login',
   data() {
     return {
+      logoImg: require('@/assets/imgs/logo.png'),
       loginForm: {
         username: '',
         password: ''
@@ -127,7 +131,7 @@ $cursor: #fff;
   background-position: 50%;
   position: relative;
   background: url(../../assets/imgs/login-bg.png);
-  background-size: 100% 100%;  
+  background-size: 100% 100%;
 	background-size: cover;
   .login-box-container{
     width: 500px;
@@ -166,7 +170,7 @@ $cursor: #fff;
       }
     }
   }
- 
+
   .el-input {
     display: inline-block;
     height: 42px;
@@ -204,6 +208,19 @@ $cursor: #fff;
 $bg:#fff;
 $dark_gray:#889aa4;
 $light_gray:#fff;
+
+.logo-img{
+  height: 120px;
+  width: 200px;
+  display: inline-block;
+  position: absolute;
+  left: 4%;
+  img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
 
 .login-container {
   min-height: 100%;
