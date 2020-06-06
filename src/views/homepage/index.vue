@@ -64,21 +64,21 @@
     </el-row>
     <div class="bottom-content hg-flex mb15">
       <div class="flex-one group-box mr10">
-        <div class="title">参评企业数图</div>
+        <div class="title">参评企业数</div>
         <div class="box" id="company-data"></div>
       </div>
       <div class="flex-one group-box">
-        <div class="title">企业得分情况图</div>
+        <div class="title">企业得分情况</div>
         <div class="box" id="score-data"></div>
       </div>
     </div>
     <div class="bottom-content hg-flex">
       <div class="flex-one group-box mr10">
-        <div class="title">结果（质量4个）</div>
+        <div class="title">成熟度概况</div>
         <div class="box" id="four-data"></div>
       </div>
       <div class="flex-one group-box">
-        <div class="title">各企业得分</div>
+        <div class="title">年度企业平均分</div>
         <div class="box" id="typeall-data"></div>
       </div>
     </div>
@@ -111,8 +111,8 @@
         const chart = new Chart({
           container: 'company-data',
           autoFit: false,
-          height: 250,
-          width: 500
+          width: 500,
+          height: 250
         })
         chart.data(data)
         chart.scale({
@@ -128,7 +128,11 @@
           showCrosshairs: true,
           shared: true,
         })
-        chart.line().position('year*value').label('value')
+        chart
+          .line()
+          .position('year*value')
+          .label('value')
+          .shape('smooth')
         chart.point().position('year*value')
         chart.render()
       },
@@ -138,7 +142,7 @@
           container: 'score-data',
           autoFit: false,
           height: 300,
-          width: 300
+          width: 420
         })
         chart.legend(false)
         chart.tooltip({
@@ -185,67 +189,48 @@
           .interval()
           .adjust('stack')
           .position('percent')
+          .label('type')
           .color('type')
         chart.render()
       },
       getFourData () {
         const data = [
-          { type: '质量', percent: 0.21 },
-          { type: '创新', percent: 0.4 },
-          { type: '品牌', percent: 0.49 },
-          { type: '结果', percent: 0.52 }
+          { type: '质量', value: 270 },
+          { type: '创新', value: 250 },
+          { type: '品牌', value: 180 },
+          { type: '结果', value: 150 },
         ]
         const chart = new Chart({
           container: 'four-data',
           autoFit: false,
-          height: 250,
+          height: 280,
           width: 500
         })
+        chart.coordinate('theta', {
+          startAngle: Math.PI, // 起始角度
+          endAngle: Math.PI * (3 / 2), // 结束角度
+        })
         chart.data(data)
-        chart.scale('percent', {
-          min: 0,
-          max: 2,
-        })
         chart.tooltip({
-          title: 'type',
-          showMarkers: false
+          showTitle: false,
+          showMarkers: false,
         })
-        chart.legend(false)
-        chart.axis('type', {
-          grid: null,
-          tickLine: null,
-          line: null,
-          label: {
-            style: {
-              fill: '#595959'
-            }
-          }
+        chart.legend({
+          position: 'right-bottom',
         })
-        chart.coordinate('polar', { innerRadius: 0.1 }).transpose()
         chart
           .interval()
-          .position('type*percent')
-          .color('percent', '#BAE7FF-#1890FF-#0050B3')
-          .tooltip('percent', (val) => {
-            return {
-              name: '占比',
-              value: val * 100 + '%',
-            }
-          })
-          .label('percent', {
-            offset: -2,
-            content: (data) => {
-              return data.percent * 100 + '%'
-            }
-          })
+          .adjust('stack')
+          .position('value')
+          .color('type')
         chart.render()
       },
       getTypeallData () {
         const data = [
-          { year: '1951 年', sales: 38 },
-          { year: '1952 年', sales: 52 },
-          { year: '1956 年', sales: 61 },
-          { year: '1957 年', sales: 145 }
+          { year: '2017年', average: 380 },
+          { year: '2018年', average: 520 },
+          { year: '2019年', average: 610 },
+          { year: '2020年', average: 450 }
         ];
         const chart = new Chart({
           container: 'typeall-data',
@@ -254,13 +239,15 @@
           width: 500
         })
         chart.data(data)
-        chart.scale('sales', {
+        chart.scale('average', {
           nice: true
         })
         chart.tooltip({
           showMarkers: false
         })
-        chart.interval().position('year*sales')
+        chart
+          .interval()
+          .position('year*average')
         chart.render()
       }
     }
