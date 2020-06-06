@@ -5,10 +5,17 @@
             <el-button type="info" icon="el-icon-edit" plain @click="editAwardForm" size="small" v-hasPermi="['lib:list:edit']">编辑</el-button>
         </el-row>
         <div class="table">
-            <div class="award-item" v-for="(item,index) in list" :key="index">
+            <div v-for="(item,index) in list" :key="index" :class="{'award-item':true,'addclass':isactive == index}"  @click="select(index,item.id)">
                 <p class="title">{{item.name}}</p>
                 <p class="desc">{{item.description}}</p>
-                <p class="options">1</p>
+                <div class="options">
+                    <el-button type="primary" size="small">
+                        <router-link :to="'enter/'+ item.id">配置奖项</router-link>
+                    </el-button>
+                    <el-button type="danger" size="small">
+                        <a href="javascript:" v-hasPermi="['lib:list:delete']" @click="handleDelAward(item)">删除</a>
+                    </el-button>
+                </div>
             </div>
         </div>
         <!-- <div class="table">
@@ -90,6 +97,7 @@ export default {
             listLoading: false,
             awardVisble:{v:false},
             selectedRow:'',
+            isactive:0,
             formData:{
                 awardList:[
                     {type:'Input',label:'奖项名称',prop:'name',placeholder:'请输入奖项名称',value:''},
@@ -103,11 +111,16 @@ export default {
         this.fetchList()
     },
     methods: {
+        select(idx,id){
+            this.isactive = idx
+            this.selectedRow = id
+        },
         fetchList() {
             this.listLoading = true
             fetchAwardList().then(response => {
                 this.list = response.data.data
                 this.listLoading = false
+                this.selectedRow = this.list[0].id
             })
         },
         showAwardForm(){
@@ -168,29 +181,42 @@ export default {
 <style lang="less" scoped>
     .table{
         margin-top:20px;
-        box-shadow: -5px 0 15px rgba(0,0,0,.1);
-        // background: linear-gradient(130deg,#aa6aff,#706dff);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        // box-shadow: -5px 0 15px rgba(0,0,0,.1);
         .award-item{
-            width: 50%;
+            width: 22%;
+            margin: 10px;
+            padding: 0 20px 20px 20px ;
+            border: solid 1px #f1f1f1;   
+            // box-shadow:0 0 10px rgba(0,0,0,.2);
+            box-shadow: 5px 20px 30px rgba(0,0,0,.1);
+            // background: linear-gradient(130deg,#aa6aff,#706dff);
             .title{
                 width: 100%;
-                font-size: 24px;
+                font-size: 22px;
                 color: #000;
                 font-weight: 440;
-                margin-bottom: 0;
+                margin-bottom: 14px;
             }
             .desc{
                 margin-top: 2%;
                 margin-bottom: 0;
                 opacity: .5;
-                font-size: 1.14em;
+                font-size: 16px;
                 color: #6a7b8c;
                 max-height: 30px;
             }
             .options{
-                width: 91.84%;
+                width: 100%;
+                margin-top: 15px;
                 display: flex;
             }
+            
+        }
+        .addclass{
+            border: solid 1px #273EB0;
         }
     }
 </style>

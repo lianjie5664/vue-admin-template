@@ -10,7 +10,7 @@
         <el-input v-model="formParams.gradeUserName"></el-input>
       </div> -->
       <div class="items ml30">
-        <el-button type="primary" @click.stop="toCreate">提交</el-button>
+        <el-button type="primary" @click="subScore" round :loading="btnLoading">提交评审</el-button>
       </div>
     </div>
     <div class="table-list">
@@ -85,7 +85,8 @@
       <div v-if="dynamicpt.grade == 3">
         <div class="content" v-for="(item,index) in keyPointCompileList" :key="index">
           <div class="title">{{index + 1 +'）'}}{{item.keyPoint}}</div>
-          <vue-ueditor-wrap v-model="item.content" :config="myConfig"></vue-ueditor-wrap>
+          <div v-html="item.content "></div>
+          <!-- <vue-ueditor-wrap v-model="item.content" :config="myConfig"></vue-ueditor-wrap> -->
         </div>
       </div>
       <div v-else>
@@ -115,6 +116,7 @@ export default {
       isFixed: false,
       loading: false, // 页面加载loading
       totalScore:0,
+      btnLoading:false,
       drawer:false,
       direction: 'rtl',
       dynamicpt:{
@@ -136,6 +138,7 @@ export default {
           // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
           UEDITOR_HOME_URL: '/Ueditor/'
       },
+      submitData:[],
       paramsList: {
         id: '',
         awardId: '',
@@ -190,7 +193,6 @@ export default {
       })
     },
     detail(row){
-      console.log(row)
       this.dynamicpt.name = row.formStyle.component
       this.dynamicpt.aid = row.id
       this.dynamicpt.awardId = row.awardId
@@ -209,16 +211,17 @@ export default {
     },
     getData(){
       getReviewResult({awardId:this.awardId,reportUserId:this.reportUserId,gradeUserId:1}).then(res => {
-        // console.log(res)
-        let data =res.data , totalScore = 0
-        data.map((v)=>{
+        let data = res.data.scoreSituationArray 
+        data.map((v)=>{  
           v.calculate = Number(v.calculate)
-          // if(v.goal !=""){
-            totalScore += Number(v.goal)
-          // }
         })
-        this.totalScore = totalScore
-        this.awardList = res.data
+        this.totalScore = res.data.total
+        this.awardList = data
+        let subArr = {}
+        subArr.awardId = this.awardId
+        subArr.reportUserId = this.reportUserId
+        subArr.scoreSituation = data
+        this.submitData = subArr
       })
     },
     handleNumCon (row) {
@@ -228,12 +231,16 @@ export default {
       subArr.awardId = this.awardId
       subArr.reportUserId = this.reportUserId
       subArr.scoreSituation = filterCate
-      this.subScore(subArr)
+      this.submitData = subArr
+      // this.subScore(subArr)
     },
-    subScore(arr){
-      toSave(arr).then(res => {
+    subScore(){
+      this.btnLoading = true
+      toSave(this.submitData).then(res => {
         if(res.code == 1){
           this.getData()
+          this.btnLoading = false
+          this.$message.success('提交成功！')
         }
       })
     },
