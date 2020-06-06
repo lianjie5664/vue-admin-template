@@ -17,7 +17,8 @@ const state = {
   roles: [],
   routers: constantRouterMap,
   addRouters: [],
-  permissions:[]
+  permissions:[],
+  roleId: ''
 }
 
 const mutations = {
@@ -39,6 +40,9 @@ const mutations = {
   },
   SET_PERMISSION : (state, permissions) =>{
     state.permissions = permissions
+  },
+  GET_ROLEID: (state, roleId) => {
+    state.roleId = roleId
   },
   LOGOUT: (state) => {
     state.addRouters = [];
@@ -80,11 +84,12 @@ const actions = {
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-        const { userName, avatar, roleIdList,permissionList } = data
+        const { userName, avatar, roleIdList,permissionList, roleId } = data
         commit('SET_NAME', userName)
         commit('SET_AVATAR', require("@/assets/imgs/profile.jpg"))
         commit('SET_ROLES', roleIdList)
-        commit('SET_PERMISSION', permissionList) 
+        commit('SET_PERMISSION', permissionList)
+        commit('GET_ROLEID', roleId)
         let menuList = data.menuList , menuRouters = []
         menuList.forEach((m, i) => {
           if (m.parentId == '0') {
@@ -149,4 +154,3 @@ export default {
   mutations,
   actions
 }
-
