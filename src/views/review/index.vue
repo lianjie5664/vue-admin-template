@@ -13,7 +13,7 @@
                 >
                 <el-table-column align="center" label="编号" width="95">
                     <template slot-scope="scope">
-                    {{ scope.$index }}
+                    {{ scope.$index +1 }}
                     </template>
                 </el-table-column>
                 <el-table-column label="奖项类型">
@@ -47,9 +47,9 @@
                         <el-button type="primary" size="mini">
                             <router-link :to="{path:'/review/professor',query:{awardId:row.awardId,reportUserId:row.createUserId,gradeUserId:row.gradeUserId}}">评审</router-link>
                         </el-button>
-                        <el-button size="mini" type="success" @click="handleDelAward(row)">
+                        <!-- <el-button size="mini" type="success" @click="handleDelAward(row)">
                             评审结果
-                        </el-button>
+                        </el-button> -->
                     </template>
                 </el-table-column>
             </el-table>
