@@ -6,11 +6,11 @@
           <div class="title">长沙市市长质量奖</div>
           <div class="cont-item hg-flex">
             <div class="item-info borderRight">
-              <div class="item-pot">63 %</div>
+              <div class="item-pot">83 %</div>
               <div class="item-type">完成度</div>
             </div>
             <div class="item-info">
-              <div class="item-pot">63 %</div>
+              <div class="item-pot">73 %</div>
               <div class="item-type">专家评审进度</div>
             </div>
           </div>
@@ -21,11 +21,11 @@
           <div class="title">长沙市市长质量奖</div>
           <div class="cont-item hg-flex">
             <div class="item-info borderRight">
-              <div class="item-pot">63 %</div>
+              <div class="item-pot">73 %</div>
               <div class="item-type">完成度</div>
             </div>
             <div class="item-info">
-              <div class="item-pot">63 %</div>
+              <div class="item-pot">53 %</div>
               <div class="item-type">专家评审进度</div>
             </div>
           </div>
@@ -36,7 +36,7 @@
           <div class="title">长沙市市长质量奖</div>
           <div class="cont-item hg-flex">
             <div class="item-info borderRight">
-              <div class="item-pot">63 %</div>
+              <div class="item-pot">77 %</div>
               <div class="item-type">完成度</div>
             </div>
             <div class="item-info">
@@ -51,11 +51,11 @@
           <div class="title">长沙市市长质量奖</div>
           <div class="cont-item hg-flex">
             <div class="item-info borderRight">
-              <div class="item-pot">63 %</div>
+              <div class="item-pot">86 %</div>
               <div class="item-type">完成度</div>
             </div>
             <div class="item-info">
-              <div class="item-pot">63 %</div>
+              <div class="item-pot">70 %</div>
               <div class="item-type">专家评审进度</div>
             </div>
           </div>
@@ -72,7 +72,7 @@
         <div class="box" id="score-data"></div>
       </div>
     </div>
-    <div class="bottom-content hg-flex">
+    <div class="bottom-content hg-flex mb15">
       <div class="flex-one group-box mr10">
         <div class="title">成熟度概况</div>
         <div class="box" id="four-data"></div>
@@ -80,6 +80,33 @@
       <div class="flex-one group-box">
         <div class="title">年度企业平均分</div>
         <div class="box" id="typeall-data"></div>
+      </div>
+    </div>
+    <div class="bottom-content hg-flex">
+      <div class="flex-one group-box mr10">
+        <div class="title">资讯</div>
+        <el-collapse v-model="infoActive" accordion>
+          <el-collapse-item title="长沙市质量强市工作领导小组文件" name="1">
+            <div>长沙市质量强市工作领导小组</div>
+            <div>关于印发《长沙市市长质量奖评定实施工作细则》、《长沙市市长质量奖评审人员管理办法》的通知</div>
+          </el-collapse-item>
+          <el-collapse-item title="长沙市市长质量奖评定实施工作细则" name="2">
+            <div>引用文件和评定依据</div>
+            <div>申报市长质量奖的企业或者组织应具备的基本条件</div>
+          </el-collapse-item>
+        </el-collapse>
+      </div>
+      <div class="flex-one group-box mr10">
+        <div class="title">通知</div>
+        <el-collapse v-model="noticeActive" accordion>
+          <el-collapse-item title="长沙市市长质量奖评审员申请表" name="1">
+            <div>长沙市市长质量奖评审员申请表</div>
+          </el-collapse-item>
+          <el-collapse-item title="长沙市市长质量奖评审监督员管理办法" name="2">
+            <div>为维护长沙市市长质量奖的权威性和公正性，根据《长沙市市长质量奖管理办法（试行）》的规定，制定本《办法》</div>
+            <div>本《办法》所指市长质量奖评审监督员为具体从事市长质量奖评审监督工作的人员，包括纪检监察、市直部门和具有市长质量奖评审员资格的人员</div>
+          </el-collapse-item>
+        </el-collapse>
       </div>
     </div>
   </div>
@@ -93,6 +120,8 @@
   export default {
     data () {
       return {
+        infoActive: '1',
+        noticeActive: '1'
       }
     },
     mounted () {
@@ -227,10 +256,10 @@
       },
       getTypeallData () {
         const data = [
-          { year: '2017年', average: 380 },
-          { year: '2018年', average: 520 },
-          { year: '2019年', average: 610 },
-          { year: '2020年', average: 450 }
+          { year: '2017年', average: 980 },
+          { year: '2018年', average: 820 },
+          { year: '2019年', average: 710 },
+          { year: '2020年', average: 950 }
         ];
         const chart = new Chart({
           container: 'typeall-data',
