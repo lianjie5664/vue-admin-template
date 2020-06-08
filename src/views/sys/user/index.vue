@@ -59,7 +59,7 @@
             :modalType="modalType"
             :userModel="user"
             :rolearr ="rolearr"
-            :industry="industry"
+            :industy="industy"
             @userAdd ="handleSaveUser"
             @userModify ="handleUserModify"
             ></user-add>
@@ -70,7 +70,7 @@ import UserTable from './components/userTable'
 import UserAdd from './components/userAdd'
 import {notice} from '@/utils/tools'
 import { roleList } from '@/api/role'
-import { industries } from '@/utils/industry.js'
+import { industies } from '@/utils/industry.js'
 import { userList,changeUserPwd ,saveUser,activationUser,lockUser,deleteUser} from "@/api/user"
 export default {
     data(){
@@ -92,7 +92,7 @@ export default {
                 password:'',
                 passwordRepeat:''
             },
-            industry:industries,
+            industy:industies,
             users:[],
             rolearr:[],
 

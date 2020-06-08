@@ -23,7 +23,7 @@
                 </el-table-column>
                 <el-table-column label="分数">
                     <template slot-scope="scope">
-                        {{scope.row.gradeTotal}}
+                        {{scope.row.total}}
                     </template>
                 </el-table-column>
                  <el-table-column label="编制人">

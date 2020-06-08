@@ -96,7 +96,7 @@
     <!-- 内容详情 -->
     <el-drawer
       title="详情"
-      size="40%"
+      size="50%"
       :visible.sync="drawer"
       :direction="direction">
       <div v-if="dynamicpt.grade == 3">

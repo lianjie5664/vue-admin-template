@@ -43,6 +43,7 @@ module.exports = {
     proxy: {
       '/api': {
         // target: 'http://xmfapi.cecicloud.com/api',
+        // target: 'http://192.168.0.103:8080/api',
         target: 'http://localhost:8080/co_matur/api',
         ws: true, // 使用的是http协议则设置为false，https协议则设置为true
         secure:false,

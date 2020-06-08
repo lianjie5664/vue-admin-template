@@ -73,7 +73,7 @@
                     <el-form-item label="所属行业" prop="industry">
                         <el-select v-model="userForm.industry" size="small" value-key="id" style="width:100%;" placeholder="请选择所属行业">
                             <el-option
-                                v-for="item in industry"
+                                v-for="item in industy"
                                 :key="item.id"
                                 :label="item.label"
                                 :value="item.value">
@@ -191,7 +191,7 @@ export default {
         userModel:{
             type:Object,
         },
-        industry:{
+        industy:{
             type:Array,
             default:[]
         }
