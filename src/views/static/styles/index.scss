@@ -1,0 +1,44 @@
+.static-box{
+  .bottom-content{
+    .group-box{
+      padding: 10px;
+      border-radius: 4px;
+      box-shadow: 0 0 8px #ccc;
+    }
+    .title{
+      color: #333;
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      position: relative;
+      padding-left: 18px;
+      &:before{
+        content: '';
+        position: absolute;
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: transparent;
+        border: 2px solid #4165E0;
+        left: 3px;
+        top: 4px;
+      }
+    }
+    .box{
+      min-height: 300px;
+      text-align: center;
+      line-height: 288px;
+    }
+  }
+  .table-box{
+    thead th{
+      color: #333;
+      font-size: 15px;
+    }
+    tbody td{
+      color: #666;
+      font-size: 14px;
+    }
+  }
+}
