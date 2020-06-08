@@ -31,25 +31,20 @@
                     {{ scope.row.createUserName }}
                     </template>
                 </el-table-column>
-                <el-table-column label="编制时间">
-                    <template slot-scope="scope">
-                    {{ scope.row.createDate }}
-                    </template>
-                </el-table-column>
                 <el-table-column label="评审时间">
                     <template slot-scope="scope">
                     {{ scope.row.gradeDate }}
                     </template>
                 </el-table-column>
                 
-                 <el-table-column label="操作" width="230" class-name="small-padding fixed-width">
+                 <el-table-column label="操作" width="230" align="center" class-name="small-padding fixed-width">
                     <template slot-scope="{row}">
-                        <el-button type="primary" size="mini">
-                            <router-link :to="{path:'/review/professor',query:{awardId:row.awardId,reportUserId:row.createUserId,gradeUserId:row.gradeUserId}}">评审</router-link>
+                        <el-button type="primary" size="mini" plain>
+                            <router-link :to="{path:'/review/professor',
+                            query:{awardId:row.awardId,
+                            reportUserId:row.createUserId,
+                            createUserId:row.createUserId}}">评审</router-link>
                         </el-button>
-                        <!-- <el-button size="mini" type="success" @click="handleDelAward(row)">
-                            评审结果
-                        </el-button> -->
                     </template>
                 </el-table-column>
             </el-table>

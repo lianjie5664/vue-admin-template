@@ -1,6 +1,6 @@
 <template>
     <div class="app-container">
-        <el-dialog :title=" types == '0' ? '录入关键点' : '修改关键点'" :visible.sync="dialogFormVisible.v" width="600px">
+        <el-dialog :title=" types == '0' ? '录入关键点' : '修改关键点'" :visible.sync="dialogFormVisible.v" width="600px" :close-on-click-modal="false">
             <div class="demo-drawer__content">
                 <el-form status-icon label-width="100px" label-position="right" style="padding-bottom:40px" :model="formData" ref="rightForm">
                     <el-form-item v-for='(item,index) in formData.rightItemList' :label="item.label" :prop="'rightItemList.' + index + '.value'" :key='index'>

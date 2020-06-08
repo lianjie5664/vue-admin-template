@@ -28,23 +28,23 @@
                 </el-table-column>
                  <el-table-column label="编制人">
                     <template slot-scope="scope">
-                    {{ scope.row.reportUserName }}
+                    {{ scope.row.createUserName }}
                     </template>
                 </el-table-column>
-                <el-table-column label="编制时间">
+                <!-- <el-table-column label="编制时间">
                     <template slot-scope="scope">
                     {{ scope.row.createDate }}
                     </template>
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column label="评审时间">
                     <template slot-scope="scope">
                     {{ scope.row.gradeDate }}
                     </template>
                 </el-table-column>
                 
-                 <el-table-column label="操作" width="230" class-name="small-padding fixed-width">
+                 <el-table-column label="操作" width="230" align="center" class-name="small-padding fixed-width">
                     <template slot-scope="{row}">
-                        <el-button type="primary" size="mini">
+                        <el-button type="primary" size="mini" plain>
                             <router-link :to="{path:'/creview/professor',query:{awardId:row.awardId}}">自评</router-link>
                         </el-button>
                         <!-- <el-button size="mini" type="success" @click="handleDelAward(row)">

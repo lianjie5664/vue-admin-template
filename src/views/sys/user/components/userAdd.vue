@@ -1,6 +1,6 @@
 <template>
     <div class="userAddForm">
-        <el-dialog :title="modalType == 0?'用户录入':'用户编辑'" width="700px" :visible.sync="visible" @close="$emit('update:show', false)">
+        <el-dialog :title="modalType == 0?'用户录入':'用户编辑'" width="700px" :visible.sync="visible" @close="$emit('update:show', false)" :close-on-click-modal="false">
             <el-form ref="userForm" :model="userForm" :rules="rules">
                 <el-row
                 :gutter="12"
@@ -38,16 +38,16 @@
                 </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                <el-form-item label="用户类型" prop="userType">
-                    <el-select v-model="userForm.userType" size="small" value-key="id" style="width:100%;" placeholder="请选择用户类型">
-                        <el-option
-                            v-for="item in userType"
-                            :key="item.id"
-                            :label="item.label"
-                            :value="item.value">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
+                    <el-form-item label="用户类型" prop="userType">
+                        <el-select v-model="userForm.userType" size="small" value-key="id" style="width:100%;" placeholder="请选择用户类型">
+                            <el-option
+                                v-for="item in userType"
+                                :key="item.id"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
                 </el-col>
                 <el-col :span="12">
                 <el-form-item label="手机号码" prop="mobile">
@@ -67,6 +67,18 @@
                 <el-col :span="12">
                     <el-form-item label="常用地址" prop="address">
                         <el-input v-model="userForm.address" size="small" placeholder="请输入常用地址" autocomplete="off"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="所属行业" prop="industry">
+                        <el-select v-model="userForm.industry" size="small" value-key="id" style="width:100%;" placeholder="请选择所属行业">
+                            <el-option
+                                v-for="item in industry"
+                                :key="item.id"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                 </el-col>
                 </el-row>
@@ -122,6 +134,8 @@ export default {
                 phone:'',
                 email:'',
                 address:'',
+                passWord:'',
+                industry:''
             },
             rules: {
                 loginName: [
@@ -155,6 +169,9 @@ export default {
                 address: [
                     { required: true, message: '请输入常用地址', trigger: 'blur' }
                 ],
+                industry: [
+                    { required: true, message: '请选择所属行业', trigger: 'change' }
+                ],
             }
         }
     },
@@ -173,6 +190,10 @@ export default {
         },
         userModel:{
             type:Object,
+        },
+        industry:{
+            type:Array,
+            default:[]
         }
     },
     methods:{
@@ -194,11 +215,9 @@ export default {
     watch: {
         show () {
             this.visible = this.show;
-            console.log(this.userModel)
             this.userForm = this.userModel
         }
     }
-    
 }
 </script>
 <style lang="less" scoped>

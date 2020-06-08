@@ -47,10 +47,10 @@
                 </el-table-column>
                  <el-table-column label="操作" width="230" class-name="small-padding fixed-width">
                     <template slot-scope="{row}">
-                        <el-button type="primary" size="mini">
+                        <el-button type="primary" size="mini" plain>
                             <router-link :to="'compile/'+ row.id">编制报告</router-link>
                         </el-button>
-                        <el-button size="mini" type="danger" @click="handleDelAward(row)">
+                        <el-button size="mini" plain type="danger" @click="handleDelAward(row)">
                             删除
                         </el-button>
                     </template>

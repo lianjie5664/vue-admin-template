@@ -12,8 +12,8 @@
                     <el-button type="primary" size="small">
                         <router-link :to="'enter/'+ item.id">配置奖项</router-link>
                     </el-button>
-                    <el-button type="danger" size="small">
-                        <a href="javascript:" v-hasPermi="['lib:list:delete']" @click="handleDelAward(item)">删除</a>
+                    <el-button type="danger" size="small" v-hasPermi="['lib:list:delete']">
+                        <a href="javascript:" @click="handleDelAward(item)">删除</a>
                     </el-button>
                 </div>
             </div>

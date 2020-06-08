@@ -39,7 +39,7 @@
             ></user-table>
         </div>
         <!-- resetpassword modal -->
-        <el-dialog title="重置密码" width="25%" :visible.sync="editPasswdModal">
+        <el-dialog title="重置密码" width="25%" :visible.sync="editPasswdModal" :close-on-click-modal="false">
             <el-form ref="resetForm" :model="resetForm" :rules="rules">
                 <el-form-item label="密码" prop="password">
                     <el-input v-model="resetForm.password" placeholder="请输入密码" type="password" autocomplete="off"></el-input>
@@ -59,6 +59,7 @@
             :modalType="modalType"
             :userModel="user"
             :rolearr ="rolearr"
+            :industry="industry"
             @userAdd ="handleSaveUser"
             @userModify ="handleUserModify"
             ></user-add>
@@ -69,6 +70,7 @@ import UserTable from './components/userTable'
 import UserAdd from './components/userAdd'
 import {notice} from '@/utils/tools'
 import { roleList } from '@/api/role'
+import { industries } from '@/utils/industry.js'
 import { userList,changeUserPwd ,saveUser,activationUser,lockUser,deleteUser} from "@/api/user"
 export default {
     data(){
@@ -90,6 +92,7 @@ export default {
                 password:'',
                 passwordRepeat:''
             },
+            industry:industries,
             users:[],
             rolearr:[],
 
@@ -131,6 +134,8 @@ export default {
         // 显示重置密码对话框
         showResetPasswdModal(){
             if(JSON.stringify(this.selectedRow)=='{}') return 
+            this.resetForm.password = ""
+            this.resetForm.passwordRepeat = ""
             this.editPasswdModal = true
         },
         // 重置 用户密码

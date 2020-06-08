@@ -1,6 +1,6 @@
 <template>
     <div class="menuAdd">
-        <el-dialog :title="!dataForm.id ? '新增' : '编辑'" width="40%" :visible.sync="dialogVisible" @close="$emit('update:show', false)">
+        <el-dialog :title="!dataForm.id ? '新增' : '编辑'" width="40%" :visible.sync="dialogVisible" @close="$emit('update:show', false)" :close-on-click-modal="false">
             <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="submitForm()" 
                 label-width="80px" size="small" style="text-align:left;">
                 <el-form-item label="菜单类型" prop="type">

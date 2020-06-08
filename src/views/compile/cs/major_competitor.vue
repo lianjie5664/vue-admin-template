@@ -56,7 +56,7 @@ export default {
             ],
         } 
     },
-    props:['id','awardId'],  
+    props:['id','awardId','cid'], 
     methods:{
         delRow(rowIdx){
             if(rowIdx == 0){
@@ -84,9 +84,9 @@ export default {
             })
         },
         getDetail(){
-            getReptCompileDetail({standardId:this.id}).then((res) =>{
+            getReptCompileDetail({standardId:this.id,createUserId:this.cid}).then((res) =>{
                 if(res.code == 1){
-                    this.formData = JSON.parse(res.data.description)
+                    this.formData = res.data.description
                 }
             })
         }

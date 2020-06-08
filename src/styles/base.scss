@@ -70,10 +70,17 @@
   color:rgb(191, 203, 217);
 }
 
-.el-table--enable-row-hover .el-table__body tr:hover>td{
-  background-color: #273EB0 !important;
+.el-table__body tr:hover{
+  // background-color: #273EB0 !important;
+  background-image: -webkit-linear-gradient(left,#537ffa,#5b40f7);
   color: #fff;
   cursor: pointer;
+}
+// .el-table__row:hover{
+//   background: red;
+// }
+.el-table--enable-row-transition .el-table__body td{
+  transition:background-color 45s ease;
 }
 .el-table--medium td{
   padding:8px 0 !important;

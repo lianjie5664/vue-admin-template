@@ -18,6 +18,7 @@ const state = {
   routers: constantRouterMap,
   addRouters: [],
   permissions:[],
+  userId:'',
   roleId: ''
 }
 
@@ -33,6 +34,9 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_USERID: (state, userid) => {
+    state.userId = userid
   },
   SET_ROUTERS: (state, routers) => {
     state.addRouters = routers; //路由访问
@@ -84,12 +88,13 @@ const actions = {
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-        const { userName, avatar, roleIdList,permissionList, roleId } = data
+        const { userName, avatar, id,roleIdList,permissionList, roleId } = data
         commit('SET_NAME', userName)
         commit('SET_AVATAR', require("@/assets/imgs/profile.jpg"))
         commit('SET_ROLES', roleIdList)
         commit('SET_PERMISSION', permissionList)
         commit('GET_ROLEID', roleId)
+        commit('SET_USERID', id)
         let menuList = data.menuList , menuRouters = []
         menuList.forEach((m, i) => {
           if (m.parentId == '0') {

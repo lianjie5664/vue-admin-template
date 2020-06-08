@@ -1,6 +1,6 @@
 <template>
     <div class="app-container">
-        <el-dialog :title="selected == '' ?'新增奖项':'修改奖项'" :visible.sync="awardFormVisble.v" width="600px">
+        <el-dialog :title="selected == '' ?'新增奖项':'修改奖项'" :visible.sync="awardFormVisble.v" width="600px" :close-on-click-modal="false">
             <div class="demo-drawer__content">
                 <el-form status-icon label-width="100px" label-position="right" style="padding-bottom:40px" :model="formData" ref="awardAddForm">
                     <el-form-item v-for='(item,index) in formData.awardList' :label="item.label" :prop="'awardList.' + index + '.value'" :key='index'>

@@ -63,6 +63,7 @@
         <el-dialog
             :title="dialogType == 0 ? '新建角色' : '编辑角色'"
             :visible.sync="roleFormVisible"
+            :close-on-click-modal="false"
             width="600px">
             <el-form ref="roleForm" :model="roleForm" :rules="rules" label-width="80px">
                 <el-row :gutter="10">

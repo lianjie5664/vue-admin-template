@@ -205,7 +205,7 @@ export default {
             }
         }
     },
-    props:['id','awardId'],
+    props:['id','awardId','cid'],
     methods:{
         handleSubmit(){
             let data = {
@@ -222,10 +222,9 @@ export default {
             })
         },
         getDetail(){
-            getReptCompileDetail({standardId:this.id}).then((res) =>{
+            getReptCompileDetail({standardId:this.id,createUserId:this.cid}).then((res) =>{
                 if(res.code == 1){
-                    this.formData = Object.assign({},this.formData,JSON.parse(res.data.description))
-                    console.log(this.formData)
+                    this.formData = Object.assign({},this.formData,res.data.description)
                 }
             })
         }

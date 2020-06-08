@@ -82,7 +82,7 @@
             @submit="handleRightForm">
         </info-form>   
 
-        <el-dialog title="动态表单配置" :visible.sync="formSettingVisible">
+        <el-dialog title="动态表单配置" :visible.sync="formSettingVisible" :close-on-click-modal="false">
           <!-- <el-form> -->
             <el-alert style="margin-bottom:12px;"
               title="此处为指标库的动态表单配置，针对无关键点的自定义表单。"

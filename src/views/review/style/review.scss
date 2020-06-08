@@ -8,14 +8,16 @@
     margin: 0 auto;
     line-height: 85px;
     background: #fff;
-    box-shadow: 0 0 10px #ccc;
+    // box-shadow: 0 0 10px #ccc;
   }
   .is_fixed{
-    width: 100%;
-    position: fixed;
+    width: 21%;
+    position: fixed !important;
     top: 0;
     z-index: 1002;
-    box-shadow: 0 0 10px #ccc;
+    // box-shadow: 0 0 10px #ccc;
+    // box-shadow: 0 0 10px 2px rgba(30,13,4,.15);
+    border-radius: 5px;
   }
   .top-info{
     @include layout-align(center);
@@ -75,6 +77,8 @@
     }
   }
   .table-list{
+    border: solid 1px #ebeef5;
+    // box-shadow: 0 0 10px 2px rgba(30,13,4,.15);
     th{
       color: #333;
     }
@@ -93,6 +97,56 @@
       font-size: 16px;
     }
     
+  }
+
+  //5664
+  .right-score{
+    border:solid 1px #ebeef5;
+    margin-left: 15px;
+    box-shadow: 5px 20px 30px rgba(0, 0, 0, 0.1);
+    height: 400px;
+    position: relative;
+    .head{
+      width: 100%;
+      background:#edf2f7;
+      border-bottom: solid 1px #ebeef5;
+      height: 50px;
+      .left{
+        float: left;
+        h3{
+          font-size: 14px;
+          color: #000;
+          padding-left:15px;
+        }
+      }
+      .right{
+        float: right;
+        margin-right: 15px;
+        margin-top: 5px;
+      }
+    }
+    
+    .outer-box{
+      position: relative;
+      width: 100%;
+      height: 338px;
+      display: inline-block;
+      .score-box{
+        width: 180px;
+        height: 180px;
+        position: absolute;
+        top:50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+      }
+    }
+  }
+  .content{
+    padding:0 20px 20px 20px;
+  }
+  .title{
+    font-weight: 700;
+    margin: 20px 0;
   }
 }
 
@@ -128,6 +182,45 @@
   }
 }
 
-.content{
-  padding:20px;
+
+
+//  得分圆形
+.circle-box{
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+  img{
+    width: 100%;
+    height: 100%;
+  }
+  .index-gNumber {
+    border-radius: 80px;
+    line-height: 80px;
+    color: #18de6c;
+    width: 80px;
+    height: 80px;
+    font-size: 24px;
+    position: absolute;
+    right: 70px;
+    top: 60px;
+    text-align: center;
+    .index-fen {
+      font-size: 14px;
+    }
+  }
+  .index-bgThree {
+    animation: index-circling 2s linear 0s infinite;
+  }
+  .index-bgOne {
+    animation: index-circling 8s linear 0s infinite;
+  }
+  .index-bgTwo {
+    position: absolute;
+    right: 23px;
+    top: 12px;
+    animation: index-circlingt 8s linear 0s infinite;
+  }
 }
+
+@keyframes index-circling{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}
+@keyframes index-circlingt{0%{transform:rotate(1turn)}to{transform:rotate(0deg)}}
