@@ -221,7 +221,6 @@ export default {
         subArr.awardId = this.awardId
         subArr.scoreSituation = data
         this.submitData = subArr
-        console.log(this.submitData )
       })
     },
     handleNumCon (row) {
