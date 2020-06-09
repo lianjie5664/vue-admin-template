@@ -8,6 +8,22 @@ export function login(data) {
   })
 }
 
+export function register(data) {
+  return request({
+    url: '/auth/register',
+    method: 'post',
+    data
+  })
+}
+
+export function sendcode(data) {
+  return request({
+    url: '/sms/sendcode',
+    method: 'post',
+    data
+  })
+}
+
 export function getInfo() {
   return request({
     url: '/user/info',
