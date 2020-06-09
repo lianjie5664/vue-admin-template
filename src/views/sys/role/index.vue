@@ -37,6 +37,9 @@
                     </el-table-column>
                     <el-table-column label="状态" align="center">
                         <template slot-scope="scope">
+                            <div class="">
+                                <span style="width:8px;height:8px;boder-radius:50%;background:red;"></span>
+                            </div>
                         {{ scope.row.useable == '1'?'可用':'禁用' }}
                         </template>
                     </el-table-column>

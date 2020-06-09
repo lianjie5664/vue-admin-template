@@ -28,7 +28,7 @@
                             /> -->
                             <treeselect v-if="item.type==='TreeSelect'"
                                 :options="optionData"
-                                :disable-branch-nodes="true"
+                                :searchable="true"
                                 :show-count="true"
                                 v-model="selectValue"
                                 @select="selectNode"

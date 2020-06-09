@@ -31,11 +31,6 @@
                     {{ scope.row.createUserName }}
                     </template>
                 </el-table-column>
-                <!-- <el-table-column label="编制时间">
-                    <template slot-scope="scope">
-                    {{ scope.row.createDate }}
-                    </template>
-                </el-table-column> -->
                 <el-table-column label="评审时间">
                     <template slot-scope="scope">
                     {{ scope.row.gradeDate }}

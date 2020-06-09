@@ -31,6 +31,11 @@
                     {{ scope.row.createUserName }}
                     </template>
                 </el-table-column>
+                <el-table-column label="评审人">
+                    <template slot-scope="scope">
+                    {{ scope.row.gradeUserName }}
+                    </template>
+                </el-table-column>
                 <el-table-column label="评审时间">
                     <template slot-scope="scope">
                     {{ scope.row.gradeDate }}
@@ -43,7 +48,7 @@
                             <router-link :to="{path:'/review/professor',
                             query:{awardId:row.awardId,
                             reportUserId:row.createUserId,
-                            createUserId:row.createUserId}}">评审</router-link>
+                            createUserId:row.createUserId,gradeUserId:row.gradeUserId}}">评审</router-link>
                         </el-button>
                     </template>
                 </el-table-column>

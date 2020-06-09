@@ -41,7 +41,7 @@ router.beforeEach((to, from, next) => {
         }).catch((err) => {
           store.dispatch('user/logout').then(() => {
             Message.error(err || 'Verification failed, please login again')
-            next(`/login?redirect=${to.path}`)
+            next(`/login?redirect=dashboard`)
           })
         })
       } else {

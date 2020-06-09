@@ -77,8 +77,7 @@
     }
   }
   .table-list{
-    border: solid 1px #ebeef5;
-    // box-shadow: 0 0 10px 2px rgba(30,13,4,.15);
+    box-shadow: 5px 20px 30px rgba(0,0,0,0.1);
     th{
       color: #333;
     }
@@ -104,13 +103,13 @@
     border:solid 1px #ebeef5;
     margin-left: 15px;
     box-shadow: 5px 20px 30px rgba(0, 0, 0, 0.1);
-    height: 400px;
+    height: 290px;
     position: relative;
     .head{
       width: 100%;
       background:#edf2f7;
       border-bottom: solid 1px #ebeef5;
-      height: 50px;
+      height: 42px;
       .left{
         float: left;
         h3{
@@ -129,7 +128,7 @@
     .outer-box{
       position: relative;
       width: 100%;
-      height: 338px;
+      height: 210px;
       display: inline-block;
       .score-box{
         width: 180px;
@@ -189,6 +188,8 @@
   width: 200px;
   height: 200px;
   margin: 0 auto;
+  position: relative;
+  // border: solid 1px red;
   img{
     width: 100%;
     height: 100%;
@@ -201,7 +202,7 @@
     height: 80px;
     font-size: 24px;
     position: absolute;
-    right: 70px;
+    right: 59px;
     top: 60px;
     text-align: center;
     .index-fen {

@@ -6,11 +6,15 @@
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar" class="user-avatar">
-          <i class="el-icon-caret-bottom" />
+          <span>{{name}}</span>
+          <i class="el-icon-arrow-down" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
+          <!-- <el-dropdown-item divided @click.native="logout">
+            <span style="display:block;">个人中心</span>
+          </el-dropdown-item> -->
           <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">Log Out</span>
+            <span style="display:block;">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -31,7 +35,8 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'avatar',
+      'name'
     ])
   },
   methods: {
@@ -40,7 +45,7 @@ export default {
     },
     async logout() {
       await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      this.$router.push(`/login?redirect=dashboard`)
     }
   }
 }
@@ -107,18 +112,24 @@ export default {
 
         .user-avatar {
           cursor: pointer;
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
+          width: 25px;
+          height: 25px;
+          border-radius: 50%;
+          position: absolute;
+          top: 12px;
+          left: -36px;
         }
 
         .el-icon-caret-bottom {
           cursor: pointer;
           position: absolute;
           right: -20px;
-          top: 25px;
+          top: 20px;
           font-size: 12px;
         }
+      }
+      .user-dropdown{
+        top: 46px;
       }
     }
   }

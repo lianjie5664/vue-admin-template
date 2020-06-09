@@ -50,10 +50,7 @@ export default {
                     this.$emit('submit',jsonArr)
                 }
             })
-        },
-        created() {
-            alert(1)
-        },
+        }
     }
 }
 </script>

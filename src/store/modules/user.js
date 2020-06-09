@@ -19,7 +19,8 @@ const state = {
   addRouters: [],
   permissions:[],
   userId:'',
-  roleId: ''
+  roleId: '',
+  userName:''
 }
 
 const mutations = {

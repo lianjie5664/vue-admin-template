@@ -78,7 +78,7 @@
         <award-form
             :awardFormVisble="awardVisble"
             :formData="formData"
-            :selected="selectedRow"
+            :selected="formSelect"
             @close="awardVisble.v = false"
             @submit="handleAwardForm">
         </award-form>   
@@ -97,6 +97,7 @@ export default {
             listLoading: false,
             awardVisble:{v:false},
             selectedRow:'',
+            formSelect:0,
             isactive:0,
             formData:{
                 awardList:[
@@ -124,6 +125,10 @@ export default {
             })
         },
         showAwardForm(){
+            this.formSelect = 0
+            this.formData.awardList.map((v)=>{
+                v.value = ''
+            })
             this.awardVisble.v = true
         },
         handleAwardForm(data){
@@ -168,6 +173,7 @@ export default {
                 this.$message.error('请选择一项编辑！')
                 return
             }
+            this.formSelect = 1
             let s = this.list.filter(item => item.id == this.selectedRow)
             this.formData.awardList[0].value = s[0].name
             this.formData.awardList[1].value = s[0].area
@@ -181,15 +187,16 @@ export default {
 <style lang="less" scoped>
     .table{
         margin-top:20px;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
+        // display: flex;
+        // flex-wrap: wrap;
+        // justify-content: space-between;
         // box-shadow: -5px 0 15px rgba(0,0,0,.1);
         .award-item{
             width: 22%;
             margin: 10px;
             padding: 0 20px 20px 20px ;
             border: solid 1px #f1f1f1;   
+            float: left;
             // box-shadow:0 0 10px rgba(0,0,0,.2);
             box-shadow: 5px 20px 30px rgba(0,0,0,.1);
             // background: linear-gradient(130deg,#aa6aff,#706dff);

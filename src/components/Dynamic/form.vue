@@ -34,7 +34,7 @@
                   </el-date-picker>
                   <el-upload v-if="item.type==='uploadFile'"
                     class="upload-demo"
-                    action="http://35.201.165.105:8000/controller.php"
+                    action="http://localhost:8080/co_matur/api/file/upload"
                     :on-preview="handlePreview"
                     :on-remove="handleRemove"
                     :on-success="handleAvatarSuccess"
