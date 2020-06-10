@@ -30,13 +30,13 @@
     }
   }
   .box-contain{
-    width: 400px;
+    width: 600px;
     background: url('../../assets/imgs/login-box-bg.png') no-repeat;
     background-size: 100%;
     background-color: #fff;
     .el-form{
       width: 100%;
-      padding: 135px 15px 2px;
+      padding: 215px 15px 2px;
     }
     .el-form-item{
       display: flex;
@@ -46,15 +46,19 @@
       .el-input{
         width: 273px;
       }
+      
     }
     .el-form-item__content{
       flex:1;
       .el-select{
         width: 100%;
       }
+      .code-btn{
+        width: 100%;
+      }
     }
   }
   .register-btn{
-    button{width: 200px;}
+    button{width: 100%;}
   }
 }

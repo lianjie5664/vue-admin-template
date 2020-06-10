@@ -7,45 +7,87 @@
       <div class="title">企业账号注册</div>
       <div class="box-contain">
         <el-form ref="registerForm" :model="formParams" :rules="rules" size="small">
-          <el-form-item prop="name">
-            <el-input v-model="formParams.name" placeholder="请输入企业名称"></el-input>
-          </el-form-item>
-          <el-form-item prop="organizationCode">
-            <el-input v-model="formParams.organizationCode" placeholder="请输入组织机构代码"></el-input>
-          </el-form-item>
-          <el-form-item prop="industry">
-            <el-select v-model="formParams.industry" placeholder="请选择行业">
-              <el-option v-for="(item, index) in industies" :key="index" :label="item.label" :value="item.value"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item prop="address">
-            <el-input v-model="formParams.address" placeholder="请输入地址"></el-input>
-          </el-form-item>
-          <el-form-item prop="linkman">
-            <el-input v-model="formParams.linkman" placeholder="请输入联系人"></el-input>
-          </el-form-item>
-          <el-form-item prop="phone">
-            <el-input v-model="formParams.phone" placeholder="请输入手机号"></el-input>
-          </el-form-item>
-          <el-form-item prop="password">
-            <el-input v-model="formParams.password" placeholder="请输入密码" autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item prop="checkPass">
-            <el-input v-model="formParams.checkPass" placeholder="请确认密码" autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item prop="code" class="get-code">
-            <el-input v-model="formParams.code" placeholder="请输入验证码"></el-input>
-            <el-button @click.native.prevent="getCode">获取验证码</el-button>
-          </el-form-item>
-          <el-form-item prop="email">
-            <el-input v-model="formParams.email" placeholder="请输入邮箱"></el-input>
-          </el-form-item>
-          <el-form-item prop="remarks">
-            <el-input type="textarea" v-model="formParams.remarks" placeholder="请输入简介内容"></el-input>
-          </el-form-item>
-          <el-form-item class="register-btn tocenter">
-            <el-button :loading="loading" type="primary" @click.native.prevent="toRegister">立即注册</el-button>
-          </el-form-item>
+          <el-row :gutter="10">
+            <el-col :span="12">
+              <el-form-item prop="phone">
+                <el-input v-model="formParams.phone" placeholder="请输入手机号"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="code" class="get-code">
+                  <el-input v-model="formParams.code" placeholder="请输入验证码" style="width:68%"></el-input>
+                  <el-button @click.native.prevent="getCode" class="code-btn" style="width:30%" :disabled="!show">
+                    <span v-show="show">获取验证码</span>
+                    <span v-show="!show" class="count">{{count}} s</span>
+                  </el-button>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="10">
+            <el-col :span="12">
+              <el-form-item prop="password">
+                <el-input type="password" v-model="formParams.password" placeholder="请输入密码" autocomplete="off"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="checkPass">
+                <el-input type="password" v-model="formParams.checkPass" placeholder="请确认密码" autocomplete="off"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="10">
+            <el-col :span="12">
+              <el-form-item prop="name">
+                <el-input v-model="formParams.name" placeholder="请输入企业名称"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="organizationCode">
+                <el-input v-model="formParams.organizationCode" placeholder="请输入组织机构代码"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="10">
+            <el-col :span="12">
+              <el-form-item prop="industry">
+                <el-select v-model="formParams.industry" placeholder="请选择行业">
+                  <el-option v-for="(item, index) in industies" :key="index" :label="item.label" :value="item.value"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="address">
+                <el-input v-model="formParams.address" placeholder="请输入地址"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="10">
+            <el-col :span="12">
+              <el-form-item prop="linkman">
+                <el-input v-model="formParams.linkman" placeholder="请输入联系人"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="email">
+                <el-input v-model="formParams.email" placeholder="请输入邮箱"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="0">
+            <el-col :span="24">
+              <el-form-item prop="remarks">
+                <el-input type="textarea" v-model="formParams.remarks" placeholder="请输入简介内容"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="10">
+            <el-col :span="24">
+              <el-form-item class="register-btn tocenter">
+                <el-button :loading="loading" type="primary" @click.native.prevent="toRegister">立即注册</el-button>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          
         </el-form>
       </div>
     </div>
@@ -80,6 +122,9 @@ export default {
     return {
       loading: false,
       logoImg: require('@/assets/imgs/logo.png'),
+      timer:null,
+      count:0,
+      show:true,
       formParams: {
         name: '',
         password: '',
@@ -115,6 +160,19 @@ export default {
         const params = {
           phone: this.formParams.phone,
           type: '101020001'
+        }
+        if (!this.timer) {
+          this.count = 60;
+          this.show = false;
+          this.timer = setInterval(() => {
+            if (this.count > 0 && this.count <= 60) {
+              this.count--;
+            } else {
+              this.show = true;
+              clearInterval(this.timer);
+              this.timer = null;
+            }
+          }, 1000);
         }
         sendcode(params).then(res => {
           console.log('res++++', res)
