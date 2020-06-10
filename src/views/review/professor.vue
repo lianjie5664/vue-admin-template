@@ -111,6 +111,17 @@
         <dynami-cpt :name="dynamicpt.name" :aid="dynamicpt.aid" :createUserId="createUserId" :awardId="dynamicpt.awardId"></dynami-cpt>   
       </div>
     </el-drawer>
+    <!-- 提交评审提示 -->
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%">
+      <span>如您已提交过评审，请选择取消，若还未提交评审结果，请点击确定！</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="goBackOneStep">取 消</el-button>
+        <el-button type="primary" @click="subGrade">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -140,6 +151,7 @@ export default {
       disabled:true,
       drawer:false,
       direction: 'rtl',
+      dialogVisible:false,
       dynamicpt:{
         name:'',
         aid:'',
@@ -182,6 +194,14 @@ export default {
     this.$nextTick( () => {
       this.offsetTop = document.querySelector('#boxFixed').offsetTop;
     })
+    // 回退监测
+    if (window.history && window.history.pushState) {
+      history.pushState(null, null, document.URL);
+      window.addEventListener('popstate', this.goBack, false);
+    }
+  },
+  destroyed(){
+    window.removeEventListener('popstate', this.goBack, false);
   },
   computed: {
     // 数据树形整合
@@ -272,6 +292,18 @@ export default {
           this.$message.success('评审成功！')
         }
       })
+    },
+    goBack(){
+      if(!this.dialogVisible && !this.disabled && (this.gradeUserId == this.$store.state.user.userId || this.gradeUserId == '')){
+        this.dialogVisible = true
+      }
+    },
+    goBackOneStep(){
+      this.$router.back(-1)
+    },
+    subGrade(){
+      this.subScore()
+      this.dialogVisible = false
     }
   }
 }

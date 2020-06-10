@@ -9,7 +9,7 @@
                 <p class="title">{{item.name}}</p>
                 <p class="desc">{{item.description}}</p>
                 <div class="options">
-                    <el-button type="primary" size="small">
+                    <el-button type="primary" size="small" v-hasPermi="['btn:lib:config']">
                         <router-link :to="'enter/'+ item.id">配置奖项</router-link>
                     </el-button>
                     <el-button type="danger" size="small" v-hasPermi="['lib:list:delete']">
@@ -18,63 +18,6 @@
                 </div>
             </div>
         </div>
-        <!-- <div class="table">
-            <el-table
-                ref="multipleTable"
-                v-loading="listLoading"
-                :data="list"
-                element-loading-text="Loading"
-                border
-                fit
-                highlight-current-row
-                @selection-change="handleSelectionChange">
-                >
-                <el-table-column
-                    type="selection"
-                    width="55">
-                </el-table-column>
-                <el-table-column align="center" label="编号" width="95">
-                    <template slot-scope="scope">
-                    {{ scope.$index }}
-                    </template>
-                </el-table-column>
-                <el-table-column label="奖项名称" >
-                    <template slot-scope="scope">
-                    {{ scope.row.name }}
-                    </template>
-                </el-table-column>
-                <el-table-column label="地区">
-                    <template slot-scope="scope">
-                    <span>{{ scope.row.area }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column label="描述">
-                    <template slot-scope="scope">
-                    {{ scope.row.description }}
-                    </template>
-                </el-table-column>
-                <el-table-column label="创建时间">
-                    <template slot-scope="scope">
-                    {{ scope.row.createDate }}
-                    </template>
-                </el-table-column>
-                <el-table-column label="更新时间">
-                    <template slot-scope="scope">
-                    {{ scope.row.updateDate }}
-                    </template>
-                </el-table-column>
-                 <el-table-column label="操作" width="230" class-name="small-padding fixed-width">
-                    <template slot-scope="{row}">
-                        <el-button type="primary" size="mini" v-hasPermi="['lib:list:config']">
-                            <router-link :to="'enter/'+ row.id">配置奖项</router-link>
-                        </el-button>
-                        <el-button size="mini" type="danger" v-hasPermi="['lib:list:delete']" @click="handleDelAward(row)">
-                            删除
-                        </el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-        </div> -->
         <award-form
             :awardFormVisble="awardVisble"
             :formData="formData"

@@ -5,10 +5,9 @@
                 <el-row :gutter="20">
                     <el-col :span="24">
                         <div class="grid-content">
-                            <el-button type="primary" icon="el-icon-plus" plain size="mini" @click="showLeftModal">录入</el-button>
-                            <!-- <el-button type="success" icon="el-icon-view" plain size="mini" @click="getLeftRow">查看</el-button> -->
-                            <el-button type="info" icon="el-icon-edit" plain size="mini" @click="editLeftRow">编辑</el-button>
-                            <el-button type="warning" icon="el-icon-setting" plain size="mini" @click="showSaveForm">配置表单</el-button>
+                            <el-button type="primary" icon="el-icon-plus" plain size="mini" v-hasPermi="['btn:lib:add']" @click="showLeftModal">录入</el-button>
+                            <el-button type="info" icon="el-icon-edit" plain size="mini" v-hasPermi="['btn:libitem:edit']" @click="editLeftRow">编辑</el-button>
+                            <el-button type="warning" icon="el-icon-setting" plain size="mini" v-hasPermi="['btn:libForm:config']" @click="showSaveForm">配置表单</el-button>
                         </div>
                     </el-col>
                 </el-row>
@@ -34,7 +33,7 @@
                             <el-table-column prop="score" label="分值" width="80" align="center"></el-table-column>
                             <el-table-column label="操作" width="120" align="left">
                                 <template slot-scope="scope">
-                                    <el-button type="danger" icon="el-icon-delete" size="small" plain @click="delAwardCfg(scope.row.id)">删除</el-button>
+                                    <el-button type="danger" icon="el-icon-delete" size="small" v-hasPermi="['btn:libitem:delete']" plain @click="delAwardCfg(scope.row.id)">删除</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -45,8 +44,8 @@
                 <el-row :gutter="20">
                     <el-col :span="24">
                         <div class="grid-content">
-                            <el-button type="primary" icon="el-icon-plus" plain size="mini" @click="showInfoDialog">录入</el-button>
-                            <el-button type="info" icon="el-icon-edit" plain size="mini" @click="editKeyPoint">编辑</el-button>
+                            <el-button type="primary" icon="el-icon-plus" plain size="mini" v-hasPermi="['btn:keypoint:add']" @click="showInfoDialog">录入</el-button>
+                            <el-button type="info" icon="el-icon-edit" plain size="mini" v-hasPermi="['btn:keypoint:update']" @click="editKeyPoint">编辑</el-button>
                         </div>
                     </el-col>
                 </el-row>
@@ -62,7 +61,7 @@
                             <el-table-column prop="description" label="详细说明"> </el-table-column>
                               <el-table-column label="操作" width="80" align="left">
                                 <template slot-scope="scope">
-                                    <el-button type="danger" size="small" plain @click="delPoint(scope.row.id)">删除</el-button>
+                                    <el-button type="danger" size="small" v-hasPermi="['btn:keypoint:delete']" plain @click="delPoint(scope.row.id)">删除</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>

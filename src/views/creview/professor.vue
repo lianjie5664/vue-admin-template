@@ -109,6 +109,17 @@
         <dynami-cpt :name="dynamicpt.name" :aid="dynamicpt.aid" :awardId="dynamicpt.awardId"></dynami-cpt>   
       </div>
     </el-drawer>
+    <!-- 提交评审提示 -->
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%">
+      <span>如您已提交过评审，请选择取消，若还未提交评审结果，请点击确定！</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="goBackOneStep">取 消</el-button>
+        <el-button type="primary" @click="subGrade">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -135,6 +146,7 @@ export default {
       btnLoading:false,
       disabled:true,
       direction: 'rtl',
+      dialogVisible:false,
       dynamicpt:{
         name:'',
         aid:'',
@@ -177,6 +189,14 @@ export default {
     this.$nextTick( () => {
       this.offsetTop = document.querySelector('#boxFixed').offsetTop;
     })
+    // 回退监测
+    if (window.history && window.history.pushState) {
+      history.pushState(null, null, document.URL);
+      window.addEventListener('popstate', this.goBack, false);
+    }
+  },
+  destroyed(){
+    window.removeEventListener('popstate', this.goBack, false);
   },
   computed: {
     // 数据树形整合
@@ -227,7 +247,6 @@ export default {
     },
     getData(){
       getOwnReviewResult({awardId:this.awardId}).then(res => {
-      // debugger
         // console.log(res)
         let data = res.data.scoreSituationArray 
         if(data.length > 1){
@@ -263,6 +282,18 @@ export default {
           this.$message.success('自评成功！')
         }
       })
+    },
+    goBack(){
+      if(!this.dialogVisible && !this.disabled){
+        this.dialogVisible = true
+      }
+    },
+    goBackOneStep(){
+      this.$router.back(-1)
+    },
+    subGrade(){
+      this.subScore()
+      this.dialogVisible = false
     }
   }
 }
