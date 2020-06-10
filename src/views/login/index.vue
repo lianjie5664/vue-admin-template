@@ -43,8 +43,10 @@
                 <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
               </span>
             </el-form-item>
-
             <el-button :loading="loading" type="primary" class="login-btn" @click.native.prevent="handleLogin">立即登录</el-button>
+            <div class="toright registerNow">
+              还未有账号？<router-link to="/register">立即注册</router-link>
+            </div>
           </el-form>
       </div>
     </div>
@@ -110,98 +112,92 @@ export default {
 </script>
 
 <style lang="scss">
-/* 修复input 背景不协调 和光标变色 */
-/* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
-$bg:#283443;
-$light_gray:#fff;
-$cursor: #fff;
+  $bg:#283443;
+  $light_gray:#fff;
+  $cursor: #fff;
 
-@supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-  .login-container .el-input input {
-    color: $cursor;
-  }
-}
-
-/* reset element-ui css */
-.login-container {
-  width: 100%;
-  height: 100%;
-  min-width: 1200px;
-  background-position: 50%;
-  position: relative;
-  background: url(../../assets/imgs/login-bg.png);
-  background-size: 100% 100%;
-	background-size: cover;
-  .login-box-container{
-    width: 500px;
-    position: absolute;
-    right: 160px;
-    top: 50%;
-    -webkit-transform: translateY(-60%);
-    transform: translateY(-60%);
-    .login-title{
-      h2{
-        font-size: 32px;
-        font-weight: 400;
-        text-align: center;
-        // padding-bottom: 40px;
-        color:#283443;
-        letter-spacing: 4px;
-      }
-    }
-    .login-box{
-      width: 400px;
-      // height: 340px;
-      background: #fff url(../../assets/imgs/login-box-bg.png) no-repeat top;
-      background-size:100%;
-      box-shadow: 0 0 10px 2px rgba(30,13,4,.15);
-      border-radius: 12px;
-      margin:0 auto;
-    }
-    .login-btn{
-      width:100%;
-      margin-bottom:30px;
-      background:#273EB0;
-      border: solid 1px #273EB0;
-      height: 45px;
-      &:hover{
-        background: rgb(57, 80, 197);
-      }
+  @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
+    .login-container .el-input input {
+      color: $cursor;
     }
   }
+  .login-container {
+    width: 100%;
+    height: 100%;
+    min-width: 1200px;
+    background-position: 50%;
+    position: relative;
+    background: url(../../assets/imgs/login-bg.png);
+    background-size: 100% 100%;
+  	background-size: cover;
+    .login-box-container{
+      width: 500px;
+      position: absolute;
+      right: 160px;
+      top: 50%;
+      -webkit-transform: translateY(-60%);
+      transform: translateY(-60%);
+      .login-title{
+        h2{
+          font-size: 32px;
+          font-weight: 400;
+          text-align: center;
+          color:#283443;
+          letter-spacing: 4px;
+        }
+      }
+      .login-box{
+        width: 400px;
+        background: #fff url(../../assets/imgs/login-box-bg.png) no-repeat top;
+        background-size:100%;
+        box-shadow: 0 0 10px 2px rgba(30,13,4,.15);
+        border-radius: 12px;
+        margin:0 auto;
+      }
+      .login-btn{
+        width:100%;
+        margin-bottom: 15px;
+        background:#273EB0;
+        border: solid 1px #273EB0;
+        height: 45px;
+        &:hover{
+          background: rgb(57, 80, 197);
+        }
+      }
+    }
 
-  .el-input {
-    display: inline-block;
-    height: 42px;
-    width: 85%;
-
-    input {
-      background: #fff;
-      border: 0px;
-      -webkit-appearance: none;
-      border-radius: 0px;
-      padding: 8px 5px 8px 15px;
-      color: $light_gray;
+    .el-input {
+      display: inline-block;
       height: 42px;
-      color: #333;
-    }
-    input:-webkit-autofill {
-      -webkit-box-shadow: 0 0 0px 1000px white inset;	/**通过边框阴影遮挡住背景*/
-      -webkit-text-fill-color: #333;
-    }
-  }
+      width: 85%;
 
-  .el-form-item {
-    border: 1px solid #d4d3d3;
-    border-radius: 4px 4px 0 0;
-    border-radius: 5px;
-    color: #454545;
-    .el-form-item__content{
-      line-height: 35px;
+      input {
+        background: #fff;
+        border: 0px;
+        -webkit-appearance: none;
+        border-radius: 0px;
+        padding: 8px 5px 8px 15px;
+        color: $light_gray;
+        height: 42px;
+        color: #333;
+      }
+      input:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0px 1000px white inset;
+        -webkit-text-fill-color: #333;
+      }
+    }
+
+    .el-form-item {
+      border: 1px solid #d4d3d3;
+      border-radius: 4px 4px 0 0;
+      border-radius: 5px;
+      color: #454545;
+      .el-form-item__content{
+        line-height: 35px;
+      }
     }
   }
-}
 </style>
 
 <style lang="scss" scoped>
@@ -232,7 +228,7 @@ $light_gray:#fff;
     position: relative;
     width: 520px;
     max-width: 100%;
-    padding: 160px 35px 0;
+    padding: 160px 35px 20px;
     margin: 0 auto;
     overflow: hidden;
   }
@@ -247,7 +243,6 @@ $light_gray:#fff;
 
   .title-container {
     position: relative;
-
     .title {
       font-size: 26px;
       color: $light_gray;
@@ -256,7 +251,6 @@ $light_gray:#fff;
       font-weight: bold;
     }
   }
-
   .show-pwd {
     position: absolute;
     right: 10px;
@@ -265,6 +259,18 @@ $light_gray:#fff;
     color: $dark_gray;
     cursor: pointer;
     user-select: none;
+  }
+
+  .registerNow{
+    color: #666;
+    font-size: 14px;
+    a{
+      cursor: pointer;
+      color: #409eff;
+      &:hover{
+        color: #66b1ff;
+      }
+    }
   }
 }
 </style>

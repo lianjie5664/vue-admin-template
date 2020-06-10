@@ -1,0 +1,60 @@
+.register-content{
+  width: 100%;
+  height: 100%;
+  background-position: 50%;
+  position: relative;
+  background: url('../../assets/imgs/login-bg.png') no-repeat;
+  background-size: cover;
+  overflow: hidden;
+  .logo-img{
+    height: 120px;
+    width: 200px;
+    display: inline-block;
+    position: absolute;
+    left: 4%;
+    img{
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+  .register-box{
+    position: absolute;
+    right: 15%;
+    top: 10px;
+    .title{
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+  }
+  .box-contain{
+    width: 400px;
+    background: url('../../assets/imgs/login-box-bg.png') no-repeat;
+    background-size: 100%;
+    background-color: #fff;
+    .el-form{
+      width: 100%;
+      padding: 135px 15px 2px;
+    }
+    .el-form-item{
+      display: flex;
+      margin-bottom: 15px;
+    }
+    .get-code{
+      .el-input{
+        width: 273px;
+      }
+    }
+    .el-form-item__content{
+      flex:1;
+      .el-select{
+        width: 100%;
+      }
+    }
+  }
+  .register-btn{
+    button{width: 200px;}
+  }
+}
