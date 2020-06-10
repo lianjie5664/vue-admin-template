@@ -15,7 +15,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item prop="code" class="get-code">
-                  <el-input v-model="formParams.code" placeholder="请输入验证码" style="width:68%"></el-input>
+                  <el-input v-model="formParams.code" :disabled="true" placeholder="请输入验证码" style="width:68%"></el-input>
                   <el-button @click.native.prevent="getCode" class="code-btn" style="width:30%" :disabled="!show">
                     <span v-show="show">获取验证码</span>
                     <span v-show="!show" class="count">{{count}} s</span>
@@ -87,7 +87,6 @@
               </el-form-item>
             </el-col>
           </el-row>
-          
         </el-form>
       </div>
     </div>
@@ -196,7 +195,7 @@ export default {
               this.loading = false
               this.$message({
                 type: 'success',
-                message: '注册成功！',
+                message: '注册成功！请等待审核。。。',
                 onClose: () => {
                   this.$router.push({ path: '/' })
                 }
