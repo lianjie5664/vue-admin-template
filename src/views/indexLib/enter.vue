@@ -1,115 +1,73 @@
 <template>
     <div class="statistics common-content">
-        <el-row :gutter="20">
-            <el-col :span="12">
-                <el-row :gutter="20">
-                    <el-col :span="24">
-                        <div class="grid-content">
-                            <el-button type="primary" icon="el-icon-plus" plain size="mini" v-hasPermi="['btn:lib:add']" @click="showLeftModal">录入</el-button>
-                            <el-button type="info" icon="el-icon-edit" plain size="mini" v-hasPermi="['btn:libitem:edit']" @click="editLeftRow">编辑</el-button>
-                            <el-button type="warning" icon="el-icon-setting" plain size="mini" v-hasPermi="['btn:libForm:config']" @click="showSaveForm">配置表单</el-button>
-                        </div>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="20" class="mt15">
-                    <el-col :span="24">
-                        <el-table :data="statisticDatas" class="tableStyle" v-loading="leftTb" style="height:calc(100vh - 160px);overflow-y:scroll"
-                                  size="medium" :row-style="selectedHighlight" :row-class-name="rowClassNameHandler" @row-click="selectRow">
-                            <el-table-column label="指标名称" align="left" show-overflow-tooltip>
-                                <template slot-scope="scope">
-                                <span :style="{marginLeft: scope.row.level * 23 + 'px'}">&ensp;</span>
-                                <i v-if="scope.row.showChildren" :class="{'categoryStyle el-icon-folder-opened ':scope.row.showChildren, 'categoryStyle el-icon-document-remove':!scope.row.hasChildren}" @click="onExpand(scope.row)" :style="{cursor:scope.row.hasChildren ? 'pointer' : 'normal'}"></i>
-                                <i v-else :class="{'categoryStyle el-icon-folder':scope.row.hasChildren, 'categoryStyle el-icon-document-remove':!scope.row.hasChildren}" @click="onExpand(scope.row)" :style="{cursor:scope.row.hasChildren ? 'pointer' : 'normal'}"></i>
-                                <span :data-level="scope.row.level" :style="{marginLeft: 4 + 'px'}">{{ scope.row.name }}</span>
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="grade" label="指标等级" width="180" align="center">
-                                <template slot-scope="scope">
-                                    <span v-if="scope.row.grade == 1">一级指标</span>
-                                    <span v-if="scope.row.grade == 2">二级指标</span>
-                                    <span v-if="scope.row.grade == 3">三级指标</span>
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="score" label="分值" width="80" align="center"></el-table-column>
-                            <el-table-column label="操作" width="120" align="left">
-                                <template slot-scope="scope">
-                                    <el-button type="danger" icon="el-icon-delete" size="small" v-hasPermi="['btn:libitem:delete']" plain @click="delAwardCfg(scope.row.id)">删除</el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </el-col>
-                </el-row>
-            </el-col>
-            <el-col :span="12">
-                <el-row :gutter="20">
-                    <el-col :span="24">
-                        <div class="grid-content">
-                            <el-button type="primary" icon="el-icon-plus" plain size="mini" v-hasPermi="['btn:keypoint:add']" @click="showInfoDialog">录入</el-button>
-                            <el-button type="info" icon="el-icon-edit" plain size="mini" v-hasPermi="['btn:keypoint:update']" @click="editKeyPoint">编辑</el-button>
-                        </div>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="20" class="mt15">
-                    <el-col :span="24">
-                        <el-table :data="tableData" class='tableStyle' ref="keyPointForm" border @selection-change="handleSelectionChange">
-                            <el-table-column
-                                type="selection"
-                                width="55">
-                            </el-table-column>
-                            <el-table-column prop="sort" label="序号" width="180"></el-table-column>
-                            <el-table-column prop="keyPoint" label="关键点" width="180"></el-table-column>
-                            <el-table-column prop="description" label="详细说明"> </el-table-column>
-                              <el-table-column label="操作" width="80" align="left">
-                                <template slot-scope="scope">
-                                    <el-button type="danger" size="small" v-hasPermi="['btn:keypoint:delete']" plain @click="delPoint(scope.row.id)">删除</el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </el-col>
-                </el-row>
-            </el-col>
-        </el-row>
-        <add-form
-            labelWidth = "80px"
-            :formData="formData"
-            :dialog="leftModalVisible"
-            :list="statisticDatas"
-            :row="currentRow"
-            :types="modalType"
-            @close="leftModalVisible.v = false"
-            @submit="handleLeftForm"
-            ></add-form>
-        <info-form
+      
+      <el-row :gutter="20">
+        <el-col :span="12">
+            <el-row :gutter="20">
+                <el-col :span="24">
+                    <div class="grid-content">
+                        <el-button type="primary" icon="el-icon-plus" plain size="mini" v-hasPermi="['btn:lib:add']" @click="showLeftModal">新增指标</el-button>
+                        <!-- <el-button type="warning" icon="el-icon-setting" plain size="mini"  @click="showSaveForm">配置表单</el-button> -->
+                    </div>
+                </el-col>
+            </el-row>
+        </el-col>
+      </el-row>
+      <div class="contains">
+        <tree-table ref="recTree"
+        :list.sync="treeDataSource"
+        @actionFunc="editLeftRow"
+        @deleteFunc="deleteFunc"
+        @getRowFunc="getRowFunc"
+        @configFunc="showSaveForm"
+        @subordinateFunc="subordinateFunc"
+        @handlerExpand="handlerExpand"></tree-table>
+      </div>
+      <!-- 指标库组件 -->
+      <index-add
+        labelWidth = "80px"
+        :indexData="leftFormData"
+        :show.sync="leftModalVisible"
+        :list="statisticDatas"
+        :row="currentRow"
+        :types="modalType"
+        @submit="handleLeftForm"
+        ></index-add>
+        <!-- <info-form
             :dialogFormVisible="rightDialogVisble"
-            :formData="formData"
+            :formData="leftFormData"
             :types="keyPointType"
             @close="rightDialogVisble.v = false"
             @submit="handleRightForm">
-        </info-form>   
-
-        <el-dialog title="动态表单配置" :visible.sync="formSettingVisible" :close-on-click-modal="false">
-          <!-- <el-form> -->
+        </info-form>    -->
+        <!-- <el-dialog title="动态表单配置" :visible.sync="formSettingVisible" :close-on-click-modal="false">
             <el-alert style="margin-bottom:12px;"
               title="此处为指标库的动态表单配置，针对无关键点的自定义表单。"
               type="warning"
               show-icon>
             </el-alert>
-            <!-- <el-form-item label-width="400">
-              <el-input v-model="formSettingVal" type="textarea" :rows="16"></el-input>
-            </el-form-item> -->
-            <vue-json-editor v-model="formSettingVal" :mode="'code'" :lang="'zh'"></vue-json-editor>
-          <!-- </el-form> -->
+            <vue-json-editor v-model="currentRow.formStyle" :mode="'code'" :lang="'zh'"></vue-json-editor>
           <div slot="footer" class="dialog-footer">
             <el-button @click="formSettingVisible = false">取 消</el-button>
             <el-button type="primary" @click="handleSettingForm">确 定</el-button>
           </div>
-        </el-dialog> 
+        </el-dialog>  -->
+        <config-kpt
+        :show.sync="formSettingVisible"
+        :data="currentRow"
+        :tableData="tableData"
+        @getListData="getData"
+        @delete="delPoint"
+        @get="getPoint"
+        ></config-kpt>
     </div>
 </template>
 <script>
-import AddForm from './components/indexadd'
+import IndexAdd from './components/indexadd'
 import InfoForm from './components/infoadd'
-import vueJsonEditor from 'vue-json-editor'
+import treeTable from '@/components/TreeTable/tree-table.vue'
+import ConfigKpt from './components/configKeyPoint'
+
 import {  findListByAward,
           awardCfgAdd, 
           awardCfgModify,
@@ -121,86 +79,86 @@ import {  findListByAward,
           saveDynamicForm 
 } from '@/api/award' 
 import {notice} from '@/utils/tools'
+// import treeTable from '@/components/tree-table.vue'
 export default {
   name: 'ContractStatistic',
-  components:{AddForm,InfoForm,vueJsonEditor},
+  components:{IndexAdd,InfoForm,treeTable,ConfigKpt},
   data() {
-    let sexs=[{label:'顶级',value:'0'},{label:'女',value:'F'}]
-    let intersts=[{label:'羽毛球',value:'badminton'},{label:'篮球',value:'basketball'}]
     return {
-        statisticDatas: [],
-        pastDays: 0,
+        list: [], // 请求原始数据
+        treeDataSource: [],
+        statisticDatas:[],
         currentRow: {},
         // rightTb:true,
         modalType:0,
         keyPointType:0,
         leftTb:true,
-        leftModalVisible:{v:false},
+        leftModalVisible:false,
         formSettingVisible:false,
-        formSettingVal:'',
-        rightDialogVisble:{v:false},
+        // formSettingVal:'',
+        // rightDialogVisble:{v:false},
         awardId:this.$route.params.id,
         keyPointId:'',
         editPointRow:{},
-        formData:{
-            formItemList:[
-                {type:'Input',label:'指标名称',prop:'name',width:'180px',placeholder:'请输入指标名称',value:''},
-                {type:'TreeSelect',label:'上级指标库',prop:'parentId',width:'310px',change:row=>'',placeholder:'请选择上级指标库',value:''},
-                {type:'Select',label:'指标等级',prop:'grade',width:'180px',change:row=>'',options:[
-                {value: 1,label: '一级指标' },{value: 2,label: '二级指标' },{value: 3,label: '三级指标' }],placeholder:'请输入指标等级',value:''},
-                {type:'Input',label:'分值',prop:'score',width:'180px',placeholder:'请输入分值',value:''},
-                {type:'TextArea',label:'指标内容',prop:'content',width:'180px',placeholder:'请输入指标内容',value:''},
-            ],
-            rightItemList:[
-                {type:'Input',label:'序号',prop:'sort',placeholder:'请输入序号',value:''},
-                {type:'TextArea',label:'关键点',prop:'keyPoint',placeholder:'请输入关键点',value:''},
-                {type:'TextArea',label:'详细说明',prop:'description',placeholder:'请输入详细说明',value:''},
-            ]
+        leftFormData:{
+          content:'',//指标内容
+          // grade:'1',//指标等级
+          name:'', //指标名称
+          parentId:'',//父级指标
+          score:'', //指标分值
         },
         tableData: [],
     }
   },
- 
-  mounted() {
-    let self = this
-    self.loadStatisticData()
-  },
   created(){
-     
+      this.getData()
   },
   methods: {
-    selectRow(row){
+    getRowFunc(model){
+      // this.delAwardCfg(model.id)
+      // console.log(1112,model)
+    },
+    deleteFunc(model) {
+      this.delAwardCfg(model.id)
+    },
+    subordinateFunc(model){
+      this.modalType = 0
+      let { id } = model
+      this.leftFormData ={
+        content:'',//指标内容
+        name:'', //指标名称
+        parentId:id,//父级指标
+        score:'', //指标分值
+      },
+      this.leftModalVisible = true
+    },
+    handlerExpand(m) {
+      m.isExpand = !m.isExpand
+    },
+    getTreeData() {
+      let cloneData = JSON.parse(JSON.stringify(this.list))  // 对源数据深度克隆
+      this.treeDataSource = cloneData.filter(father => {
+        // 循环所有项，并添加children属性
+        let branchArr = cloneData.filter(child => father.id == child.parentId)  // 返回每一项的子级数组
+        branchArr.length > 0 ? (father.children = branchArr) : ''   //给父级添加一个children属性，并赋值
+        return father.parentId == 0   //返回第一层
+      })
+    },
+    editLeftRow(row){
       this.currentRow = row
-      this.getPoint(row.id)
-      this.formSettingVal = row.formStyle
-    },
-    selectedHighlight ({ row, rowIndex }) {
-        if (this.statisticDatas[rowIndex].id == this.currentRow.id) {
-            return {
-                "background-color": "rgb(39, 62, 176)",
-                "color":"#fff"
-            }
-        }
-    },
-    editLeftRow(){
+      this.leftFormData = Object.assign({id:row.id},this.leftFormData,row)
       this.modalType = 1
-      let params = Object.assign({id:this.currentRow.id},this.currentRow),
-          formData = this.formData.formItemList
-      for(let i in formData){
-        for (let j in params){
-          if(formData[i].prop == j){
-            formData[i].value = params[j]
-          }
-        }
-        this.formData.formItemList  =  formData
-        this.leftModalVisible.v = true
-      }
-    },
-    handleEditLeftRow(){
-
+      this.leftModalVisible = true  
     },
     showLeftModal(){
-        this.leftModalVisible.v = true
+      this.modalType = 0
+      this.leftFormData ={
+        content:'',//指标内容
+        name:'', //指标名称
+        parentId:0,//父级指标
+        score:'', //指标分值
+      },
+      this.leftModalVisible = true
     },
     handleLeftForm(data){
       data.parentId == "" ? data.parentId = 0 : data.parentId = data.parentId
@@ -209,56 +167,57 @@ export default {
         awardCfgAdd(params).then(res =>{
           if(res.code == 1){
             notice(1,'添加成功！',1)
-            this.loadStatisticData()
+            this.getData()
           }else{
             notice(0,'添加失败！',0)
-            this.loadStatisticData()
+            this.getData()
           }
-          this.leftModalVisible.v = false
+          this.leftModalVisible = false
         })
       }else{
         let params = Object.assign({id:this.currentRow.id,awardId:this.awardId},data)
         awardCfgModify(params).then(res =>{
           if(res.code == 1){
             notice(1,'修改成功！',1)
-            this.loadStatisticData()
+            this.getData()
           }else{
             notice(0,'修改失败！',0)
-            this.loadStatisticData()
+            this.getData()
           }
-          this.leftModalVisible.v = false
+          this.leftModalVisible = false
         })
       }
         
     },
     showInfoDialog(){
-      if(JSON.stringify(this.currentRow) == "{}"){
-        this.$message.error('请选择左侧指标项进行配置！')
-        return
-      }
-      this.formData.rightItemList.map((v) =>{
-        v.value = ''
-      })
-      this.rightDialogVisble.v = true
+      // if(JSON.stringify(this.currentRow) == "{}"){
+      //   this.$message.error('请选择左侧指标项进行配置！')
+      //   return
+      // }
+      // this.keyPointType = 0
+      // this.formData.rightItemList.map((v) =>{
+      //   v.value = ''
+      // })
+      // this.rightDialogVisble.v = true
     },
-    handleRightForm(data){
-      if(this.standardId == 0) return 
-      let params 
-      if(this.keyPointId){
-        params = Object.assign({id:this.keyPointId,standardId:this.currentRow.id},data)
-      }else{
-        params = Object.assign({standardId:this.currentRow.id},data)
-      }
-      pointAdd(params).then(res => {
-        if(res.code == 1){
-            notice(1,'添加成功！',1)
-            this.getPoint(this.currentRow.id)
-          }else{
-            notice(0,'添加失败！',0)
-          }
-          this.rightDialogVisble.v = false
-      })
-    },
+    // handleRightForm(data){
+    //   if(this.standardId == 0) return 
+    //   let params 
+    //   if(this.keyPointId){
+    //     params = Object.assign({id:this.keyPointId,standardId:this.currentRow.id},data)
+    //   }else{
+    //     params = Object.assign({standardId:this.currentRow.id},data)
+    //   }
+    //   pointAdd(params).then(res => {
+    //     if(res.code == 1){
+    //         notice(1,'添加成功！',1)
+    //         this.getPoint(this.currentRow.id)
+    //       }else{
+    //         notice(0,'添加失败！',0)
+    //       }
+    //       this.rightDialogVisble.v = false
+    //   })
+    // },
     getPoint(id){
       getPoints({standardId:id}).then(res =>{
         this.tableData = res.data.keyPointsList
@@ -273,7 +232,7 @@ export default {
           awardCfgDel({id:id}).then(res => {
             if(res.code == 1){
               notice(1,'删除成功！',1)
-              this.loadStatisticData()
+              this.getData()
             }else{
               notice(0,'删除失败！'+ res.msg,0)
             }
@@ -306,29 +265,23 @@ export default {
           this.editPointRow = selection[0]
       }
     },
-    editKeyPoint(){
-      if(!this.keyPointId){
-        this.$message.error('请选择一项进行编辑！')
-        return
-      }
-        this.keyPointType = 1
-        let params = Object.assign({standardId:this.currentRow.id},this.editPointRow),
-          formData = this.formData.rightItemList
-          for(let i in formData){
-            for (let j in params){
-              if(formData[i].prop == j){
-                formData[i].value = params[j]
-              }
-            }
-            this.formData.rightItemList  =  formData
-            this.rightDialogVisble.v = true
-          }
+    editKeyPoint(row){
+        // this.keyPointType = 1
+        // let params = Object.assign({standardId:this.currentRow.id},row),
+        //   formData = this.formData.rightItemList
+        //   for(let i in formData){
+        //     for (let j in params){
+        //       if(formData[i].prop == j){
+        //         formData[i].value = params[j]
+        //       }
+        //     }
+        //     this.formData.rightItemList  =  formData
+        //     this.rightDialogVisble.v = true
+        //   }
     },
-    showSaveForm(){
-      if(JSON.stringify(this.currentRow) == "{}"){
-        this.$message.error('请选择左侧指标项进行配置！')
-         return
-      }
+    showSaveForm(model){
+      this.currentRow = model
+      this.getPoint(model.id)
       this.formSettingVisible = true
     },
     handleSettingForm(){
@@ -343,122 +296,20 @@ export default {
         }
       })
     },
-    _processLevelStatisticData(dataArray) {
-      let self = this
- 
-      let resultArray = [] // 一级栏目
-      let level = 1
-      for (let i = 0; i < dataArray.length; i++) {
-        let item = dataArray[i]
-        // 查找一级分类
-        if (item.parentId === "0") {
-          item['level'] = level
-          resultArray.push(item)
-          self._loadChildrenData(resultArray, dataArray, item, level + 1)
-        }
-      }
-      return resultArray
-    },
- 
-    _loadChildrenData(resultArray, originArray, item, level) {
-      let self = this
- 
-    //   let deployed = 0
-    //   let undeployed = 0
-    //   let edit = 0
-      let score = 0
-      for (let i = 0; i < originArray.length; i++) {
-        let originItem = originArray[i]
-        // 判断是否是item项的子项
-        if (originItem.parentId === item.id.toString()) {
-          item['hasChildren'] = true
-          item['showChildren'] = true
- 
-          originItem['level'] = level
-          originItem['visible'] = true // 子项默认隐藏
-          originItem['hiddenByCategory'] = false
- 
-          resultArray.push(originItem)
-          self._loadChildrenData(
-            resultArray,
-            originArray,
-            originItem,
-            level + 1
-          )
- 
-          // 应该放在统计完子类数据之后
-        //   deployed += originItem.deployed
-        //   undeployed += originItem.undeployed
-        //   edit += originItem.edit
-          score += parseInt(originItem.score)
-        }
-      }
-      // 计算子栏目统计合计
-    //   item.deployed += deployed
-    //   item.undeployed += undeployed
-    //   item.edit += edit
-      // item.score += score
-    },
- 
-    search() {
-      this.loadStatisticData()
-    },
- 
-    loadStatisticData() {
-      let self = this
+    async getAwardCfgList(){
       let params = {
         awardId: this.awardId
       }
-      findListByAward(params).then(res=> {
-        let result = res.data
-        let resultArray = self._processLevelStatisticData(result)
-        self.statisticDatas = resultArray
-        this.leftTb = false
+      return await findListByAward(params)
+    },
+
+    getData(){
+      this.getAwardCfgList().then((res) =>{
+        this.list = res.data
+        this.statisticDatas = res.data
+      }).then(()=>{
+        this.getTreeData()
       })
-    },
-    async getAwardCfgList(params){
-      const res = await findListByAward(params)
-      return res
-    },
-    rowClassNameHandler({ row, rowIndex }) {
-      let className = 'pid-' + row.parentId
-      if (
-        row.parentId !== "0" &&
-        (row['visible'] !== true || row['hiddenByCategory'] === true)
-      ) {
-        className += ' hiddenRow'
-      }
-      return className
-    },
- 
-    onExpand(row) {
-      let self = this
-      let isShowChildren = !row['showChildren']
-      row['showChildren'] = isShowChildren
-      self._loadAllSubItems(row, true, isShowChildren)
-    },
- 
-    _loadAllSubItems(item, isFirstLevlChildren, isShowChilren) {
-      let self = this
-      let dataArray = []
-      for (let i = 0; i < self.statisticDatas.length; i++) {
-        let tempItem = self.statisticDatas[i]
-        if (tempItem.parentId === item.id) {
-          if (isFirstLevlChildren) {
-            tempItem['visible'] = !tempItem['visible']
-          }
-          tempItem['hiddenByCategory'] = !isShowChilren
- 
-          dataArray.push(tempItem)
-          let subItemArray = self._loadAllSubItems(
-            tempItem,
-            false,
-            isShowChilren
-          )
-          dataArray = dataArray.concat(subItemArray)
-        }
-      }
-      return dataArray
     }
   }
 }

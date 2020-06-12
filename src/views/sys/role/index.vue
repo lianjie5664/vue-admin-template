@@ -16,10 +16,8 @@
                     element-loading-text="Loading"
                     border
                     fit
-                    highlight-current-row
                     @row-click="selectRow"
                     @selection-change="selectRow">
-                    >
                     <el-table-column align="center" label="编号" width="120">
                         <template slot-scope="scope">
                         {{ scope.$index + 1}}

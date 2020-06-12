@@ -14,9 +14,9 @@
             </el-form>
         </div>
         <!--表格树内容栏-->
-        <el-table :data="optionData" stripe size="mini" style="width: 100%;"
+        <el-table :data="optionData" border size="mini" style="width: 100%;"
             rowKey="id" v-loading="loading" element-loading-text="加载中">
-            <el-table-column prop="name" label="菜单名称" :show-overflow-tooltip="true" width="160"></el-table-column>
+            <el-table-column prop="name" label="菜单名称" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column header-align="center" align="center" label="图标">
                 <template slot-scope="scope">
                     <i :class="scope.row.icon"></i>
@@ -29,14 +29,14 @@
                 <el-tag v-else-if="scope.row.type === '101100003'" size="small" type="info">按钮</el-tag>
                 </template>
             </el-table-column>
-            <el-table-column prop="parentName" header-align="center" align="center" width="120" label="上级菜单">
+            <el-table-column prop="parentName" header-align="center" align="center" label="上级菜单">
             </el-table-column>
             <el-table-column
-                prop="href" header-align="center" align="center" width="150" 
+                prop="href" header-align="center" align="center"
                 :show-overflow-tooltip="true" label="组件路径">
             </el-table-column>
             <el-table-column
-                prop="permission" header-align="center" align="center" width="150" 
+                prop="permission" header-align="center" align="center"
                 :show-overflow-tooltip="true" label="授权标识">
             </el-table-column>
             <el-table-column

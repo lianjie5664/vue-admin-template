@@ -70,20 +70,24 @@
   color:rgb(191, 203, 217);
 }
 
-.el-table__body tr:hover,.el-table__body-wrapper tr:hover{
-  // background-color: #273EB0 !important;
-  background-image: -webkit-linear-gradient(left,#537ffa,#5b40f7);
-  color: #fff;
-  cursor: pointer;
-  i{
-    color: #fff;
-  }
-}
+// .el-table__body tr:hover,.el-table__body-wrapper tr:hover{
+//   // background-color: #273EB0 !important;
+//   background-image: -webkit-linear-gradient(left,#537ffa,#5b40f7);
+//   color: #fff;
+//   cursor: pointer;
+//   // i{
+//   //   color: #fff;
+//   // }
+// }
 // .el-table__row:hover{
 //   background: red;
 // }
+.el-table__body-wrapper tbody tr:hover>td { 
+  background-color:#ecf5ff!important;
+  cursor:pointer;
+}
 .el-table--enable-row-transition .el-table__body td{
-  transition:background-color 45s ease;
+  transition:background-color .1s ease;
 }
 .el-table--medium td{
   padding:8px 0 !important;

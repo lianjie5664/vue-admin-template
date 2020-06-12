@@ -8,13 +8,8 @@
                 element-loading-text="Loading"
                 border
                 fit
-                highlight-current-row
-                @selection-change="handleSelectionChange">
+                highlight-current-row>
                 >
-                <el-table-column
-                    type="selection"
-                    width="55">
-                </el-table-column>
                 <el-table-column align="center" label="编号" width="95">
                     <template slot-scope="scope">
                     {{ scope.$index }}
@@ -121,15 +116,15 @@ export default {
                 }).catch(() => {
             });
         },
-        handleSelectionChange(selection){
-            if(selection.length > 1){
-                let del_row = selection.shift();
-                this.$refs.multipleTable.toggleRowSelection(del_row, false);
-            }
-            if(selection.length != 0){
-                this.selectedRow = selection[0].id
-            }
-        },
+        // handleSelectionChange(selection){
+        //     if(selection.length > 1){
+        //         let del_row = selection.shift();
+        //         this.$refs.multipleTable.toggleRowSelection(del_row, false);
+        //     }
+        //     if(selection.length != 0){
+        //         this.selectedRow = selection[0].id
+        //     }
+        // },
         editAwardForm(){
             if(this.selectedRow == ''){
                 this.$message.error('请选择一项编辑！')

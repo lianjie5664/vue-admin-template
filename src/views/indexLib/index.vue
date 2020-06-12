@@ -130,25 +130,24 @@ export default {
 <style lang="less" scoped>
     .table{
         margin-top:20px;
-        // display: flex;
-        // flex-wrap: wrap;
-        // justify-content: space-between;
-        // box-shadow: -5px 0 15px rgba(0,0,0,.1);
         .award-item{
             width: 22%;
-            margin: 10px;
+            margin-bottom: 25px;
+            margin-right:20px;
             padding: 0 20px 20px 20px ;
             border: solid 1px #f1f1f1;   
             float: left;
-            // box-shadow:0 0 10px rgba(0,0,0,.2);
+            border-radius:8px;
             box-shadow: 5px 20px 30px rgba(0,0,0,.1);
-            // background: linear-gradient(130deg,#aa6aff,#706dff);
             .title{
                 width: 100%;
                 font-size: 22px;
                 color: #000;
                 font-weight: 440;
                 margin-bottom: 14px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis
             }
             .desc{
                 margin-top: 2%;
