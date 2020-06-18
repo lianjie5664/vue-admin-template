@@ -96,7 +96,7 @@
           </el-collapse-item>
         </el-collapse>
       </div>
-      <div class="flex-one group-box mr10">
+      <div class="flex-one group-box">
         <div class="title">通知</div>
         <el-collapse v-model="noticeActive" accordion>
           <el-collapse-item title="长沙市市长质量奖评审员申请表" name="1">
