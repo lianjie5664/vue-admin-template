@@ -55,6 +55,7 @@
 </template>
 
 <script>
+import DataSet from '@antv/data-set'
 import { Chart } from '@antv/g2'
 export default {
   data () {
@@ -121,36 +122,92 @@ export default {
     },
     getFourData () {
       const data = [
-        { type: '质量', value: 270 },
-        { type: '创新', value: 230 },
-        { type: '品牌', value: 180 },
-        { type: '结果', value: 150 },
+        { item: '质量', score: 270 },
+        { item: '创新', score: 250 },
+        { item: '品牌', score: 180 },
+        { item: '结果', score: 150 },
+        { item: '市场满意度', score: 89 },
+        { item: '顾客满意度', score: 87 },
       ]
+      const { DataView } = DataSet
+      const dv = new DataView().source(data)
+      dv.transform({
+        type: 'fold',
+        fields: ['score'], // 展开字段集
+        key: 'user', // key字段
+        value: 'score', // value字段
+      })
       const chart = new Chart({
         container: 'four-data',
         autoFit: false,
         height: 280,
         width: 500
       })
-      chart.coordinate('theta', {
-        startAngle: Math.PI, // 起始角度
-        endAngle: Math.PI * (3 / 2), // 结束角度
+      chart.data(dv.rows)
+      chart.scale('score', {
+        min: 0,
+        max: 400
       })
-      chart.data(data)
+      chart.coordinate('polar', {
+        radius: 0.8
+      })
       chart.tooltip({
-        showTitle: false,
-        showMarkers: false,
+        shared: true,
+        showCrosshairs: true,
+        crosshairs: {
+          line: {
+            style: {
+              lineDash: [4, 4],
+              stroke: '#333'
+            }
+          }
+        }
       })
-      chart.legend({
-        position: 'right-bottom',
+      chart.axis('item', {
+        line: null,
+        tickLine: null,
+        grid: {
+          line: {
+            style: {
+              lineDash: null,
+            },
+          },
+        }
+      })
+      chart.axis('score', {
+        line: null,
+        tickLine: null,
+        grid: {
+          line: {
+            type: 'line',
+            style: {
+              lineDash: null,
+            },
+          },
+        }
       })
       chart
-        .interval()
-        .adjust('stack')
-        .position('value')
-        .color('type')
+        .line()
+        .position('item*score')
+        .color('user')
+        .size(2)
+      chart
+        .point()
+        .position('item*score')
+        .color('user')
+        .shape('circle')
+        .size(4)
+        .style({
+          stroke: '#fff',
+          lineWidth: 1,
+          fillOpacity: 1
+        })
+      chart
+        .area()
+        .position('item*score')
+        .color('user')
       chart.render()
-    },
+    }
   }
 }
 </script>
