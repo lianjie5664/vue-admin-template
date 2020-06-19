@@ -1,7 +1,8 @@
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import { MessageBox, Message,Notification } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
+import errorCode from '@/utils/errCode'
 
 // create an axios instance
 const service = axios.create({
@@ -25,7 +26,6 @@ service.interceptors.request.use(
   },
   error => {
     // do something with request error
-    console.log(error) // for debug
     return Promise.reject(error)
   }
 )
@@ -43,36 +43,40 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
-    const res = response.data
-    return res
-    // if the custom code is not 20000, it is judged as an error.
-    if (res.code !== 20000) {
-      Message({
-        message: res.message || 'Error',
-        type: 'error',
-        duration: 5 * 1000
-      })
-
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-        // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
+    const code = response.data.code
+    const message = errorCode[code] || response.data.msg || errorCode['default']
+    if (code == 401) {
+      MessageBox.confirm(
+        '登录状态已过期，您可以继续留在该页面，或者重新登录',
+        '系统提示',
+        {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => {
-          store.dispatch('user/resetToken').then(() => {
-            location.reload()
-          })
+        }
+      ).then(() => {
+        store.dispatch('user/logout').then(() => {
+          location.reload() // 为了重新实例化vue-router对象 避免bug
         })
-      }
-      return Promise.reject(new Error(res.message || 'Error'))
+      })
+    } else if (code == 500) {
+      Message({
+        message: message,
+        type: 'error'
+      })
+      return Promise.reject(new Error(message))
+    } else if (code != 1) {
+      Notification.error({
+        title: message
+      })
+      return Promise.reject('error')
     } else {
-      return res
+      return response.data
     }
   },
   error => {
-    console.log('err' + error) // for debug
+    // console.log(111,error)
+    // console.log('err' + error) // for debug
     Message({
       message: error.message,
       type: 'error',

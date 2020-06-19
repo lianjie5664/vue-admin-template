@@ -68,6 +68,7 @@ import DynamicForm from 'vue-dynamic-form-component'
 import VueUeditorWrap from 'vue-ueditor-wrap'
 import {notice} from '@/utils/tools'
 import dynamicComponent  from '@/views/compile/dynamicpt'
+import { ueditorConfig } from '@/utils/config'
 // import test from '@/views/compile/85eaf3d0965d4f03bfac14a75331f134'
 export default {
   name: 'ContractStatistic',
@@ -90,20 +91,7 @@ export default {
         currentTitle:'',
         loading:true,
         noDataVisible:false,
-        myConfig: {
-            // 编辑器不自动被内容撑高
-            autoHeightEnabled: false,
-            // 初始容器高度
-            initialFrameHeight: 240,
-            // 初始容器宽度
-            initialFrameWidth: '100%',
-            // 上传文件接口（这个地址是我为了方便各位体验文件上传功能搭建的临时接口，请勿在生产环境使用！！！）
-            // serverUrl: 'http://192.168.0.103:8080/co_matur/api/file/upload.do',
-                        serverUrl: 'http://192.168.0.105:8080/ueditor/ueditorUpload.do',
-            // serverUrl: 'http://35.201.165.105:8000/controller.php',
-            // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
-            UEDITOR_HOME_URL: '/Ueditor/'
-        }
+        myConfig: ueditorConfig
     }
   },
   mounted() {

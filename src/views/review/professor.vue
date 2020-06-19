@@ -75,8 +75,8 @@
                 <h3>得分情况</h3>
               </div>
               <div class="right">
-                <el-button type="success" v-if="gradeUserId == $store.state.user.userId || gradeUserId == ''" @click="subScore" round :loading="btnLoading" v-show="!disabled" :disabled="disabled" size="small">提交评审</el-button>
-                <el-button type="danger" v-show="!disabled" v-else round disabled size="small">无评审权限</el-button>
+                <el-button type="success"  @click="subScore" round :loading="btnLoading" v-show="!disabled" :disabled="disabled" size="small">提交评审</el-button>
+                <!-- <el-button type="danger" v-show="!disabled" v-else round disabled size="small">无评审权限</el-button> -->
               </div> 
             </div>
             <div class="outer-box">
@@ -131,6 +131,7 @@ import { findListByAward,getPoints } from '@/api/award'
 import { toSave,getReviewResult } from '@/api/review'
 import DynamiCpt from '@/views/compile/dynamicpt'
 import VueUeditorWrap from 'vue-ueditor-wrap'
+import { ueditorConfig} from '@/utils/config'
 
 export default {
   data () {
@@ -159,18 +160,7 @@ export default {
         grade:0
       },
       keyPointCompileList:[],
-      myConfig: {
-          // 编辑器不自动被内容撑高
-          autoHeightEnabled: false,
-          // 初始容器高度
-          initialFrameHeight: 240,
-          // 初始容器宽度
-          initialFrameWidth: '100%',
-          // 上传文件接口（这个地址是我为了方便各位体验文件上传功能搭建的临时接口，请勿在生产环境使用！！！）
-          serverUrl: 'http://localhost:8080/co_matur/api/file/upload',
-          // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
-          UEDITOR_HOME_URL: '/Ueditor/'
-      },
+      myConfig: ueditorConfig,
       submitData:[],
       paramsList: {
         id: '',

@@ -44,14 +44,25 @@ module.exports = {
       '/api': {
         // target: 'http://xmfapi.cecicloud.com/api',
         // target: 'http://192.168.0.103:8080/api',
-        target: 'http://localhost:8080/co_matur/api',
+        target: 'http://localhost:8083/co_matur/api',
         ws: true, // 使用的是http协议则设置为false，https协议则设置为true
         secure:false,
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
         }
-      }
+      },
+      // '/upload': {
+      //   // target: 'http://xmfapi.cecicloud.com/api',
+      //   // target: 'http://192.168.0.103:8080/api',
+      //   target: 'http://localhost:8080/co_matur/api/ueditor/ueditorUpload.do',
+      //   ws: true, // 使用的是http协议则设置为false，https协议则设置为true
+      //   secure:false,
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     '^/upload': ''
+      //   }
+      // }
     }
   },
   configureWebpack: {

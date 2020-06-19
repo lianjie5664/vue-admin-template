@@ -13,6 +13,9 @@
           <!-- <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">个人中心</span>
           </el-dropdown-item> -->
+          <el-dropdown-item divided>
+             <router-link :to="{path:'/console/company'}">控制台</router-link>
+          </el-dropdown-item>
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">退出登录</span>
           </el-dropdown-item>

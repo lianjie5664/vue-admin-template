@@ -88,7 +88,6 @@ export default {
     methods: {
         submitForm(formName,types){
             this.$refs[formName].validate((valid) => {
-                let jsonArr = {}
                 if(valid){
                     this.$emit('submit',Object.assign(this.formData,{types:types}))
                 }

@@ -1,14 +1,5 @@
 <template lang="html">
   <div class="app-container professor-page">
-    <!-- <div class="top-info hg-flex mb20 box_fixed" id="boxFixed" :class="{'is_fixed' : isFixed}">
-      <div class="items mr40">
-        <label>得分情况：</label>
-          <div class="score-item">{{totalScore}}<span>分</span>   </div> 
-      </div>
-      <div class="items ml30">
-        <el-button type="primary" @click="subScore" round :loading="btnLoading" v-show="!disabled" :disabled="disabled">提交评审</el-button>
-      </div>
-    </div> -->
     <el-row>
       <el-col :span="18">
         <div class="table-list">
@@ -53,8 +44,8 @@
               align="center"
               label="备注">
               <template slot-scope="scope">
-                  <el-input v-model="scope.row.gradeRemark" v-if="scope.row.grade == 3" placeholder="请输入备注"></el-input>
-                </template>
+                <el-input v-model="scope.row.gradeRemark" v-if="scope.row.grade == 3" placeholder="请输入备注"></el-input>
+              </template>
             </el-table-column>
             <el-table-column
               prop="score"
@@ -62,8 +53,8 @@
               align="center"
               label="查看">
               <template slot-scope="scope">
-                  <el-button type="text" size="small" @click="detail(scope.row)">查看详情</el-button>
-                </template>
+                <el-button type="text" size="small" @click="detail(scope.row)">查看详情</el-button>
+              </template>
             </el-table-column>
           </el-table>
         </div>
@@ -124,14 +115,15 @@
 </template>
 
 <script>
-import '../review/style/review.scss'
-import { findListByAward,getPoints } from '@/api/award'
-import { saveOwn,getOwnReviewResult } from '@/api/review'
-import DynamiCpt from '@/views/compile/dynamicpt'
-import VueUeditorWrap from 'vue-ueditor-wrap'
+import "../review/style/review.scss";
+import { findListByAward, getPoints } from "@/api/award";
+import { saveOwn, getOwnReviewResult } from "@/api/review";
+import DynamiCpt from "@/views/compile/dynamicpt";
+import VueUeditorWrap from "vue-ueditor-wrap";
+import { ueditorConfig } from "@/utils/config";
 
 export default {
-  data () {
+  data() {
     return {
       // formParams: {
       //   scoreTotal: 0, // 得分情况
@@ -141,160 +133,152 @@ export default {
       awardId: this.$route.query.awardId,
       isFixed: false,
       loading: false, // 页面加载loading
-      totalScore:0,
-      drawer:false,
-      btnLoading:false,
-      disabled:true,
-      direction: 'rtl',
-      dialogVisible:false,
-      dynamicpt:{
-        name:'',
-        aid:'',
-        awardId:'',
-        grade:0
+      totalScore: 0,
+      drawer: false,
+      btnLoading: false,
+      disabled: true,
+      direction: "rtl",
+      dialogVisible: false,
+      dynamicpt: {
+        name: "",
+        aid: "",
+        awardId: "",
+        grade: 0
       },
-      submitData:[],
-      keyPointCompileList:[],
-      myConfig: {
-          // 编辑器不自动被内容撑高
-          autoHeightEnabled: false,
-          // 初始容器高度
-          initialFrameHeight: 240,
-          // 初始容器宽度
-          initialFrameWidth: '100%',
-          // 上传文件接口（这个地址是我为了方便各位体验文件上传功能搭建的临时接口，请勿在生产环境使用！！！）
-          serverUrl: 'http://35.201.165.105:8000/controller.php',
-          // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
-          UEDITOR_HOME_URL: '/Ueditor/'
-      },
+      submitData: [],
+      keyPointCompileList: [],
+      myConfig: ueditorConfig,
       paramsList: {
-        id: '',
-        awardId: '',
-        parentId: '',
+        id: "",
+        awardId: "",
+        parentId: "",
         calculate: 0, // 系数
-        score: '' // 分数
+        score: "" // 分数
       },
       paramArr: [],
       saveList: [] // 返回数据
-    }
+    };
   },
-  components:{DynamiCpt,VueUeditorWrap},
-  created () {
-    this.getAward().then(()=>{
-      this.getData()
-    })
+  components: { DynamiCpt, VueUeditorWrap },
+  created() {
+    this.getAward().then(() => {
+      this.getData();
+    });
   },
-  mounted(){
-    window.addEventListener('scroll',this.initHeight);
-    this.$nextTick( () => {
-      this.offsetTop = document.querySelector('#boxFixed').offsetTop;
-    })
+  mounted() {
+    window.addEventListener("scroll", this.initHeight);
+    this.$nextTick(() => {
+      this.offsetTop = document.querySelector("#boxFixed").offsetTop;
+    });
     // 回退监测
     if (window.history && window.history.pushState) {
       history.pushState(null, null, document.URL);
-      window.addEventListener('popstate', this.goBack, false);
+      window.addEventListener("popstate", this.goBack, false);
     }
   },
-  destroyed(){
-    window.removeEventListener('popstate', this.goBack, false);
+  destroyed() {
+    window.removeEventListener("popstate", this.goBack, false);
   },
   computed: {
     // 数据树形整合
-    optionData () {
-      let cloneData = JSON.parse(JSON.stringify(this.awardList))  // 对源数据深度克隆
+    optionData() {
+      let cloneData = JSON.parse(JSON.stringify(this.awardList)); // 对源数据深度克隆
       return cloneData.filter(father => {
         // 循环所有项，并添加children属性
-        let branchArr = cloneData.filter(child => father.id == child.parentId)  // 返回每一项的子级数组
-        branchArr.length > 0 ? (father.children = branchArr) : ''   //给父级添加一个children属性，并赋值
-        return father.parentId == 0   //返回第一层
-      })
-    },
+        let branchArr = cloneData.filter(child => father.id == child.parentId); // 返回每一项的子级数组
+        branchArr.length > 0 ? (father.children = branchArr) : ""; //给父级添加一个children属性，并赋值
+        return father.parentId == 0; //返回第一层
+      });
+    }
   },
   methods: {
-    initHeight () {
-      var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+    initHeight() {
+      var scrollTop =
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop;
       this.isFixed = scrollTop > this.offsetTop ? true : false;
     },
-    destroyed () {
-      window.removeEventListener('scroll', this.handleScroll)
+    destroyed() {
+      window.removeEventListener("scroll", this.handleScroll);
     },
     // 获取奖项评分列表
-    async getAward () {
-      this.loading = true
-      await findListByAward({awardId: this.awardId}).then(res => {
+    async getAward() {
+      this.loading = true;
+      await findListByAward({ awardId: this.awardId }).then(res => {
         if (res && res.data && res.data[0]) {
-          this.loading = false
-          this.awardList = res.data
+          this.loading = false;
+          this.awardList = res.data;
         }
-      })
+      });
     },
-    detail(row){
-      this.dynamicpt.name = row.formStyle.component
-      this.dynamicpt.aid = row.id
-      this.dynamicpt.awardId = row.awardId
-      this.dynamicpt.grade = row.grade
-      if(row.grade == 3){
-        this.getPoints(row.id)
+    detail(row) {
+      this.dynamicpt.name = row.formStyle.component;
+      this.dynamicpt.aid = row.id;
+      this.dynamicpt.awardId = row.awardId;
+      this.dynamicpt.grade = row.grade;
+      if (row.grade == 3) {
+        this.getPoints(row.id);
       }
-      this.drawer = true
+      this.drawer = true;
     },
-    getPoints(id){
-      getPoints({standardId:id}).then(res =>{
-        if(res.code == 1){
-          this.keyPointCompileList = res.data.reportCompile
+    getPoints(id) {
+      getPoints({ standardId: id }).then(res => {
+        if (res.code == 1) {
+          this.keyPointCompileList = res.data.reportCompile;
         }
-      })
+      });
     },
-    getData(){
-      getOwnReviewResult({awardId:this.awardId}).then(res => {
+    getData() {
+      getOwnReviewResult({ awardId: this.awardId }).then(res => {
         // console.log(res)
-        let data = res.data.scoreSituationArray 
-        if(data.length > 1){
-          data.map((v)=>{  
-            v.calculate = Number(v.calculate)
-          })
+        let data = res.data.scoreSituationArray;
+        if (data.length > 1) {
+          data.map(v => {
+            v.calculate = Number(v.calculate);
+          });
         }
-        this.totalScore = res.data.total
-        this.awardList = data
-        let subArr = {}
-        subArr.awardId = this.awardId
-        subArr.scoreSituation = data
-        this.submitData = subArr
-      })
+        this.totalScore = res.data.total;
+        this.awardList = data;
+        let subArr = {};
+        subArr.awardId = this.awardId;
+        subArr.scoreSituation = data;
+        this.submitData = subArr;
+      });
     },
-    handleNumCon (row) {
-      let cloneData = this.optionData
-      let filterCate =  cloneData.filter(father => father.score != "")
-       let subArr = {}
-      subArr.awardId = this.awardId
-      subArr.scoreSituation = filterCate
-      this.submitData = subArr
-      this.disabled = false
+    handleNumCon(row) {
+      let cloneData = this.optionData;
+      let filterCate = cloneData.filter(father => father.score != "");
+      let subArr = {};
+      subArr.awardId = this.awardId;
+      subArr.scoreSituation = filterCate;
+      this.submitData = subArr;
+      this.disabled = false;
       // this.subScore(subArr)
     },
-    subScore(){
-      this.btnLoading = true
+    subScore() {
+      this.btnLoading = true;
       saveOwn(this.submitData).then(res => {
-        if(res.code == 1){
-          this.disabled = true
-          this.getData()
-          this.btnLoading = false
-          this.$message.success('自评成功！')
+        if (res.code == 1) {
+          this.disabled = true;
+          this.getData();
+          this.btnLoading = false;
+          this.$message.success("自评成功！");
         }
-      })
+      });
     },
-    goBack(){
-      if(!this.dialogVisible && !this.disabled){
-        this.dialogVisible = true
+    goBack() {
+      if (!this.dialogVisible && !this.disabled) {
+        this.dialogVisible = true;
       }
     },
-    goBackOneStep(){
-      this.$router.back(-1)
+    goBackOneStep() {
+      this.$router.back(-1);
     },
-    subGrade(){
-      this.subScore()
-      this.dialogVisible = false
+    subGrade() {
+      this.subScore();
+      this.dialogVisible = false;
     }
   }
-}
+};
 </script>

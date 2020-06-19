@@ -5,24 +5,24 @@
             <el-button type="info" icon="el-icon-edit" plain @click="editAwardForm" size="small" v-hasPermi="['lib:list:edit']">编辑</el-button>
         </el-row>
         <div class="table">
-            <div v-for="(item,index) in list" :key="index" :class="{'award-item':true,'addclass':isactive == index}"  @click="select(index,item.id)">
+            <div v-for="(item,index) in allRow" :key="index" :class="{'award-item':true,'addclass':isactive == index}"  @click="select(index,item.id)">
                 <p class="title">{{item.name}}</p>
                 <p class="desc">{{item.description}}</p>
                 <div class="options">
-                    <el-button type="primary" size="small" v-hasPermi="['btn:lib:config']">
+                    <el-button type="primary" size="small" plain v-hasPermi="['btn:lib:config']">
                         <router-link :to="'enter/'+ item.id">配置奖项</router-link>
                     </el-button>
-                    <el-button type="danger" size="small" v-hasPermi="['lib:list:delete']">
+                    <el-button type="danger" size="small" plain v-hasPermi="['lib:list:delete']">
                         <a href="javascript:" @click="handleDelAward(item)">删除</a>
                     </el-button>
                 </div>
             </div>
         </div>
         <award-form
-            :awardFormVisble="awardVisble"
-            :formData="formData"
-            :selected="formSelect"
-            @close="awardVisble.v = false"
+            :show.sync="awardVisble"
+            :indexData="selectRow"
+            :types="formSelect"
+            @close="awardVisble = false"
             @submit="handleAwardForm">
         </award-form>   
     </div>
@@ -36,48 +36,43 @@ export default {
     components:{AwardForm},
     data(){
         return {
-            list: null,
             listLoading: false,
-            awardVisble:{v:false},
-            selectedRow:'',
+            awardVisble:false,
+            selectRow:{},
+            activeRow:{},
+            allRow:[],
             formSelect:0,
             isactive:0,
-            formData:{
-                awardList:[
-                    {type:'Input',label:'奖项名称',prop:'name',placeholder:'请输入奖项名称',value:''},
-                    {type:'Input',label:'所在地区',prop:'area',placeholder:'请输入所在地区',value:''},
-                    {type:'TextArea',label:'奖项描述',prop:'description',placeholder:'请输入奖项描述',value:''},
-                ]
-            },
         }
     },
     created() {
         this.fetchList()
     },
     methods: {
-        select(idx,id){
+        select(idx){
             this.isactive = idx
-            this.selectedRow = id
+            this.selectRow = this.allRow[idx]
+            this.activeRow = this.allRow[idx]
         },
         fetchList() {
             this.listLoading = true
             fetchAwardList().then(response => {
-                this.list = response.data.data
+                let { data } = response.data
                 this.listLoading = false
-                this.selectedRow = this.list[0].id
+                this.selectRow = data[0]
+                this.activeRow = data[0]
+                this.allRow = data
             })
         },
         showAwardForm(){
             this.formSelect = 0
-            this.formData.awardList.map((v)=>{
-                v.value = ''
-            })
-            this.awardVisble.v = true
+            this.selectRow = {}
+            this.awardVisble = true
         },
         handleAwardForm(data){
             awardSave(data).then(res =>{
                 if(res.code == 1){
-                    this.awardVisble.v = false
+                    this.awardVisble = false
                     notice(1,'奖项添加成功！',1)
                     this.fetchList()
                 }else{
@@ -108,21 +103,13 @@ export default {
                 this.$refs.multipleTable.toggleRowSelection(del_row, false);
             }
             if(selection.length != 0){
-                this.selectedRow = selection[0].id
+                this.selectedIndex = selection[0].id
             }
         },
         editAwardForm(){
-            if(this.selectedRow == ''){
-                this.$message.error('请选择一项编辑！')
-                return
-            }
             this.formSelect = 1
-            let s = this.list.filter(item => item.id == this.selectedRow)
-            this.formData.awardList[0].value = s[0].name
-            this.formData.awardList[1].value = s[0].area
-            this.formData.awardList[2].value = s[0].description
-
-            this.awardVisble.v = true
+            this.selectRow = this.activeRow
+            this.awardVisble = true
         }
     }
 }
@@ -138,11 +125,12 @@ export default {
             border: solid 1px #f1f1f1;   
             float: left;
             border-radius:8px;
-            box-shadow: 5px 20px 30px rgba(0,0,0,.1);
+            // box-shadow: 5px 20px 30px rgba(0,0,0,.1);
+            box-shadow: 0 2px 10px 0 rgba(70,130,242,.2);
             .title{
                 width: 100%;
                 font-size: 22px;
-                color: #000;
+                // color: #000;
                 font-weight: 440;
                 margin-bottom: 14px;
                 overflow: hidden;
@@ -154,7 +142,7 @@ export default {
                 margin-bottom: 0;
                 opacity: .5;
                 font-size: 16px;
-                color: #6a7b8c;
+                // color: #6a7b8c;
                 max-height: 30px;
             }
             .options{
@@ -165,7 +153,12 @@ export default {
             
         }
         .addclass{
-            border: solid 1px #273EB0;
+            // border: solid 1px #273EB0;
+            color: #fff;
+            text-decoration: none;
+            background-color: #5ebcff;
+            background-image: linear-gradient(52deg,#5ebcff,#3ba1ff 40%,#005dcc);
+
         }
     }
 </style>

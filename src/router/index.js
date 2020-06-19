@@ -65,6 +65,17 @@ export const constantRouterMap = [
       meta: { title: '系统首页', icon: 'el-icon-s-home' }
     }]
   },
+  {
+    path: '/console/company',
+    component: Layout,
+    children: [{
+      path: '/console/company',
+      name: 'Company',
+      component: () => import('@/views/console/company'),
+      meta: { title: '企业控制台', icon: '' }
+    }],
+    hidden:true
+  },
   // {
   //   path: '/compile/:id',
   //   // component: () => import('@/views/compile/' + window.location.hash.split('/')[2]+'.vue'),

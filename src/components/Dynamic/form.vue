@@ -34,7 +34,7 @@
                   </el-date-picker>
                   <el-upload v-if="item.type==='uploadFile'"
                     class="upload-demo"
-                    action="http://localhost:8080/co_matur/api/file/upload"
+                    action="http://em.cecicloud.com/ueditor/editorUpload.do"
                     :on-preview="handlePreview"
                     :on-remove="handleRemove"
                     :on-success="handleAvatarSuccess"

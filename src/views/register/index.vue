@@ -1,7 +1,9 @@
 <template lang="html">
   <div class="register-content">
     <div class="logo-img">
-      <img :src="logoImg" alt="">
+      <a href="/">
+        <img :src="logoImg" alt="">
+      </a>
     </div>
     <div class="register-box">
       <div class="title">企业账号注册</div>
@@ -15,7 +17,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item prop="code" class="get-code">
-                  <el-input v-model="formParams.code" :disabled="true" placeholder="请输入验证码" style="width:68%"></el-input>
+                  <el-input v-model="formParams.code" placeholder="请输入验证码" style="width:68%"></el-input>
                   <el-button @click.native.prevent="getCode" class="code-btn" style="width:30%" :disabled="!show">
                     <span v-show="show">获取验证码</span>
                     <span v-show="!show" class="count">{{count}} s</span>
@@ -177,7 +179,7 @@ export default {
           console.log('res++++', res)
           if (+res.code === 1) {
             this.$message.success('获取成功！')
-            this.formParams.code = res.smsCd
+            // this.formParams.code = res.smsCd
           } else {
             this.$message.error(res.msg)
           }
