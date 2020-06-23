@@ -46,7 +46,7 @@
       .el-input{
         width: 273px;
       }
-      
+
     }
     .el-form-item__content{
       flex:1;
@@ -60,5 +60,12 @@
   }
   .register-btn{
     button{width: 100%;}
+  }
+
+  .distpicker-address-wrapper select{
+    height: 32px;
+    line-height: 32px;
+    font-size: 13px;
+    padding: 0 10px;
   }
 }
