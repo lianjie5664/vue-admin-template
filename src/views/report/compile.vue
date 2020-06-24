@@ -1,5 +1,15 @@
 <template>
     <div class="statistics common-content">
+      <div class="awardInfo">
+        <div class="awardName">
+          <span class="label"><i class="el-icon-position"></i></span>
+          <span class="name">{{awradObj.name}}</span>
+        </div>
+        <div class="info">
+          <span><i class="el-icon-document-copy"></i>{{awradObj.description}}</span>
+          <span><i class="el-icon-location-outline"></i>{{awradObj.area}}</span>
+        </div>
+      </div>
         <el-row :gutter="20">
             <el-col :span="8">
                 <el-row :gutter="20" class="mt15">
@@ -29,14 +39,28 @@
                   <div class="rightbox" v-if="noDataVisible">
                     <el-scrollbar style="height: 100%;"> <!-- 滚动条 -->
                       <div class="parentTitle">{{currentTitle}}</div>
-                      <dynamic-component :name="rowCpt" :aid="currentRow" :awardId="awardId"></dynamic-component>
+                      <dynamic-component 
+                        :name="rowCpt" 
+                        :aid="currentRow" 
+                        :compileTime="compileTime" 
+                        :compileId="compileId" 
+                        :createUserId="createUserId" 
+                        :awardId="awardId">
+                      </dynamic-component>
                     </el-scrollbar><!-- /滚动条 -->
                   </div>
                   <div class="rightbox" v-else>
                     <el-scrollbar style="height: 100%;"> <!-- 滚动条 -->
                       <div class="parentTitle">{{currentTitle}}</div>
                       <!-- <img src="../../assets/imgs/noData.png" class="imgs" alt="" v-show="noDataVisible"> -->
-                     <dynamic-component :name="rowCpt" :aid="currentRow" :awardId="awardId"></dynamic-component>
+                     <dynamic-component 
+                     :name="rowCpt" 
+                      :aid="currentRow" 
+                      :compileId="compileId" 
+                      :compileTime="compileTime" 
+                      :createUserId="createUserId" 
+                      :awardId="awardId">
+                     </dynamic-component>
                     </el-scrollbar><!-- /滚动条 -->
                   </div>
                 </el-row>
@@ -63,7 +87,7 @@
     </div>
 </template>
 <script>
-import { findListByAward,getPoints,savaQaRept} from '@/api/award' 
+import { findListByAward,getPoints,savaQaRept,getAwardById} from '@/api/award' 
 import DynamicForm from 'vue-dynamic-form-component'
 import VueUeditorWrap from 'vue-ueditor-wrap'
 import {notice} from '@/utils/tools'
@@ -75,6 +99,10 @@ export default {
   components:{VueUeditorWrap,DynamicForm,dynamicComponent},
   data() {
     return {
+        compileTime:this.$route.query.compileTime,
+        compileId:this.$route.query.compileId,
+        awardId:this.$route.params.id,
+        createUserId:this.$route.query.cuid,
         dynamicValidateForm:{
           formType:"",
           formData:{},
@@ -86,19 +114,19 @@ export default {
         statisticDatas:[],
         currentRow: '',
         leftTb:true,
-        awardId:this.$route.params.id,
         multiplePoints:[],
         currentTitle:'',
         loading:true,
         noDataVisible:false,
-        myConfig: ueditorConfig
+        myConfig: ueditorConfig,
+        awradObj:{}
     }
   },
   mounted() {
     this.loadStatisticData(this.$route.params.id)
   },
   created(){
-    
+    this.getAwardInfo(this.awardId)
   },
   methods: {
     selectRow(row){
@@ -113,15 +141,25 @@ export default {
           this.noDataVisible = false
           this.keyPointShow = false
         }
-      this.getPoint(row.id)
+        this.getPoint(row.id)
     },
-    
+    getAwardInfo(awardId){
+      getAwardById({id:awardId}).then((res => {
+        if(res.code == 1){
+          this.awradObj = res.data
+          if(res.data.id !== this.awardId){
+            this.$message.error('非法请求！')
+            this.$router.push({path:'/report/index'})
+            // alert('非法请求')
+          }
+        }
+      }))
+    },
     getPoint(id){
       this.loading = true
       getPoints({standardId:id}).then(res =>{
         if(res.code == 1){
           let result = res.data
-          // this.multiplePoints = result
           // 获取关键点列表
           let generaKeyPointList = result.keyPointsList
           let compiledPointData = result.reportCompile
@@ -149,28 +187,41 @@ export default {
         this.loading = !this.loading
       })
     },
-    savePoints(){
-      let data = {
-        awardId:this.awardId,
-        standardId:this.currentRow,
-        description:this.null2str(this.dynamicValidateForm.formData)
-      }
-      savaQaRept(data).then( res => {
-        if(res.code == 1){
-           notice(1,'保存成功！',1)
-           this.getPoint(this.currentRow)
-        }else{
-           notice(0,'保存失败，请重试！',0)
-        }
-      })
-    },
+    // savePoints(){
+    //   let data = {}
+    //   if(this.compileId == 0){
+    //     data = {
+    //       awardId:this.awardId,
+    //       compileTime:this.compileTime,
+    //       standardId:this.currentRow,
+    //       escription:this.null2str(this.dynamicValidateForm.formData)
+    //     }
+    //   }else{
+    //     data = {
+    //       awardId:this.awardId,
+    //       compileTime:this.compileTime,
+    //       compileId:this.compileId,
+    //       standardId:this.currentRow,
+    //       description:this.null2str(this.dynamicValidateForm.formData)
+    //     }
+    //   }
+    //   savaQaRept(data).then( res => {
+    //     if(res.code == 1){
+    //        notice(1,'保存成功！',1)
+    //        this.getPoint(this.currentRow)
+    //     }else{
+    //        notice(0,'保存失败，请重试！',0)
+    //     }
+    //   })
+    // },
     handleSaveQaRept(){
       let data = {
         awardId:this.awardId,
         standardId:this.currentRow,
+        compileTime:this.compileTime || '',
+        compileId:this.compileId || '',
         description:this.keyPointCompileList  
       }
-
       savaQaRept(data).then( res => {
         if(res.code == 1){
            notice(1,'保存成功！',1)
@@ -308,6 +359,34 @@ export default {
 <style lang="less" scoped>
 .statistics {
     padding: 10px;
+    .awardInfo{
+      background: #fff;
+      box-shadow: rgba(30, 13, 4, 0.15) 0px 0px 10px 2px;
+      padding: 20px;
+      overflow: hidden;
+      .awardName{
+        margin-bottom: 15px;
+        font-weight: normal;
+        color: #666;
+        .label{
+          font-size: 16px;
+        }
+        .name{
+          font-size: 18px;
+          font-weight: 700;
+        }
+      }
+      .info{
+        color: #999;
+        font-size: 14px;
+        i{
+          margin-right: 8px;
+        }
+        span{
+          margin-right: 20px;
+        }
+      }
+    }
     .hiddenRow {
         display: none;
     }

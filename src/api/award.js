@@ -1,5 +1,14 @@
 import request from '@/utils/request'
 
+
+export function getAwardById(data) {
+  return request({
+    url: '/qaAward/get',
+    method: 'post',
+    data
+  })
+}
+
 export function awardSave(data) {
   return request({
     url: '/qaAward/save',
@@ -123,8 +132,45 @@ export function getReptCompileDetail(data) {
 }
 
 
+// 获取个人编制列表
+ 
+export function getReportCompileList(data){
+  return request({
+    url: '/qaReportCompile/reportCompileList',
+    method: 'post',
+    data
+  })
+}
+
+// 导出word
+export function exportWord(data){
+  return request({
+    url: '/word/export',
+    method: 'post',
+    data,
+    responseType:'blob',
+    header:{
+      filename:data.filename
+    }
+  })
+}
 
 
+// 生成一条奖项记录
 
+export function genRecord(data){
+  return request({
+    url: '/qaReportCompile/insert',
+    method: 'post',
+    data,
+  })
+}
 
-
+// 删除一条报告编制
+export function delRecord(data){
+  return request({
+    url: '/qaReportCompile/delete',
+    method: 'post',
+    data,
+  })
+}

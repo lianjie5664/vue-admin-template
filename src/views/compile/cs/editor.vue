@@ -21,12 +21,14 @@ export default {
         }
     },
     components:{VueUeditorWrap},
-    props:['id','awardId'],  
+    props:['id','awardId','compileTime','compileId'],  
     methods:{
         handleSubmit(){
             let data = {
                 awardId:this.awardId,
                 standardId:this.id,
+                compileTime:this.compileTime,
+                compileId:this.compileId,
                 description:this.contents
             }
             savaQaRept(data).then( res => {

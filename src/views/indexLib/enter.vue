@@ -232,19 +232,13 @@ export default {
       });
     },
     delPoint(pointId) {
-      this.$confirm("确定要删除吗?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(() => {
-        pointDel({ id: pointId }).then(res => {
-          if (res.code == 1) {
-            notice(1, "删除成功！", 1);
-            this.getPoint(this.currentRow.id);
-          } else {
-            notice(0, "删除失败！" + res.msg, 0);
-          }
-        });
+      pointDel({ id: pointId }).then(res => {
+        if (res.code == 1) {
+          notice(1, "删除成功！", 1);
+          this.getPoint(this.currentRow.id);
+        } else {
+          notice(0, "删除失败！" + res.msg, 0);
+        }
       });
     },
     handleSelectionChange(selection) {

@@ -8,8 +8,10 @@ import errorCode from '@/utils/errCode'
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 50000 // request timeout
+  timeout: 50000, // request timeout
+  // responseType: 'arraybuffer'
 })
+
 
 // request interceptor
 service.interceptors.request.use(
@@ -43,8 +45,22 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
-    const code = response.data.code
-    const message = errorCode[code] || response.data.msg || errorCode['default']
+    let data = response.data;
+    if (response.request.responseType === 'blob') {
+        var blob = new Blob([data],  { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document;charset=utf-8'})
+        var downloadElement = document.createElement('a');
+        var href = window.URL.createObjectURL(blob); //创建下载的链接
+        downloadElement.href = href;
+        // var time = new Date();
+        // var timestamp = Date.parse(time);
+        downloadElement.download = response.config.header.filename + '.doc'; //下载后文件名
+        document.body.appendChild(downloadElement);
+        downloadElement.click(); //点击下载
+        document.body.removeChild(downloadElement); //下载完成移除元素
+        window.URL.revokeObjectURL(href); //释放掉blob对象
+    }
+    const code = data.code
+    const message = errorCode[code] || data.msg || errorCode['default']
     if (code == 401) {
       MessageBox.confirm(
         '登录状态已过期，您可以继续留在该页面，或者重新登录',
@@ -65,13 +81,13 @@ service.interceptors.response.use(
         type: 'error'
       })
       return Promise.reject(new Error(message))
-    } else if (code != 1) {
+    } else if (code != 1 && response.request.responseType !='blob')  {
       Notification.error({
         title: message
       })
       return Promise.reject('error')
     } else {
-      return response.data
+      return data
     }
   },
   error => {

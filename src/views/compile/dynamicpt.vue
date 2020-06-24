@@ -1,7 +1,7 @@
 <template>
     <div>
         <transition mode="out-in">
-            <component :is="comp" :id="ids" :awardId="awardId" :cid="createId" :key="ids"></component>
+            <component :is="comp" :id="ids" :awardId="awardIds" :compileTime="cTime" :compileId="cId" :cid="createId" :key="ids"></component>
         </transition>
     </div>
 </template>
@@ -12,11 +12,10 @@ export default {
   
     }
   },
-  props: ['name','aid','awardId','createUserId'],
+  props: ['name','aid','awardId','createUserId', 'compileTime','compileId'],
   computed: {
     comp() {
         try{
-            
             let name = this.name
             console.log('已加载模板=======>',this.name)
             if(name !== "" && name !== undefined){
@@ -38,6 +37,12 @@ export default {
     },
     createId(){
         return this.createUserId
+    },
+    cTime(){
+        return this.compileTime
+    },
+    cId(){
+        return this.compileId
     }
   },
 }
