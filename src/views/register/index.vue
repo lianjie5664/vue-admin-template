@@ -38,14 +38,9 @@
             </el-col>
           </el-row>
           <el-row :gutter="10">
-            <el-col :span="12">
+            <el-col>
               <el-form-item prop="name">
                 <el-input v-model="formParams.name" placeholder="请输入企业名称"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item prop="organizationCode">
-                <el-input v-model="formParams.organizationCode" placeholder="请输入组织机构代码"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -58,8 +53,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item prop="address">
-                <el-input v-model="formParams.address" placeholder="请输入地址"></el-input>
+              <el-form-item prop="organizationCode">
+                <el-input v-model="formParams.organizationCode" placeholder="请输入组织机构代码"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -75,15 +70,25 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row :gutter="0">
-            <el-col :span="24">
+          <el-row >
+            <el-col>
+              <div class="mb15">
+                <v-Distpicker :placeholders="distholders" @selected="onSelected"></v-Distpicker>
+                <el-form-item>
+                  <el-input placeholder="详细地址" class="mt15" v-model="formParams.detailAddress"></el-input>
+                </el-form-item>
+              </div>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col>
               <el-form-item prop="remarks">
                 <el-input type="textarea" v-model="formParams.remarks" placeholder="请输入简介内容"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row :gutter="10">
-            <el-col :span="24">
+          <el-row>
+            <el-col>
               <el-form-item class="register-btn tocenter">
                 <el-button :loading="loading" type="primary" @click.native.prevent="toRegister">立即注册</el-button>
               </el-form-item>
@@ -98,8 +103,10 @@
 <script>
 import './register.scss'
 import {industies} from '@/utils/industry'
+import VDistpicker from 'v-distpicker'
 import { register, sendcode } from '@/api/user'
 export default {
+  components: { VDistpicker },
   data () {
     var validatePass = (rule, value, callback) => {
       if (value === '') {
@@ -121,6 +128,11 @@ export default {
       }
     }
     return {
+      distholders: {
+        province: '湖南省',
+        city: '长沙市',
+        area: '请选择区域'
+      },
       loading: false,
       logoImg: require('@/assets/imgs/logo.png'),
       timer:null,
@@ -156,6 +168,11 @@ export default {
     }
   },
   methods: {
+    onSelected (val) {
+      if (val && this.formParams.detailAddress) {
+        this.formParams.address = val.province.value + val.city.value + val.area.value + this.formParams.detailAddress
+      }
+    },
     getCode () {
       if (this.formParams.phone) {
         const params = {
