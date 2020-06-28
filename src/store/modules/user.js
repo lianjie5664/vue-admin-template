@@ -89,12 +89,12 @@ const actions = {
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-        const { userName, avatar, id,roleIdList,permissionList, roleId } = data
+        const { userName, avatar, id,roleIdList,permissionList, roleEnname } = data
         commit('SET_NAME', userName)
         commit('SET_AVATAR', require("@/assets/imgs/profile.jpg"))
         commit('SET_ROLES', roleIdList)
         commit('SET_PERMISSION', permissionList)
-        commit('GET_ROLEID', roleId)
+        commit('GET_ROLEID', roleEnname)
         commit('SET_USERID', id)
         let menuList = data.menuList , menuRouters = []
         menuList.forEach((m, i) => {
