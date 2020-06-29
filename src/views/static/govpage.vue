@@ -43,6 +43,16 @@
     </el-table>
     <div class="bottom-content hg-flex mb15">
       <div class="flex-one group-box mr10">
+        <div class="title">总分排序分析</div>
+        <div class="box" id="total-score"></div>
+      </div>
+      <div class="flex-one group-box">
+        <div class="title">每项得分占比分析</div>
+        <div class="box" id="compare-score"></div>
+      </div>
+    </div>
+    <div class="bottom-content hg-flex mb15">
+      <div class="flex-one group-box mr10">
         <div class="title">企业得分情况</div>
         <div class="box" id="score-data"></div>
       </div>
@@ -102,8 +112,152 @@ export default {
   mounted () {
     this.getScoreData()
     this.getTypeallData()
+    this.getTotalScore()
+    this.getCompareScore()
   },
   methods: {
+    getCompareScore () {
+      const { DataView } = DataSet
+      const chart = new Chart({
+        container: 'compare-score',
+        autoFit: false,
+        height: 300,
+        width: 420
+      })
+      chart.legend(false)
+      chart.tooltip({
+        showTitle: false,
+        showMarkers: false,
+        itemTpl: '<li class="g2-tooltip-list-item"><span style="background-color:{color};" class="g2-tooltip-marker"></span>{name}: {value}</li>',
+      })
+      const userData = [
+        { type: '质量分', value: 200 },
+        { type: '结果分', value: 300 },
+        { type: '创新分', value: 200 },
+        { type: '品牌分', value: 200 }
+      ]
+      const userDv = new DataView();
+      userDv.source(userData).transform({
+        type: 'percent',
+        field: 'value',
+        dimension: 'type',
+        as: 'percent',
+      })
+      const pieView = chart.createView()
+      pieView.data(userDv.rows)
+      pieView.scale('percent', {
+        formatter: (val) => {
+          return (val * 100).toFixed(2) + '%'
+        }
+      })
+      pieView.coordinate('theta', {
+        radius: 0.8,
+        innerRadius: 0.7
+      })
+      pieView.annotation().text({
+        position: ['50%', '50%'],
+        content: '得分900分',
+        style: {
+          lineHeight: '24px',
+          fontSize: '16',
+          fill: '#333333',
+          textAlign: 'center',
+        }
+      })
+      pieView
+        .interval()
+        .adjust('stack')
+        .position('percent')
+        .label('type')
+        .color('type')
+      chart.render()
+    },
+    getTotalScore () {
+      const data = [
+        { name: '企业1', value: 410 },
+        { name: '企业2', value: 520 },
+        { name: '企业3', value: 550 },
+        { name: '企业4', value: 440 },
+        { name: '企业5', value: 750 },
+        { name: '企业6', value: 820 },
+        { name: '企业7', value: 925 },
+        { name: '企业8', value: 870 },
+        { name: '企业9', value: 720 },
+        { name: '企业10', value: 840 },
+        { name: '企业11', value: 780 },
+        { name: '企业12', value: 950 },
+        { name: '企业13', value: 780 },
+      ]
+      const ds = new DataSet()
+      const dv = ds.createView().source(data)
+      dv.transform({
+        type: 'map',
+        callback: row => {
+          row.name = parseInt(row.name, 10)
+          return row
+        }
+      }).transform({
+        type: 'regression',
+        method: 'polynomial',
+        fields: ['name', 'value'],
+        bandwidth: 0.1,
+        as: ['Name', 'Value']
+      })
+      const chart = new Chart({
+        container: 'total-score',
+        autoFit: false,
+        height: 260,
+        width: 500
+      })
+      chart.scale({
+        Name: {
+          range: [0, 1],
+        },
+        value: {
+          alias: '得分',
+          sync: true,
+          nice: true
+        },
+        Value: {
+          sync: true,
+          nice: true
+        },
+      })
+      chart.axis('name', {
+        tickLine: null
+      })
+      const view1 = chart.createView()
+      view1.data(data)
+      view1.axis('name', false)
+      view1
+        .interval()
+        .position('name*value')
+        .style({
+          fillOpacity: 1,
+        })
+      const view2 = chart.createView()
+      view2.axis(false)
+      view2.data(dv.rows)
+      view2
+        .line()
+        .position('Name*Value')
+        .style({
+          stroke: '#333333',
+          lineDash: [3, 3]
+        })
+        .tooltip(false)
+      view2.annotation().text({
+        content: '趋势线',
+        position: ['min', 'min'],
+        style: {
+          fill: '#333333',
+          fontSize: 12,
+          fontWeight: 300
+        },
+        offsetY: -60
+      })
+      chart.render()
+    },
     getScoreData () {
       const { DataView } = DataSet
       const chart = new Chart({
