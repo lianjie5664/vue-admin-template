@@ -61,6 +61,26 @@
         <div class="box" id="typeall-data"></div>
       </div>
     </div>
+    <div class="bottom-content hg-flex mb15">
+      <div class="flex-one group-box mr10">
+        <div class="title">企业报告进度</div>
+        <div class="box" id="enterprise-report"></div>
+      </div>
+      <div class="flex-one group-box">
+        <div class="title">专家评分进度</div>
+        <div class="box" id="professor-report"></div>
+      </div>
+    </div>
+    <div class="bottom-content hg-flex mb15">
+      <div class="flex-one group-box mr10">
+        <div class="title">卓越绩效二维分析</div>
+        <div class="box" id="two-data"></div>
+      </div>
+      <div class="flex-one group-box">
+        <div class="title">卓越绩效六维分析</div>
+        <div class="box" id="four-data"></div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -114,8 +134,173 @@ export default {
     this.getTypeallData()
     this.getTotalScore()
     this.getCompareScore()
+    this.getEnterReport()
+    this.getProReport()
+    this.getFourData()
   },
   methods: {
+    getFourData () {
+      const data = [
+        { item: '质量', score: 270, total: 300 },
+        { item: '创新', score: 250, total: 300 },
+        { item: '品牌', score: 180, total: 300 },
+        { item: '结果', score: 150, total: 300 },
+        { item: '市场满意度', score: 89, total: 200 },
+        { item: '顾客满意度', score: 87, total: 200 },
+      ]
+      const { DataView } = DataSet
+      const dv = new DataView().source(data)
+      dv.transform({
+        type: 'fold',
+        fields: ['score', 'total'], // 展开字段集
+        key: 'user', // key字段
+        value: 'score', // value字段
+      })
+      const chart = new Chart({
+        container: 'four-data',
+        autoFit: false,
+        height: 280,
+        width: 500
+      })
+      chart.data(dv.rows)
+      chart.scale('score', {
+        min: 0,
+        max: 400
+      })
+      chart.coordinate('polar', {
+        radius: 0.8
+      })
+      chart.tooltip({
+        shared: true,
+        showCrosshairs: true,
+        crosshairs: {
+          line: {
+            style: {
+              lineDash: [4, 4],
+              stroke: '#333'
+            }
+          }
+        }
+      })
+      chart.axis('item', {
+        line: null,
+        tickLine: null,
+        grid: {
+          line: {
+            style: {
+              lineDash: null,
+            },
+          },
+        }
+      })
+      chart.axis('score', {
+        line: null,
+        tickLine: null,
+        grid: {
+          line: {
+            type: 'line',
+            style: {
+              lineDash: null,
+            },
+          },
+        }
+      })
+      chart
+        .line()
+        .position('item*score')
+        .color('user')
+        .size(2)
+      chart
+        .point()
+        .position('item*score')
+        .color('user')
+        .shape('circle')
+        .size(4)
+        .style({
+          stroke: '#fff',
+          lineWidth: 1,
+          fillOpacity: 1
+        })
+      chart
+        .area()
+        .position('item*score')
+        .color('user')
+      chart.render()
+    },
+    getEnterReport () {
+      const data = [
+        { item: '已完成', count: 40, percent: 0.4 },
+        { item: '未完成', count: 60, percent: 0.6 }
+      ]
+      const chart = new Chart({
+        container: 'enterprise-report',
+        autoFit: false,
+        height: 280,
+        width: 420
+      })
+      chart.coordinate('theta', {
+        radius: 0.6,
+      })
+      chart.data(data)
+      chart.scale('percent', {
+        formatter: (val) => {
+          val = val * 100 + '%'
+          return val;
+        },
+      })
+      chart.tooltip({
+        showTitle: false,
+        showMarkers: false,
+      })
+      chart
+        .interval()
+        .position('percent')
+        .color('item')
+        .label('percent', {
+          content: (data) => {
+            return `${data.item}: ${data.percent * 100}%`
+          },
+        })
+        .adjust('stack')
+      chart.render()
+    },
+    getProReport () {
+      const data = [
+        { item: '已完成', count: 70, percent: 0.7 },
+        { item: '未完成', count: 30, percent: 0.3 }
+      ]
+      const chart = new Chart({
+        container: 'professor-report',
+        autoFit: false,
+        height: 280,
+        width: 420
+      })
+      chart.coordinate('theta', {
+        radius: 0.6,
+      })
+      chart.data(data)
+      chart.scale('percent', {
+        formatter: (val) => {
+          val = val * 100 + '%'
+          return val;
+        },
+      })
+      chart.tooltip({
+        showTitle: false,
+        showMarkers: false,
+      })
+      chart
+        .interval()
+        .position('percent')
+        .color('item')
+        .label('percent', {
+          content: (data) => {
+            return `${data.item}: ${data.percent * 100}%`
+          },
+        })
+        .adjust('stack')
+      chart.render()
+    },
     getCompareScore () {
       const { DataView } = DataSet
       const chart = new Chart({
@@ -188,73 +373,38 @@ export default {
         { name: '企业12', value: 950 },
         { name: '企业13', value: 780 },
       ]
-      const ds = new DataSet()
-      const dv = ds.createView().source(data)
-      dv.transform({
-        type: 'map',
-        callback: row => {
-          row.name = parseInt(row.name, 10)
-          return row
-        }
-      }).transform({
-        type: 'regression',
-        method: 'polynomial',
-        fields: ['name', 'value'],
-        bandwidth: 0.1,
-        as: ['Name', 'Value']
-      })
       const chart = new Chart({
         container: 'total-score',
         autoFit: false,
         height: 260,
         width: 500
       })
-      chart.scale({
-        Name: {
-          range: [0, 1],
-        },
-        value: {
-          alias: '得分',
-          sync: true,
-          nice: true
-        },
-        Value: {
-          sync: true,
-          nice: true
-        },
+      chart.data(data);
+      chart.scale('value', {
+        alias: '得分',
       })
       chart.axis('name', {
-        tickLine: null
-      })
-      const view1 = chart.createView()
-      view1.data(data)
-      view1.axis('name', false)
-      view1
-        .interval()
-        .position('name*value')
-        .style({
-          fillOpacity: 1,
-        })
-      const view2 = chart.createView()
-      view2.axis(false)
-      view2.data(dv.rows)
-      view2
-        .line()
-        .position('Name*Value')
-        .style({
-          stroke: '#333333',
-          lineDash: [3, 3]
-        })
-        .tooltip(false)
-      view2.annotation().text({
-        content: '趋势线',
-        position: ['min', 'min'],
-        style: {
-          fill: '#333333',
-          fontSize: 12,
-          fontWeight: 300
+        tickLine: {
+          alignTick: false,
         },
-        offsetY: -60
+      })
+      chart.tooltip({
+        showMarkers: false,
+      })
+      chart.axis('name', false)
+      chart.interval().position('name*value')
+      // 添加文本标注
+      data.forEach((item) => {
+        chart
+          .annotation()
+          .text({
+            position: [item.name, item.value],
+            content: item.value,
+            style: {
+              textAlign: 'center',
+            },
+            offsetY: 10,
+          })
       })
       chart.render()
     },
