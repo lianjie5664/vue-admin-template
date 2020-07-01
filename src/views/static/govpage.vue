@@ -137,8 +137,191 @@ export default {
     this.getEnterReport()
     this.getProReport()
     this.getFourData()
+    this.getTwoData()
   },
   methods: {
+    getTwoData () {
+      let myTwoData = this.$echarts.init(document.getElementById('two-data'))
+      // 散点数据
+      let marksData = [
+        {
+          name: '企业1',
+          value: [32, 15],
+        },
+        {
+          name: '企业2',
+          value: [42, 20],
+        },
+        {
+          name: '企业3',
+          value: [34, 51],
+        },
+        {
+          name: '企业4',
+          value: [45, 64],
+        },
+      ]
+      // 中心线
+      const centerLine = [{name: '过程分', xAxis: 40}, {name: '结果分', yAxis: 40}]
+      const option = {
+        tooltip: {
+          axisPointer: {
+            show: true,
+            type: 'cross',
+            lineStyle: {
+              type: 'dashed',
+              width: 1
+            },
+            label: {
+              backgroundColor: '#555'
+            }
+          }
+        },
+        grid: {
+          left: 50,
+          right: 50,
+          bottom: '4%',
+          top: '6%',
+          containLabel: true
+        },
+        xAxis: {
+          scale: true,
+          axisLine: {
+            lineStyle: {
+              color: '#ddd'
+            }
+          },
+          axisLabel: {
+            color: '#666'
+          },
+          splitLine: {
+            lineStyle: {
+              color: '#eee'
+            }
+          }
+        },
+        yAxis: {
+          scale: true,
+          axisLine: {
+            lineStyle: {
+              color: '#ddd'
+            }
+          },
+          axisLabel: {
+            color: '#666'
+          },
+          splitLine: {
+            lineStyle: {
+              color: '#eee'
+            }
+          }
+        },
+        series: [{
+          type: 'scatter',
+          data: marksData,
+          label: {
+            show: true,
+            position: 'bottom',
+            formatter: '{b}'
+          },
+          itemStyle: {
+            shadowBlur: 2,
+            shadowColor: 'rgba(120, 36, 50, 0.5)',
+            shadowOffsetY: 1,
+            color: function (e) {
+              let randomColor = 'rgba(' + Math.floor(Math.random() * 240) + ',' + Math.floor(Math.random() * 240) + ',' + Math.floor(Math.random() * 240) + ',' + '.8' + ')'
+              return randomColor.substring()
+            }
+          },
+          // 各象限区域
+          markArea: {
+            silent: true,
+            data: [
+              // 第一象限
+              [{
+                name: '第一象限',
+                xAxis: 40, // x 轴开始位置
+                yAxis: 70, // y 轴结束位置(直接取最大值)
+                itemStyle: {
+                  color: 'rgba(56, 180, 139, .1)'
+                },
+                label: {
+                  position: 'inside',
+                  color: 'rgba(0, 0, 0, .1)',
+                  fontSize: 22
+                }
+              }, {
+                yAxis: 40 // y轴开始位置
+              }],
+              // 第二象限
+              [{
+                name: '第二象限',
+                yAxis: 70, // y 轴结束位置(直接取最大值)
+                itemStyle: {
+                  color: 'rgba(68, 97, 123, .1)'
+                },
+                label: {
+                  position: 'inside',
+                  color: 'rgba(0, 0, 0, .1)',
+                  fontSize: 22
+                }
+              }, {
+                xAxis: 40, // x 轴结束位置
+                yAxis: 40 // y轴开始位置
+              }],
+              // 第三象限
+              [{
+                name: '第三象限',
+                yAxis: 40, // y 轴结束位置
+                itemStyle: {
+                  color: 'rgba(191, 120, 58, .1)'
+                },
+                label: {
+                  position: 'inside',
+                  color: 'rgba(0, 0, 0, .1)',
+                  fontSize: 22
+                }
+              }, {
+                xAxis: 40, // x 轴结束位置
+                yAxis: 10 // y轴开始位置
+              }],
+              // 第四象限
+              [{
+                name: '第四象限',
+                xAxis: 40, // x 轴开始位置
+                yAxis: 40, // y 轴结束位置
+                itemStyle: {
+                  color: 'rgba(116, 83, 153, .1)'
+                },
+                label: {
+                  position: 'inside',
+                  color: 'rgba(0, 0, 0, .1)',
+                  fontSize: 22
+                }
+              }, {
+                yAxis: 10 // y轴开始位置
+              }]
+            ]
+          },
+          // 中心点交集象限轴
+          markLine: {
+            silent: true, // 是否不响应鼠标事件
+            precision: 2, // 精度
+            lineStyle: {
+              type: 'solid',
+              color: '#00aca6'
+            },
+            label: {
+              color: '#00aca6',
+              position: 'end',
+              formatter: '{b}'
+            },
+            data: centerLine
+          },
+        }]
+      }
+      myTwoData.setOption(option, true)
+    },
     getFourData () {
       const data = [
         { item: '质量', score: 270, total: 300 },

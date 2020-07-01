@@ -3,6 +3,7 @@ import Vue from 'vue'
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
 import ElementUI from 'element-ui'
+import echarts from 'echarts'
 import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 import VDistpicker from 'v-distpicker'
@@ -24,6 +25,7 @@ import 'vue-element-extends/lib/index.css'
 
 Vue.use(VueElementExtends)
 Vue.prototype.$EventBus = new Vue()
+Vue.prototype.$echarts = echarts
 
 Vue.use(permission)
 Vue.component('v-distpicker', VDistpicker)
