@@ -1,9 +1,9 @@
 <template lang="html">
   <div class="app-container static-box">
-    <div v-if="roleId === 'user'"><!-- cdd0e82032ec4aec82fc6f0494a83ff1 企业 -->
+    <!-- <div v-if="roleEnname === 'user'">
       <company-page />
-    </div>
-    <div v-if="roleId === 'gov'"><!-- 2cc247944de3468aab59f58a2b8aa0f4 政府 -->
+    </div> -->
+    <div>
       <government-page />
     </div>
   </div>
