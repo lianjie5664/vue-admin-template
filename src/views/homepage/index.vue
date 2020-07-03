@@ -224,18 +224,18 @@
       },
       getFourData () {
         const data = [
-          { item: '质量', score: 270 },
-          { item: '创新', score: 250 },
-          { item: '品牌', score: 180 },
-          { item: '结果', score: 150 },
-          { item: '市场满意度', score: 89 },
-          { item: '顾客满意度', score: 87 },
+          { item: '质量', score: 270, total: 300 },
+          { item: '创新', score: 250, total: 300 },
+          { item: '品牌', score: 180, total: 300 },
+          { item: '结果', score: 150, total: 300 },
+          { item: '市场满意度', score: 89, total: 200 },
+          { item: '顾客满意度', score: 87, total: 200 },
         ]
         const { DataView } = DataSet
         const dv = new DataView().source(data)
         dv.transform({
           type: 'fold',
-          fields: ['score'], // 展开字段集
+          fields: ['score', 'total'], // 展开字段集
           key: 'user', // key字段
           value: 'score', // value字段
         })
