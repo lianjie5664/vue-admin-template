@@ -67,7 +67,7 @@
         <div class="box" id="enterprise-report"></div>
       </div>
       <div class="flex-one group-box">
-        <div class="title">专家评分进度</div>
+        <div class="title">报告评审进度</div>
         <div class="box" id="professor-report"></div>
       </div>
     </div>
@@ -87,6 +87,7 @@
 <script>
 import DataSet from '@antv/data-set'
 import { Chart } from '@antv/g2'
+import { getTotalScoreRank, getScorePercent, getFirstLevelRadar, getReportProgress, getReviewProgress } from '@/api/static'
 export default {
   data () {
     return {
@@ -126,20 +127,128 @@ export default {
         score3: 198,
         score4: 150,
         scoreTotal: 849
-      }]
+      }],
+      totalScoreRank: [],
+      scorePercent: [],
+      countPercent: 0
     }
   },
+  created () {
+    this.getApiTotal()
+    this.getApiPercent()
+    // this.getApiFirst()
+    // this.getApiReport()
+    // this.getApiReview()
+  },
   mounted () {
-    this.getScoreData()
-    this.getTypeallData()
-    this.getTotalScore()
-    this.getCompareScore()
-    this.getEnterReport()
-    this.getProReport()
-    this.getFourData()
-    this.getTwoData()
+    this.$nextTick(() => {
+      this.getScoreData()
+      this.getTypeallData()
+      this.getEnterReport()
+      this.getProReport()
+      this.getFourData()
+      this.getTwoData()
+    })
   },
   methods: {
+    // 报告评审进度
+    getApiReview () {
+      const params = {
+        awardName: '长沙市企业成熟度评价指标库',
+        year: 2020
+      }
+      getReviewProgress(params).then(res => {
+        if (res && res.data && res.data.data && res.data.data[0]){
+          const data = res.data.data
+          // data.forEach(item => {
+          //   this.firstLevel.push({
+          //     type: item.standardName,
+          //     value: item.goal
+          //   })
+          // })
+          // this.getProReport(this.firstLevel)
+        }
+      })
+    },
+    // 企业编制报告进度
+    getApiReport () {
+      const params = {
+        awardName: '长沙市企业成熟度评价指标库',
+        year: 2020
+      }
+      getReportProgress(params).then(res => {
+        if (res && res.data && res.data.data && res.data.data[0]){
+          const data = res.data.data
+          // data.forEach(item => {
+          //   this.firstLevel.push({
+          //     type: item.standardName,
+          //     value: item.goal
+          //   })
+          // })
+          // this.getEnterReport(this.firstLevel)
+        }
+      })
+    },
+    // 一级指标雷达图
+    getApiFirst () {
+      const params = {
+        awardName: '长沙市企业成熟度评价指标库',
+        year: 2020
+      }
+      getFirstLevelRadar(params).then(res => {
+        if (res && res.data && res.data.data && res.data.data[0]){
+          const data = res.data.data
+          data.forEach(item => {
+            this.firstLevel.push({
+              type: item.standardName,
+              value: item.goal
+            })
+          })
+          // this.getCompareScore(this.firstLevel)
+        }
+      })
+    },
+    // 各项得分占比
+    getApiPercent () {
+      const params = {
+        awardName: '长沙市企业成熟度评价指标库',
+        year: 2020
+      }
+      getScorePercent(params).then(res => {
+        if (res && res.data && res.data.data && res.data.data[0]){
+          const data = res.data.data
+          data.forEach(item => {
+            this.scorePercent.push({
+              type: item.standardName,
+              value: +item.goal
+            })
+          })
+          this.countPercent = +res.data.total
+          this.getCompareScore(this.scorePercent)
+        }
+      })
+    },
+    // 总分排行
+    getApiTotal () {
+      const params = {
+        pageNo: 1,
+        pageSize: 10,
+        awardName: '长沙市企业成熟度评价指标库',
+        year: 2020
+      }
+      getTotalScoreRank(params).then(res => {
+        if (res && res.data && res.data.data && res.data.data[0]){
+          const data = res.data.data
+          data.forEach(item => {
+            this.totalScoreRank.push({
+              name: item.companyName,
+              value: +item.total
+            })
+          })
+          this.getTotalScore(this.totalScoreRank)
+        }
+      })
+    },
     getTwoData () {
       let myTwoData = this.$echarts.init(document.getElementById('two-data'))
       // 散点数据
@@ -484,7 +593,8 @@ export default {
         .adjust('stack')
       chart.render()
     },
-    getCompareScore () {
+    // 各项得分占比
+    getCompareScore (val) {
       const { DataView } = DataSet
       const chart = new Chart({
         container: 'compare-score',
@@ -498,13 +608,8 @@ export default {
         showMarkers: false,
         itemTpl: '<li class="g2-tooltip-list-item"><span style="background-color:{color};" class="g2-tooltip-marker"></span>{name}: {value}</li>',
       })
-      const userData = [
-        { type: '质量分', value: 200 },
-        { type: '结果分', value: 300 },
-        { type: '创新分', value: 200 },
-        { type: '品牌分', value: 200 }
-      ]
-      const userDv = new DataView();
+      const userData = val
+      const userDv = new DataView()
       userDv.source(userData).transform({
         type: 'percent',
         field: 'value',
@@ -524,7 +629,7 @@ export default {
       })
       pieView.annotation().text({
         position: ['50%', '50%'],
-        content: '得分900分',
+        content: `总得分${this.countPercent}分`,
         style: {
           lineHeight: '24px',
           fontSize: '16',
@@ -540,22 +645,9 @@ export default {
         .color('type')
       chart.render()
     },
-    getTotalScore () {
-      const data = [
-        { name: '企业1', value: 410 },
-        { name: '企业2', value: 520 },
-        { name: '企业3', value: 550 },
-        { name: '企业4', value: 440 },
-        { name: '企业5', value: 750 },
-        { name: '企业6', value: 820 },
-        { name: '企业7', value: 925 },
-        { name: '企业8', value: 870 },
-        { name: '企业9', value: 720 },
-        { name: '企业10', value: 840 },
-        { name: '企业11', value: 780 },
-        { name: '企业12', value: 950 },
-        { name: '企业13', value: 780 },
-      ]
+    // 总分排行
+    getTotalScore (val) {
+      const data = val
       const chart = new Chart({
         container: 'total-score',
         autoFit: false,
