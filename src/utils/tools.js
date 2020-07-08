@@ -1,4 +1,5 @@
 import { Notification } from 'element-ui'
+import router from './router';
 const _import = file => require('@/views/' + file + '.vue').default
 /**
  * @param {string} msg
@@ -47,22 +48,44 @@ export function handleTree(data, id, parentId, children, rootId) {
  * @param {*} menuList 菜单列表'
  */
   export function convertTree(routers,menuList){
-	routers.forEach(r => {
-		menuList.forEach((m, i) => {
-		  if (m.parentId && m.parentId == r.meta.id) {
-			  if (!r.children) r.children = []
-			  m.fullPath = r.meta.fullPath
-			  let menu = {
-				  path: '/' + m.path,
-				  component: _import(m.href),  //href ---> component
-				  meta: { id: m.id, title: m.name, icon:m.icon, fullPath: r.meta.fullPath + '/' + m.path },
-				  hidden:m.hidden == '0'? false : true ,
-				  name:m.name,
+	  try{
+		menuList.sort(sortNumber)
+		routers.forEach(r => {
+			menuList.forEach((m, i) => {
+			  if (m.parentId && m.parentId == r.meta.id) {
+				  if (!r.children) r.children = []
+				  m.fullPath = r.meta.fullPath
+				  let menu = {
+					  path: '/' + m.path,
+					  component: _import(m.href),  //href ---> component
+					  meta: { id: m.id, title: m.name, icon:m.icon, fullPath: r.meta.fullPath + '/' + m.path },
+					  hidden:m.hidden == '0'? false : true ,
+					  name:m.name,
+				  }
+				  r.children.push(menu)
 			  }
-			  r.children.push(menu)
-		  }
-		})
-		if (r.children) convertTree(r.children,menuList)
-	})
+			})
+			if (r.children) convertTree(r.children,menuList)
+		}) 
+	  }catch (err){
+		console.log(err)
+	  }
   }
+
+  export function sortNumber(a,b){
+	  return  a.sort - b.sort 
+  }
+
+export function multiarrson(arr,parentId) {
+	arr.className = 'el-icon-folder-opened mr10'
+	var chidren = arr.children;
+	if (chidren == null || chidren.length == 0) {
+	  return;
+	} else {
+	  for (var i = 0 ; i < chidren.length;i++){
+		multiarrson(chidren[i]);
+	  }
+	}
+	return arr
+}
   

@@ -5,6 +5,7 @@ Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
+import Persion from '@/layout/persion.vue'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -65,17 +66,39 @@ export const constantRouterMap = [
       meta: { title: '系统首页', icon: 'el-icon-s-home' }
     }]
   },
-  // {
-  //   path: '/console/company',
-  //   component: Layout,
-  //   children: [{
-  //     path: '/console/company',
-  //     name: 'Company',
-  //     component: () => import('@/views/console/company'),
-  //     meta: { title: '企业控制台', icon: '' }
-  //   }],
-  //   hidden:true
-  // },
+  {
+    path: '/setting/profile',
+    component: Persion,
+    children: [{
+      path: '/setting/profile',
+      name: 'Company',
+      component: () => import('@/views/setting/profile'),
+      meta: { title: '个人资料', icon: '' }
+    }],
+    hidden:true
+  },
+  {
+    path: '/setting/security',
+    component: Persion,
+    children: [{
+      path: '/setting/security',
+      name: 'Company',
+      component: () => import('@/views/setting/security'),
+      meta: { title: '安全中心', icon: '' }
+    }],
+    hidden:true
+  },
+  {
+    path: '/setting/orgInfo',
+    component: Persion,
+    children: [{
+      path: '/setting/orgInfo',
+      name: 'Company',
+      component: () => import('@/views/setting/orgInfo'),
+      meta: { title: '组织信息', icon: '' }
+    }],
+    hidden:true
+  },
   // {
   //   path: '/compile/:id',
   //   // component: () => import('@/views/compile/' + window.location.hash.split('/')[2]+'.vue'),

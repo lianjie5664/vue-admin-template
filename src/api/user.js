@@ -88,3 +88,12 @@ export function deleteUser(data) {
     data
   })
 }
+
+export function getUserByRoleName(data) {
+  return request({
+    url: '/user/listByLoginAndRole ',
+    method: 'post',
+    data
+  })
+}
+

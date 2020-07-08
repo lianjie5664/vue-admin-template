@@ -10,9 +10,9 @@
           <i class="el-icon-arrow-down" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <!-- <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">个人中心</span>
-          </el-dropdown-item> -->
+          <el-dropdown-item>
+             <router-link :to="{path:'/setting/profile'}">个人中心</router-link>
+          </el-dropdown-item>
           <!-- <el-dropdown-item divided>
              <router-link :to="{path:'/console/company'}">控制台</router-link>
           </el-dropdown-item> -->

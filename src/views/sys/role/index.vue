@@ -68,7 +68,7 @@
             width="600px">
             <el-form ref="roleForm" :model="roleForm" :rules="rules" label-width="80px">
                 <el-row :gutter="10">
-                    <el-col :span="24" label="123">
+                    <el-col :span="24">
                         <el-form-item label="角色标识" prop="enname">
                             <el-input v-model="roleForm.enname" placeholder="请输入角色标识"></el-input>
                         </el-form-item>
@@ -93,7 +93,6 @@
                                 show-checkbox
                                 ref="menu"
                                 node-key="id"
-                                default-expand-all
                                 empty-text="加载中，请稍后"
                                 :props="defaultProps"
                             ></el-tree>
@@ -249,12 +248,14 @@ export default {
             })
         },
         getRoleList(){
+            this.listLoading = true
             roleList({}).then(res => {
                 if(res.code == 1){
                     let result = res.data
                     this.roleList = result
                 }
             })
+            this.listLoading = false
         },
         getSingleRole(roleId){
             getRole({id:roleId}).then((res) =>{

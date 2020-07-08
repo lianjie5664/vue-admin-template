@@ -60,6 +60,14 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+      background
+       class="pageStyle"
+      :page-size="pageSize"
+      @current-change="current_change"
+      layout="prev, pager, next"
+      :total="total">
+    </el-pagination>
     </div>
   </div>
 </template>
@@ -71,17 +79,20 @@ export default {
   data() {
     return {
       list: [],
-      listLoading: false
+      listLoading: false,
+      total:0,
+      pageSize:10
     };
   },
   created() {
-    this.getCompileList();
+    this.getCompileList(this.currentPage,this.pageSize);
   },
   methods: {
-    getCompileList() {
+    getCompileList(currentPage,pageSize) {
       this.listLoading = true;
-      getReportCompileList({}).then(response => {
+      getReportCompileList({pageNo:currentPage,pageSize:pageSize}).then(response => {
         this.list = response.data.data;
+        this.total = response.data.count
         this.listLoading = false;
       });
     },
@@ -108,7 +119,7 @@ export default {
           delRecord({ compileId: row.compileId }).then(res => {
             if (res.code == 1) {
               notice(1, "删除成功！", 1);
-              this.getCompileList();
+              this.getCompileList(this.currentPage,this.pageSize);
             } else {
               notice(0, "删除失败！", 0);
             }
@@ -127,6 +138,9 @@ export default {
         path: "compile/" + row.awardId,
         query: { compileTime: row.compileTime, compileId: row.compileId,cuid:row.createUserId }
       });
+    },
+    current_change(currentPage){
+      this.getCompileList(currentPage,this.pageSize);
     }
   }
 };
@@ -134,5 +148,9 @@ export default {
 <style scoped>
 .table {
   margin-top: 20px;
+}
+.pageStyle{
+  margin-top:20px;
+  float: right;
 }
 </style>

@@ -15,7 +15,7 @@ function hasPermission(roles, permissionRoles) {
   return roles.some(role => permissionRoles.indexOf(role) >= 0)
 }
 
-const whiteList = ['/login', '/register', '/compile','/console'] // no redirect whitelist
+const whiteList = ['/login', '/register', '/compile','/setting'] // no redirect whitelist
 //待取出路由 console
 
 router.beforeEach((to, from, next) => {

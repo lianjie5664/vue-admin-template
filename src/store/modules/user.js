@@ -20,7 +20,8 @@ const state = {
   permissions:[],
   userId:'',
   roleId: '',
-  userName:''
+  userName:'',
+  user:{}
 }
 
 const mutations = {
@@ -35,6 +36,9 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_USER: (state, user) => {
+    state.user = user
   },
   SET_USERID: (state, userid) => {
     state.userId = userid
@@ -96,6 +100,7 @@ const actions = {
         commit('SET_PERMISSION', permissionList)
         commit('GET_ROLEID', roleEnname)
         commit('SET_USERID', id)
+        commit('SET_USER', data)
         let menuList = data.menuList , menuRouters = []
         menuList.forEach((m, i) => {
           if (m.parentId == '0') {
