@@ -8,10 +8,27 @@
         <div class="user-oprate-group mb15">
           <el-row :gutter="10">
             <el-col :span="2">
-              <el-button type="primary" plain round size="mini" icon="el-icon-plus" @click="showUserAddModal">用户录入</el-button>
+              <el-button type="primary" 
+                plain 
+                round 
+                size="mini" 
+                icon="el-icon-plus" 
+                :disabled="btnStatus"
+                @click="showUserAddModal">
+                用户录入
+              </el-button>
             </el-col>
             <el-col :span="2">
-              <el-button type="warning" plain round size="mini" icon="el-icon-edit" @click="showResetPasswdModal">密码重置</el-button>
+              <el-button 
+                type="warning" 
+                plain 
+                round 
+                size="mini" 
+                icon="el-icon-edit" 
+                :disabled="btnStatus"
+                @click="showResetPasswdModal">
+                密码重置
+              </el-button>
             </el-col>
           </el-row>
         </div>
@@ -81,7 +98,7 @@
 <script>
 import UserTable from "./components/userTable";
 import UserAdd from "./components/userAdd";
-import { notice } from "@/utils/tools";
+import { notice, multiarrson } from "@/utils/tools";
 import { roleList } from "@/api/role";
 import { industies } from "@/utils/industry.js";
 import UserTree from "@/components/Tree/index";
@@ -123,6 +140,7 @@ export default {
       editPasswdModal: false,
       resetBtnLoading: false,
       userAddModal: false,
+      btnStatus:false,
 
       totalCount: 0,
       activeOfficeId:'',
@@ -161,23 +179,10 @@ export default {
     getOfficeTree(){
       officeTree({}).then((res =>{
         if(res.code == 1){
-          let data = this.multiarrson(res.data[0])
+          let data = multiarrson(res.data[0])
           this.officeTreeData.push(data)
-          this.activeOfficeId = this.officeTreeData[0].id
         }
       }))
-    },
-    multiarrson(arr) {
-      arr.className = 'el-icon-folder-opened mr10'
-      var chidren = arr.children;
-      if (chidren == null || chidren.length == 0) {
-        return;
-      } else {
-        for (var i = 0 ; i < chidren.length;i++){
-          this.multiarrson(chidren[i]);
-        }
-      }
-      return arr
     },
     handleEditUser(row) {
       this.userAddModal = true;
@@ -190,7 +195,10 @@ export default {
     },
     // 显示重置密码对话框
     showResetPasswdModal() {
-      if (JSON.stringify(this.selectedRow) == "{}") return;
+      if (JSON.stringify(this.selectedRow) == "{}") {
+        this.$message.warning('请选择一个用户！')
+        return
+      };
       this.resetForm.password = "";
       this.resetForm.passwordRepeat = "";
       this.editPasswdModal = true;
@@ -278,7 +286,7 @@ export default {
       let params = { 
         pageNo: currentPage, 
         pageSize: pageSize,
-        officeId: this.activeOfficeId
+        officeId: this.activeOfficeId || ''
       }
       userList(params).then(res => {
         let { code, data } = res;
@@ -289,6 +297,7 @@ export default {
     },
     // 保存用户
     handleSaveUser(data) {
+      data.officeId = this.activeOfficeId
       saveUser(data).then(res => {
         this.userAddModal = false;
         if (res.code == 1) {
@@ -319,6 +328,11 @@ export default {
       });
     },
     handleNodeClick(data){
+        if(data.parentId == 1){
+          this.btnStatus = true
+          return
+        }
+        this.btnStatus = false
         this.activeOfficeId = data.id
         this.getUserList(1, this.pageSize);
     }

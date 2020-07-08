@@ -11,6 +11,7 @@
         ></el-input>
         <el-tree
           :data="treeData"
+          ref="userTree"
           node-key="id"
           default-expand-all
           :expand-on-click-node="false"
@@ -19,6 +20,7 @@
           @node-collapse="close"
           :render-content="renderContent"
           @node-click="handleNodeClick"
+          :filter-node-method="filterNode"
         ></el-tree>
       </el-col>
     </el-row>
@@ -53,6 +55,15 @@ export default {
     },
     handleNodeClick(data){
         this.$emit('nodeClick',data)
+    },
+    filterNode(value,data){
+      if (!value) return true;
+      return data.label.indexOf(value) !== -1;
+    },
+  },
+  watch:{
+    searchVal(oldVal,newVal){
+      this.$refs.userTree.filter(oldVal);
     }
   }
 };

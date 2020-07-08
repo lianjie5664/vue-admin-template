@@ -7,3 +7,32 @@ export function officeTree(data) {
     data
   })
 }
+
+export function saveOrg(data) {
+  return request({
+    url: '/office/save',
+    method: 'post',
+    data
+  })
+}
+
+export function orgList(data) {
+  return request({
+    url: '/office/list',
+    method: 'post',
+    data
+  })
+}
+
+export function orgDelete(data) {
+  return request({
+    url: '/office/delete',
+    method: 'post',
+    data
+  })
+}
+
+
+
+
+

@@ -36,7 +36,7 @@
                     </el-form-item> 
                 </el-form>
                 <div class="demo-drawer__footer">
-                    <el-button @click="show = false">取 消</el-button>
+                    <el-button @click="visible = false">取 消</el-button>
                     <el-button type="primary" @click="submitForm('ruleForm',types)" :loading="loading">{{ loading ? '提交中 ...' : '保  存' }}</el-button>
                 </div>
             </div>

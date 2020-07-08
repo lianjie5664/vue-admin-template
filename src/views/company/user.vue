@@ -2,7 +2,6 @@
   <div class="cuser-wrapper">
     <el-row :gutter="20">
       <el-col :span="4" class="search-box">
-        <el-input placeholder="搜索" size="small" suffix-icon="el-icon-search" v-model="searchVal"></el-input>
         <div class="role-list">
           <div
             class="item"
@@ -58,15 +57,16 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="序号" align="center">
-            <template slot-scope="scope">{{ scope.row.id }}</template>
+          <el-table-column label="登录账户" align="center">
+            <template slot-scope="scope">{{ scope.row.mobile }}</template>
           </el-table-column>
-          <el-table-column prop="name" label="登录账户" width="120"></el-table-column>
-          <el-table-column prop="role" label="角色" align="center" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="status" label="状态" align="center">
+          <el-table-column prop="name" label="用户姓名" align="center" width="100"></el-table-column>
+          <el-table-column prop="roleName" label="用户角色" align="center" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="email" label="电子邮箱" align="center" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="loginFlag" label="用户状态" align="center">
             <template slot-scope="scope">
               <el-switch
-                v-model="scope.row.status"
+                v-model="scope.row.loginFlag"
                 :active-value="'1'"
                 :inactive-value="'0'"
                 active-color="#13ce66"
@@ -75,9 +75,9 @@
               ></el-switch>
             </template>
           </el-table-column>
-          <el-table-column prop="createTime" label="创建时间" align="center"></el-table-column>
-          <el-table-column prop="updateTime" label="更新时间" align="center"></el-table-column>
-          <el-table-column prop="updateTime" label="操作" v-if="active==0" align="center">
+          <el-table-column prop="createDate" label="创建时间" align="center"></el-table-column>
+          <el-table-column prop="updateDate" label="更新时间" align="center"></el-table-column>
+          <el-table-column label="操作" v-if="active==0" align="center">
             <template slot-scope="scope">
               <el-button type="primary" icon="el-icon-refresh" size="mini" plain>转移</el-button>
             </template>
@@ -113,7 +113,7 @@
         <el-form-item label="电子邮箱" prop="email">
           <el-input v-model="userForm.email" size="small" placeholder="请输入电子邮箱" autocomplete="off"></el-input>
         </el-form-item>
-        <!-- <el-form-item label="用户角色" prop="roleId">
+        <el-form-item label="用户角色" prop="roleId">
           <el-select
             v-model="userForm.roleId"
             size="small"
@@ -127,17 +127,26 @@
               :value="item.id"
             ></el-option>
           </el-select>
-        </el-form-item>-->
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="visible = false">取 消</el-button>
-        <el-button type="primary" size="small" @click="handleEditUser('userForm')">确 定</el-button>
+        <el-button type="primary" size="small" @click="handleSaveUser('userForm')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import { 
+  getUserByRoleName, 
+  saveUser,
+  activationUser,
+  lockUser,
+  deleteUser
+} from '@/api/user'
+import { notice } from '@/utils/tools'
+import { roleList } from "@/api/role"
 export default {
   data() {
     return {
@@ -148,6 +157,12 @@ export default {
       checked: null,
       tableData: [],
       currentSelectItem: {},
+      rolearr:[],
+      activeRoleName: '',
+      params:{
+        pageSize:10,
+        pageNo:1,
+      },
       userForm: {
         mobile: "",
         name: "",
@@ -158,50 +173,24 @@ export default {
       companyUserRoleList: [
         {
           id: "0",
-          name: "企业负责人"
+          name: "企业管理员",
+          roleName:'com_admin'
         },
         {
           id: "1",
-          name: "企业编制员"
+          name: "企业编制员",
+          roleName:'com_compiler'
         },
         {
           id: "2",
-          name: "企业自评员"
+          name: "企业自评员",
+          roleName:'com_self_reviewer'
         }
       ],
       active: 0
     };
   },
   methods: {
-    setTable() {
-      let resdata = [
-        {
-          id: 44,
-          mobile: "15151515151",
-          name: "王er虎",
-          password: "123456",
-          email: "1234@qq.com",
-          role: "1",
-          createTime: "2020-11-11 20:22:22",
-          updateTime: "3333"
-        },
-        {
-          id: 89,
-          mobile: "15151515152",
-          name: "王大虎",
-          password: "123456",
-          email: "12345@qq.com",
-          role: "1",
-          createTime: "2020-11-11 20:22:22",
-          updateTime: "3333"
-        }
-      ];
-      // 后台数据返回后,手动添加一个checked属性控制选中与否 如果是使用el-rodio单选框,不需要这一步
-      resdata.forEach(item => {
-        item.checked = false;
-      });
-      this.tableData = resdata;
-    },
     handleSelectionChange(row) {
       this.tableData.forEach(item => {
         // 排他,每次选择时把其他选项都清除
@@ -218,18 +207,70 @@ export default {
     },
     handleSelectCompanyUser(user, index) {
       this.active = index;
+      this.activeRoleName = user.roleName
+      this.currentSelectItem = {}
+      this.fetchCompanyUserList(user.roleName)
     },
-    fetchCompanyUserList(roleid) {},
+    fetchCompanyUserList(roleName) {
+      roleName = roleName || 'com_admin'
+      this.params.enName = roleName
+      getUserByRoleName(this.params).then((res => {
+        if(res.code == 1 && res.data.data){
+          let resdata = res.data.data
+          resdata.forEach(item => {
+            item.checked = false;
+          });
+          this.tableData = resdata;
+        }
+      }))
+    },
     changeCompanyUserStatus(row) {
-      if (parseInt(row.status) == 0) {
+      if (parseInt(row.loginFlag) == 0) {
         // 锁定
+        this.handleLockUser(row.id)
       } else {
         //激活
+        this.handleActivationUser(row.id)
       }
     },
-    lockCompanyUser(i) {},
-    unlockCompanyUser(i) {},
-    handleEditUser() {},
+    handleActivationUser(id) {
+      activationUser({id:id}).then(res => {
+        if (res.code == 1) {
+          notice(1, "操作成功！", 1);
+        } else {
+          notice(0, "操作失败！", 0);
+        }
+      });
+    },
+    // 锁定用户
+    handleLockUser(id) {
+      lockUser({id:id}).then(res => {
+        if (res.code == 1) {
+          notice(1, "操作成功！", 1);
+        } else {
+          notice(0, "操作失败！", 0);
+        }
+      });
+    },
+    getRoleList() {
+      roleList({}).then(res => {
+        if (res.code == 1) {
+          this.rolearr = res.data;
+        }
+      });
+    },
+    handleSaveUser() {
+      let params = Object.assign(this.userForm,{officeId:this.$store.state.user.user.companyId})
+      saveUser(params).then(res => {
+        this.visible = false;
+        if (res.code == 1) {
+          notice(1, "添加成功！", 1);
+          this.fetchCompanyUserList(this.activeRoleName);
+        } else {
+          notice(0, "添加失败！", 0);
+        }
+      });
+    },
     showAddUserDialog() {
       this.userForm = {};
       this.modalType = 0;
@@ -245,11 +286,12 @@ export default {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        })
-          .then(() => {
+        }).then(() => {
             //todo删除
           })
-          .catch(() => {});
+          .catch((error) => {
+            console.log('error ====>',error)
+          });
       }
     }
   },
@@ -266,8 +308,10 @@ export default {
   created() {
     // 获取企业用户列表
     // 默认获取企业管理员
-    this.setTable();
-    this.fetchCompanyUserList(0);
+    // this.setTable();
+    this.getRoleList()
+    this.fetchCompanyUserList()
+    // this.fetchCompanyUserList(0);
   }
 };
 </script>
@@ -285,11 +329,11 @@ export default {
     .item {
       background: #e7eaef;
       color: #333;
-      line-height: 40px;
+      line-height: 35px;
       font-size: 14px;
       padding-left: 15px;
       margin-bottom: 12px;
-      border-radius: 40px;
+      border-radius: 4px;
       cursor: pointer;
       &:hover {
         background: #273eb0;
