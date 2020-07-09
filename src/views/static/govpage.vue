@@ -44,11 +44,25 @@
     <div class="bottom-content hg-flex mb15">
       <div class="flex-one group-box mr10">
         <div class="title">总分排序分析</div>
-        <div class="box" id="total-score"></div>
+        <div class="content-info">
+          <div v-show="totalTrue">
+            <div class="box" id="total-score"></div>
+          </div>
+          <div class="nodata-img" v-show="!totalTrue">
+            <img :src="nodataImg">
+          </div>
+        </div>
       </div>
       <div class="flex-one group-box">
         <div class="title">每项得分占比分析</div>
-        <div class="box" id="compare-score"></div>
+        <div class="content-info">
+          <div v-show="scoreTrue">
+            <div class="box" id="compare-score"></div>
+          </div>
+          <div class="nodata-img" v-show="!scoreTrue">
+            <img :src="nodataImg">
+          </div>
+        </div>
       </div>
     </div>
     <div class="bottom-content hg-flex mb15">
@@ -91,6 +105,7 @@ import { getTotalScoreRank, getScorePercent, getFirstLevelRadar, getReportProgre
 export default {
   data () {
     return {
+      nodataImg: require('@/assets/imgs/no-data.png'),
       govList: [{
         id: 1,
         name: '长沙市质量奖1',
@@ -130,17 +145,31 @@ export default {
       }],
       totalScoreRank: [],
       scorePercent: [],
-      countPercent: 0
+      countPercent: 0,
+      totalTrue: false,
+      scoreTrue: false
     }
   },
   created () {
-    this.getApiTotal()
-    this.getApiPercent()
     // this.getApiFirst()
     // this.getApiReport()
     // this.getApiReview()
   },
+  watch: {
+    'totalScoreRank' (val) {
+      if (val && val[0]) {
+        this.totalTrue = true
+      }
+    },
+    'scorePercent' (val) {
+      if (val && val[0]) {
+        this.scoreTrue = true
+      }
+    }
+  },
   mounted () {
+    this.getApiTotal()
+    this.getApiPercent()
     this.$nextTick(() => {
       this.getScoreData()
       this.getTypeallData()
@@ -216,6 +245,7 @@ export default {
       }
       getScorePercent(params).then(res => {
         if (res && res.data && res.data.data && res.data.data[0]){
+          this.scoreTrue = true
           const data = res.data.data
           data.forEach(item => {
             this.scorePercent.push({
@@ -224,6 +254,7 @@ export default {
             })
           })
           this.countPercent = +res.data.total
+          this.scorePercent = JSON.parse(JSON.stringify(this.scorePercent))
           this.getCompareScore(this.scorePercent)
         }
       })
@@ -238,6 +269,7 @@ export default {
       }
       getTotalScoreRank(params).then(res => {
         if (res && res.data && res.data.data && res.data.data[0]){
+          this.totalTrue = true
           const data = res.data.data
           data.forEach(item => {
             this.totalScoreRank.push({
@@ -245,6 +277,7 @@ export default {
               value: +item.total
             })
           })
+          this.totalScoreRank = JSON.parse(JSON.stringify(this.totalScoreRank))
           this.getTotalScore(this.totalScoreRank)
         }
       })
