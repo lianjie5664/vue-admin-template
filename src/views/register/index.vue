@@ -1,10 +1,10 @@
 <template lang="html">
   <div class="register-content">
-    <div class="logo-img">
+    <!-- <div class="logo-img">
       <a href="/">
         <img :src="logoImg" alt="">
       </a>
-    </div>
+    </div> -->
     <div class="register-box">
       <div class="title">企业账号注册</div>
       <div class="box-contain">

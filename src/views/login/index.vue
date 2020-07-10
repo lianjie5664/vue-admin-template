@@ -1,8 +1,8 @@
 <template>
   <div class="login-container">
-    <div class="logo-img">
+    <!-- <div class="logo-img">
       <img :src="logoImg" alt="">
-    </div>
+    </div> -->
     <div class="login-box-container">
       <div class="login-title">
         <h2>企业成熟度智能评价系统</h2>
