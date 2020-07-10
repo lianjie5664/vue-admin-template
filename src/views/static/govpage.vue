@@ -44,25 +44,11 @@
     <div class="bottom-content hg-flex mb15">
       <div class="flex-one group-box mr10">
         <div class="title">总分排序分析</div>
-        <div class="content-info">
-          <div v-show="totalTrue">
-            <div class="box" id="total-score"></div>
-          </div>
-          <div class="nodata-img" v-show="!totalTrue">
-            <img :src="nodataImg">
-          </div>
-        </div>
+        <div class="box" id="total-score"></div>
       </div>
       <div class="flex-one group-box">
         <div class="title">每项得分占比分析</div>
-        <div class="content-info">
-          <div v-show="scoreTrue">
-            <div class="box" id="compare-score"></div>
-          </div>
-          <div class="nodata-img" v-show="!scoreTrue">
-            <img :src="nodataImg">
-          </div>
-        </div>
+        <div class="box" id="compare-score"></div>
       </div>
     </div>
     <div class="bottom-content hg-flex mb15">
@@ -168,9 +154,9 @@ export default {
     }
   },
   mounted () {
-    this.getApiTotal()
-    this.getApiPercent()
     this.$nextTick(() => {
+      this.getTotalScore()
+      this.getCompareScore()
       this.getScoreData()
       this.getTypeallData()
       this.getEnterReport()
@@ -233,7 +219,6 @@ export default {
               value: item.goal
             })
           })
-          // this.getCompareScore(this.firstLevel)
         }
       })
     },
@@ -641,7 +626,13 @@ export default {
         showMarkers: false,
         itemTpl: '<li class="g2-tooltip-list-item"><span style="background-color:{color};" class="g2-tooltip-marker"></span>{name}: {value}</li>',
       })
-      const userData = val
+      const userData = [
+        { type: '质量分', value: 200 },
+        { type: '结果分', value: 300 },
+        { type: '创新分', value: 200 },
+        { type: '品牌分', value: 200 }
+      ]
+      // const userData = val
       const userDv = new DataView()
       userDv.source(userData).transform({
         type: 'percent',
@@ -662,7 +653,7 @@ export default {
       })
       pieView.annotation().text({
         position: ['50%', '50%'],
-        content: `总得分${this.countPercent}分`,
+        content: `总得分900分`,
         style: {
           lineHeight: '24px',
           fontSize: '16',
@@ -680,14 +671,28 @@ export default {
     },
     // 总分排行
     getTotalScore (val) {
-      const data = val
+      const data = [
+        { name: '企业1', value: 410 },
+        { name: '企业2', value: 520 },
+        { name: '企业3', value: 550 },
+        { name: '企业4', value: 440 },
+        { name: '企业5', value: 750 },
+        { name: '企业6', value: 820 },
+        { name: '企业7', value: 925 },
+        { name: '企业8', value: 870 },
+        { name: '企业9', value: 720 },
+        { name: '企业10', value: 840 },
+        { name: '企业11', value: 780 },
+        { name: '企业12', value: 950 },
+        { name: '企业13', value: 780 },
+      ]
       const chart = new Chart({
         container: 'total-score',
         autoFit: false,
         height: 260,
         width: 500
       })
-      chart.data(data);
+      chart.data(data)
       chart.scale('value', {
         alias: '得分',
       })
