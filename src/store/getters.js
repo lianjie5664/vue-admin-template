@@ -8,7 +8,7 @@ const getters = {
   permissions: state => state.user.permissions,
   permission_routers: state => state.user.routers,  //路由列表
   routers: state => state.user.routers,
-  roleId: state => state.user.roleId,
+  roleEnname: state => state.user.roleEnname,
   userId: state => state.user.userId,
   user: state => state.user.user,
 }

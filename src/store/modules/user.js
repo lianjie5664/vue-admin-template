@@ -19,7 +19,7 @@ const state = {
   addRouters: [],
   permissions:[],
   userId:'',
-  roleId: '',
+  roleEnname: '',
   userName:'',
   user:{}
 }
@@ -50,8 +50,8 @@ const mutations = {
   SET_PERMISSION : (state, permissions) =>{
     state.permissions = permissions
   },
-  GET_ROLEID: (state, roleId) => {
-    state.roleId = roleId
+  GET_ROLENAME: (state, roleEnname) => {
+    state.roleEnname = roleEnname
   },
   LOGOUT: (state) => {
     state.addRouters = [];
@@ -98,7 +98,7 @@ const actions = {
         commit('SET_AVATAR', require("@/assets/imgs/profile.jpg"))
         commit('SET_ROLES', roleIdList)
         commit('SET_PERMISSION', permissionList)
-        commit('GET_ROLEID', roleEnname)
+        commit('GET_ROLENAME', roleEnname)
         commit('SET_USERID', id)
         commit('SET_USER', data)
         let menuList = data.menuList , menuRouters = []

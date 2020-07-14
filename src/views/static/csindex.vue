@@ -20,8 +20,8 @@
       }
     },
     computed: {
-      roleId () {
-        return this.$store.getters.roleId
+      roleEnname () {
+        return this.$store.getters.roleEnname
       }
     },
     components: {companyPage, governmentPage}
