@@ -133,7 +133,7 @@ export function getReptCompileDetail(data) {
 
 
 // 获取个人编制列表
- 
+
 export function getReportCompileList(data){
   return request({
     url: '/qaReportCompile/reportCompileList',
@@ -172,5 +172,50 @@ export function delRecord(data){
     url: '/qaReportCompile/delete',
     method: 'post',
     data,
+  })
+}
+
+// 企业奖编制人报告提交审核
+export function aduitRecord(data){
+  return request({
+    url: '/qaReportCompile/submitAudit',
+    method: 'post',
+    data
+  })
+}
+
+// 企业管理员退回报告
+export function toBack(data){
+  return request({
+    url: '/qaReportCompile/companyToBack',
+    method: 'post',
+    data
+  })
+}
+
+// 企业管理员提交报告编制到政府预审员
+export function toGovern(data){
+  return request({
+    url: '/qaReportCompile/companyToGovern',
+    method: 'post',
+    data
+  })
+}
+
+// 政府预审员通过报告
+export function govInterAgree(data){
+  return request({
+    url: '/qaReportCompile/govInterAgree',
+    method: 'post',
+    data
+  })
+}
+
+// 政府预审员退回报告编制
+export function govInterBack(data){
+  return request({
+    url: '/qaReportCompile/govInterBack',
+    method: 'post',
+    data
   })
 }
