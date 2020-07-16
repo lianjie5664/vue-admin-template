@@ -20,6 +20,7 @@ const state = {
   permissions:[],
   userId:'',
   roleEnname: '',
+  roleId: '',
   userName:'',
   user:{}
 }
@@ -52,6 +53,9 @@ const mutations = {
   },
   GET_ROLENAME: (state, roleEnname) => {
     state.roleEnname = roleEnname
+  },
+  GET_ROLEID: (state, roleId) => {
+    state.roleId = roleId
   },
   LOGOUT: (state) => {
     state.addRouters = [];
@@ -93,12 +97,13 @@ const actions = {
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-        const { userName, avatar, id,roleIdList,permissionList, roleEnname } = data
+        const { userName, avatar, id,roleIdList,permissionList, roleEnname, roleId } = data
         commit('SET_NAME', userName)
         commit('SET_AVATAR', require("@/assets/imgs/profile.jpg"))
         commit('SET_ROLES', roleIdList)
         commit('SET_PERMISSION', permissionList)
         commit('GET_ROLENAME', roleEnname)
+        commit('GET_ROLEID', roleId)
         commit('SET_USERID', id)
         commit('SET_USER', data)
         let menuList = data.menuList , menuRouters = []

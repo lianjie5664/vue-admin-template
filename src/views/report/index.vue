@@ -39,6 +39,7 @@
               <i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item v-show="roleEnname === 'gov_audit'" :command="{type:'allot',params: row}">分配评审专家</el-dropdown-item> <!--政府审核负责人分配专家-->
               <el-dropdown-item v-show="roleEnname === 'com_admin'" :command="{type:'approve',params: row}">审核通过</el-dropdown-item> <!--企业管理人通过-->
               <el-dropdown-item v-show="roleEnname === 'com_admin'" :command="{type:'return',params: row}">审核退回</el-dropdown-item> <!--企业管理人退回-->
               <el-dropdown-item v-show="roleEnname === 'com_compiler'" :command="{type:'aduit',params: row}">提交审核</el-dropdown-item> <!--企业奖编制人提交审核-->
@@ -48,11 +49,21 @@
               <el-dropdown-item v-show="roleEnname === 'gov_inter'" :command="{type:'govBack',params: row}">审核退回</el-dropdown-item> <!--政府预审员退回-->
             </el-dropdown-menu>
           </el-dropdown>
+          <!-- 评审专家分配表 -->
+          <el-dialog title="评审专家分配表" :visible.sync="govDailogVisible" class="govDailog">
+            <el-checkbox-group v-model="govChecked">
+              <el-checkbox v-for="item in allotList" :label="item.id" :key="item.id">{{item.name}}</el-checkbox>
+            </el-checkbox-group>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="govDailogVisible = false">取 消</el-button>
+              <el-button type="primary" @click.native="govSubmit(row)">确 定</el-button>
+            </div>
+          </el-dialog>
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination background class="pageStyle" :page-size="pageSize" @current-change="current_change" layout="prev, pager, next" :total="total">
-    </el-pagination>
+    <el-pagination background class="pageStyle" :page-size="pageSize" @current-change="current_change" layout="prev, pager, next" :total="total"></el-pagination>
+
   </div>
 </div>
 </template>
@@ -65,25 +76,31 @@ import {
   toBack,
   toGovern,
   govInterAgree,
-  govInterBack
-} from "@/api/award";
+  govInterBack,
+  govExpert,
+  userList
+} from '@/api/award';
 import {
   statusFilter
-} from "@/utils/filter";
+} from '@/utils/filter';
 import {
   notice
-} from "@/utils/tools";
+} from '@/utils/tools';
 export default {
   data() {
     return {
       list: [],
       listLoading: false,
       total: 0,
-      pageSize: 10
+      pageSize: 10,
+      govDailogVisible: false, // 政府评审专家弹框
+      allotList: [], // 评审专员列表
+      govChecked: [], // 选中
     };
   },
   created() {
-    this.getCompileList(this.currentPage, this.pageSize);
+    this.getCompileList(this.currentPage, this.pageSize)
+    this.getUserList()
   },
   computed: {
     roleEnname () {
@@ -91,6 +108,19 @@ export default {
     }
   },
   methods: {
+    getUserList () {
+      userList({roleEnname: 'review_experts'}).then(res => {
+        if (res && res.data && res.data.data && res.data.data[0]) {
+          let newdata = res.data.data
+          newdata.forEach(item => {
+            this.allotList.push({
+              id: item.id,
+              name: item.name
+            })
+          })
+        }
+      })
+    },
     getCompileList(currentPage, pageSize) {
       this.listLoading = true;
       getReportCompileList({
@@ -157,8 +187,34 @@ export default {
         case 'govBack':
           this.toGovBack(command.params)
           break;
+        case 'allot':
+          this.toGovAllot(command.params)
+          break;
         default:
       }
+    },
+    govSubmit (row) {
+      if (this.govChecked && this.govChecked[0]) {
+        this.govDailogVisible = false
+        govExpert({
+          'compileId': row.compileId,
+          'expertArray': this.govChecked
+        }).then(res => {
+          if (+res.code === 1) {
+            notice(1, '分配成功', 1)
+            this.getCompileList(this.currentPage, this.pageSize)
+          } else {
+            notice(0, '分配失败！', 0)
+          }
+        })
+      } else {
+        notice(0, '至少选择一位评审！', 0)
+      }
+    },
+    // 政府审核负责人分配评审专家，待专家评审
+    toGovAllot (row) {
+      this.govChecked = []
+      this.govDailogVisible = true
     },
     // 政府预审员退回
     toGovBack (row) {
@@ -272,12 +328,14 @@ export default {
 };
 </script>
 <style scoped>
-.table {
-  margin-top: 20px;
-}
+  .table {
+    margin-top: 20px;
+  }
+  .pageStyle {
+    margin-top: 20px;
+    float: right;
+  }
+  .govDailog{
 
-.pageStyle {
-  margin-top: 20px;
-  float: right;
-}
+  }
 </style>

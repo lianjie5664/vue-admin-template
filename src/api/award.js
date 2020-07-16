@@ -117,7 +117,7 @@ export function savaQaRept(data) {
 
 export function reportList(data) {
   return request({
-    url: '/qaReportCompile/list',
+    url: '/qaGrade/totalList',
     method: 'post',
     data
   })
@@ -215,6 +215,51 @@ export function govInterAgree(data){
 export function govInterBack(data){
   return request({
     url: '/qaReportCompile/govInterBack',
+    method: 'post',
+    data
+  })
+}
+
+// 政府审核负责人分配评审专家，待专家评审
+export function govExpert(data){
+  return request({
+    url: '/qaReportCompile/govAllotExpert',
+    method: 'post',
+    data
+  })
+}
+
+// 获取评审专家列表
+export function userList(data){
+  return request({
+    url: '/user/list',
+    method: 'post',
+    data
+  })
+}
+
+// 评审专家提交评审结果
+export function expertToGovern(data){
+  return request({
+    url: '/qaReportCompile/expertToGovern',
+    method: 'post',
+    data
+  })
+}
+
+// -政府管理员审核通过专家评审结果
+export function govAdminAgree(data){
+  return request({
+    url: '/qaReportCompile/govAdminAgree',
+    method: 'post',
+    data
+  })
+}
+
+// -政府管理员退回专家评审结果
+export function govAdminBack(data){
+  return request({
+    url: '/qaReportCompile/govAdminBack',
     method: 'post',
     data
   })

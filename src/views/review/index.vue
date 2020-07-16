@@ -1,10 +1,18 @@
 <template>
 <div class="app-container">
+  <el-select v-model="statusVal" placeholder="请选择状态" @change="initOption">
+    <el-option
+      v-for="(item, index) in statusList"
+      :key="index"
+      :label="item"
+      :value="index">
+    </el-option>
+  </el-select>
   <div class="table">
     <el-table ref="multipleTable"
       v-loading="listLoading"
       :data="list"
-      element-loading-text="Loading" border fit highlight-current-row 
+      element-loading-text="Loading" border fit highlight-current-row
       @selection-change="handleSelectionChange">
       <el-table-column align="center" label="编号" width="95">
         <template slot-scope="scope">
@@ -45,6 +53,9 @@
                             reportUserId:row.createUserId,
                             createUserId:row.createUserId,gradeUserId:row.gradeUserId}}">评审</router-link>
           </el-button>
+          <el-button v-show="roleEnname === 'review_experts'" type="primary" size="mini" plain @click="toAduit(row)">提交评审结果</el-button>
+          <el-button v-show="roleEnname === 'gov_admin'" type="primary" size="mini" plain @click="toAgree(row)">审核通过</el-button>
+          <el-button v-show="roleEnname === 'gov_admin'" type="primary" size="mini" plain @click="toBack(row)">审核退回</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -55,7 +66,10 @@
 </template>
 <script>
 import {
-  reportList
+  reportList,
+  expertToGovern,
+  govAdminAgree,
+  govAdminBack
 } from '@/api/award'
 import {
   notice
@@ -63,6 +77,14 @@ import {
 export default {
   data() {
     return {
+      statusList: {
+        '103010007': '待评审',
+        '103010008': '已提交，待审核',
+        '103010009': '审核通过',
+        '103010010': '评审结果被退回',
+        '103010011': '评审结果已纳入统计',
+      },
+      statusVal: '',
       pageSize: 10,
       total: 0,
       currentPage: 1,
@@ -96,14 +118,80 @@ export default {
     }
   },
   created() {
-    this.fetchList(this.currentPage, this.pageSize)
+    this.fetchList(this.currentPage, this.pageSize, this.statusVal)
+  },
+  computed: {
+    roleEnname () {
+      return this.$store.getters.roleEnname
+    }
   },
   methods: {
-    fetchList(currentPage, pageSize) {
+    // 政府管理员退回专家评审结果
+    toBack (row) {
+      this.$prompt('请输入退回理由', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then((val) => {
+        govAdminBack({
+          'gradeTotalId': row.gradeTotalId,
+          'backRemark': val.value
+        }).then(res => {
+          if (+res.code === 1) {
+            notice(1, '退回成功', 1)
+            this.fetchList(this.currentPage, this.pageSize, this.statusVal)
+          } else {
+            notice(0, '退回失败！', 0)
+          }
+        })
+      }).catch(() => {})
+    },
+    // 政府管理员审核通过专家评审结果
+    toAgree (row) {
+      this.$confirm('确定审核通过评审结果吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        govAdminAgree({
+          'gradeTotalId': row.gradeTotalId
+        }).then(res => {
+          if (+res.code === 1) {
+            notice(1, '审核成功', 1)
+            this.fetchList(this.currentPage, this.pageSize, this.statusVal)
+          } else {
+            notice(0, '审核失败！', 0)
+          }
+        })
+      }).catch(() => {})
+    },
+    // 评审专家提交评审结果
+    toAduit (row) {
+      this.$confirm('确定提交评审结果吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        expertToGovern({
+          gradeTotalId: row.gradeTotalId
+        }).then(res => {
+          if (+res.code === 1) {
+            notice(1, '提交成功', 1)
+            this.fetchList(this.currentPage, this.pageSize, this.statusVal)
+          } else {
+            notice(0, '提交失败！', 0)
+          }
+        })
+      }).catch(() => {})
+    },
+    initOption () {
+      this.fetchList(this.currentPage, this.pageSize, this.statusVal)
+    },
+    fetchList(currentPage, pageSize, statusVal) {
       this.listLoading = true
       reportList({
         pageNo: currentPage,
-        pageSize: pageSize
+        pageSize: pageSize,
+        status: statusVal
       }).then(response => {
         this.list = response.data.data
         this.listLoading = false
@@ -152,7 +240,7 @@ export default {
       }
     },
     current_change(currentPage) {
-      this.fetchList(currentPage, this.pageSize);
+      this.fetchList(currentPage, this.pageSize, this.statusVal);
     }
   }
 }
