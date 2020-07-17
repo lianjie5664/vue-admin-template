@@ -264,3 +264,57 @@ export function govAdminBack(data){
     data
   })
 }
+
+// 政府管理员统计评审结果
+export function govAdminStatic(data){
+  return request({
+    url: '/qaReportCompile/govAdminStatistics',
+    method: 'post',
+    data
+  })
+}
+
+// 企业管理员分配自评专家，待自评专家评审
+export function copExpert(data){
+  return request({
+    url: '/qaReportCompile/adminAllotExpert',
+    method: 'post',
+    data
+  })
+}
+
+// 企业自评专家提交评审结果
+export function expertToCom(data){
+  return request({
+    url: '/qaReportCompile/expertToAdmin',
+    method: 'post',
+    data
+  })
+}
+
+// 企业管理员审核通过自评专家评审结果
+export function comAdminAgree(data){
+  return request({
+    url: '/qaReportCompile/companyAdminAgree',
+    method: 'post',
+    data
+  })
+}
+
+// 企业管理员退回自评专家评审结果
+export function comAdminBack(data){
+  return request({
+    url: '/qaReportCompile/companyAdminBack',
+    method: 'post',
+    data
+  })
+}
+
+// 企业管理员统计自评专家评审结果
+export function comAdminStatic(data){
+  return request({
+    url: '/qaReportCompile/companyAdminStatistics',
+    method: 'post',
+    data
+  })
+}

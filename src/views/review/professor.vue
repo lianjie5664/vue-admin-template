@@ -3,7 +3,7 @@
     <!-- <div class="top-info hg-flex mb20 box_fixed" id="boxFixed" :class="{'is_fixed' : isFixed}">
       <div class="items mr40">
         <label>得分情况：</label>
-          <div class="score-item">{{totalScore}}<span>分</span>   </div> 
+          <div class="score-item">{{totalScore}}<span>分</span>   </div>
       </div>
       <div class="items ml30">
         <el-button type="primary" @click="subScore" round :loading="btnLoading" v-show="!disabled" :disabled="disabled">提交评审</el-button>
@@ -77,7 +77,7 @@
               <div class="right">
                 <el-button type="success"  @click="subScore" round :loading="btnLoading" v-show="!disabled" :disabled="disabled" size="small">提交评审</el-button>
                 <!-- <el-button type="danger" v-show="!disabled" v-else round disabled size="small">无评审权限</el-button> -->
-              </div> 
+              </div>
             </div>
             <div class="outer-box">
               <div class="score-box">
@@ -108,7 +108,7 @@
         </div>
       </div>
       <div v-else>
-        <dynami-cpt :name="dynamicpt.name" :aid="dynamicpt.aid" :createUserId="createUserId" :awardId="dynamicpt.awardId"></dynami-cpt>   
+        <dynami-cpt :name="dynamicpt.name" :aid="dynamicpt.aid" :createUserId="createUserId" :awardId="dynamicpt.awardId"></dynami-cpt>
       </div>
     </el-drawer>
     <!-- 提交评审提示 -->
@@ -145,6 +145,7 @@ export default {
       reportUserId:this.$route.query.reportUserId || "",
       gradeUserId: this.$route.query.gradeUserId || "",
       createUserId:this.$route.query.createUserId || "",
+      gradeTotalId: this.$route.query.gradeTotalId || '',
       isFixed: false,
       loading: false, // 页面加载loading
       totalScore:0,
@@ -244,10 +245,10 @@ export default {
       if(this.gradeUserId == ""){
         this.gradeUserId = this.$store.state.user.userId
       }
-      getReviewResult({awardId:this.awardId,reportUserId:this.reportUserId,gradeUserId:this.gradeUserId}).then(res => {
-        let data = res.data.scoreSituationArray 
+      getReviewResult({gradeTotalId:this.gradeTotalId}).then(res => {
+        let data = res.data.scoreSituationArray
         if(data.length > 1){
-          data.map((v)=>{  
+          data.map((v)=>{
             v.calculate = Number(v.calculate)
           })
         }
@@ -267,6 +268,7 @@ export default {
       subArr.awardId = this.awardId
       subArr.reportUserId = this.reportUserId
       subArr.scoreSituation = filterCate
+      subArr.gradeTotalId = this.gradeTotalId
       this.submitData = subArr
       this.disabled = false
     },

@@ -2,10 +2,10 @@
 <div class="app-container">
   <div class="table">
     <el-table ref="multipleTable" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
-      <el-table-column align="center" label="编号" width="95">
+      <el-table-column align="center" label="编号" width="70">
         <template slot-scope="scope">{{ scope.$index + 1 }}</template>
       </el-table-column>
-      <el-table-column label="所属年度" width="100px" align="center">
+      <el-table-column label="所属年度" width="90px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.compileTime }} 年</span>
         </template>
@@ -20,6 +20,9 @@
       </el-table-column>
       <el-table-column label="描述">
         <template slot-scope="scope">{{ scope.row.awardDescription }}</template>
+      </el-table-column>
+      <el-table-column label="状态" width="100px">
+        <template slot-scope="scope">{{allStatusList[scope.row.governStatus]}}</template>
       </el-table-column>
       <el-table-column label="创建时间" width="160px" align="center">
         <template slot-scope="scope">{{ scope.row.createDate }}</template>
@@ -39,6 +42,9 @@
               <i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item v-show="roleEnname === 'com_admin'" :command="{type:'comStatic',params: row}">统计结果</el-dropdown-item> <!--企业管理员统计自评专家评审结果-->
+              <el-dropdown-item v-show="roleEnname === 'com_admin'" :command="{type:'comAllot',params: row}">分配自评专家</el-dropdown-item> <!--企业审核负责人分配专家-->
+              <el-dropdown-item v-show="roleEnname === 'gov_admin'" :command="{type:'govStatic',params: row}">统计结果</el-dropdown-item> <!--政府管理员统计评审结果-->
               <el-dropdown-item v-show="roleEnname === 'gov_audit'" :command="{type:'allot',params: row}">分配评审专家</el-dropdown-item> <!--政府审核负责人分配专家-->
               <el-dropdown-item v-show="roleEnname === 'com_admin'" :command="{type:'approve',params: row}">审核通过</el-dropdown-item> <!--企业管理人通过-->
               <el-dropdown-item v-show="roleEnname === 'com_admin'" :command="{type:'return',params: row}">审核退回</el-dropdown-item> <!--企业管理人退回-->
@@ -49,21 +55,35 @@
               <el-dropdown-item v-show="roleEnname === 'gov_inter'" :command="{type:'govBack',params: row}">审核退回</el-dropdown-item> <!--政府预审员退回-->
             </el-dropdown-menu>
           </el-dropdown>
-          <!-- 评审专家分配表 -->
-          <el-dialog title="评审专家分配表" :visible.sync="govDailogVisible" class="govDailog">
-            <el-checkbox-group v-model="govChecked">
-              <el-checkbox v-for="item in allotList" :label="item.id" :key="item.id">{{item.name}}</el-checkbox>
-            </el-checkbox-group>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="govDailogVisible = false">取 消</el-button>
-              <el-button type="primary" @click.native="govSubmit(row)">确 定</el-button>
-            </div>
-          </el-dialog>
         </template>
       </el-table-column>
     </el-table>
     <el-pagination background class="pageStyle" :page-size="pageSize" @current-change="current_change" layout="prev, pager, next" :total="total"></el-pagination>
+    <!-- 评审专家分配表 -->
+    <div v-show="roleEnname === 'gov_audit'">
+      <el-dialog title="评审专家分配表" :visible.sync="govDailogVisible" class="govDailog">
+        <el-checkbox-group v-model="govChecked">
+          <el-checkbox v-for="item in allotList" :label="item.id" :key="item.id">{{item.name}}</el-checkbox>
+        </el-checkbox-group>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="govDailogVisible = false">取 消</el-button>
+          <el-button type="primary" @click.native="govSubmit()">确 定</el-button>
+        </div>
+      </el-dialog>
+    </div>
 
+    <!-- 企业专家分配表 -->
+    <div v-show="roleEnname === 'com_admin'">
+      <el-dialog title="自评专家分配表" :visible.sync="comDailogVisible" class="govDailog">
+        <el-checkbox-group v-model="comChecked">
+          <el-checkbox v-for="item in allotList" :label="item.id" :key="item.id">{{item.name}}</el-checkbox>
+        </el-checkbox-group>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="comDailogVisible = false">取 消</el-button>
+          <el-button type="primary" @click.native="comSubmit()">确 定</el-button>
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </div>
 </template>
@@ -78,24 +98,33 @@ import {
   govInterAgree,
   govInterBack,
   govExpert,
-  userList
-} from '@/api/award';
+  userList,
+  govAdminStatic,
+  copExpert,
+  comAdminStatic,
+} from '@/api/award'
 import {
   statusFilter
-} from '@/utils/filter';
+} from '@/utils/filter'
 import {
   notice
-} from '@/utils/tools';
+} from '@/utils/tools'
+import { allStatusList } from '@/config/setting'
 export default {
   data() {
     return {
       list: [],
       listLoading: false,
       total: 0,
+      currentPage: 1,
       pageSize: 10,
       govDailogVisible: false, // 政府评审专家弹框
+      comDailogVisible: false,
       allotList: [], // 评审专员列表
-      govChecked: [], // 选中
+      govChecked: [], // 政府选中
+      comChecked: [], // 企业选中
+      allStatusList: allStatusList,
+      paramsId: '', // 传入弹框id
     };
   },
   created() {
@@ -109,7 +138,7 @@ export default {
   },
   methods: {
     getUserList () {
-      userList({roleEnname: 'review_experts'}).then(res => {
+      userList({roleEnname: this.roleEnname === 'com_admin' ? 'com_self_reviewer':'review_experts'}).then(res => {
         if (res && res.data && res.data.data && res.data.data[0]) {
           let newdata = res.data.data
           newdata.forEach(item => {
@@ -127,10 +156,10 @@ export default {
         pageNo: currentPage,
         pageSize: pageSize
       }).then(response => {
-        this.list = response.data.data;
+        this.list = response.data.data
         this.total = response.data.count
-        this.listLoading = false;
-      });
+        this.listLoading = false
+      })
     },
     export2Word(row) {
       let data = {
@@ -190,15 +219,49 @@ export default {
         case 'allot':
           this.toGovAllot(command.params)
           break;
+        case 'govStatic':
+          this.toGovStatic(command.params)
+          break;
+        case 'comAllot':
+          this.toComAllot(command.params)
+          break;
+        case 'comStatic':
+          this.toComStatic(command.params)
+          break;
         default:
       }
     },
-    govSubmit (row) {
-      if (this.govChecked && this.govChecked[0]) {
-        this.govDailogVisible = false
-        govExpert({
-          'compileId': row.compileId,
-          'expertArray': this.govChecked
+    // 企业管理员统计自评专家评审结果
+    toComStatic (row) {
+      this.$confirm('确定同意本次自评结果？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        comAdminStatic({
+          compileId: row.compileId
+        }).then(res => {
+          if (+res.code === 1) {
+            notice(1, '统计成功', 1)
+            this.getCompileList(this.currentPage, this.pageSize)
+          } else {
+            notice(0, '统计失败！', 0)
+          }
+        })
+      }).catch(() => {})
+    },
+    // 企业管理员分配自评专家，待自评专家评审
+    toComAllot (row) {
+      this.comChecked = []
+      this.comDailogVisible = true
+      this.paramsId = row.compileId
+    },
+    comSubmit () {
+      if (this.comChecked && this.comChecked[0]) {
+        this.comDailogVisible = false
+        copExpert({
+          'compileId': this.paramsId,
+          'expertArray': this.comChecked
         }).then(res => {
           if (+res.code === 1) {
             notice(1, '分配成功', 1)
@@ -215,6 +278,44 @@ export default {
     toGovAllot (row) {
       this.govChecked = []
       this.govDailogVisible = true
+      this.paramsId = row.compileId
+    },
+    govSubmit () {
+      if (this.govChecked && this.govChecked[0]) {
+        this.govDailogVisible = false
+        govExpert({
+          'compileId': this.paramsId,
+          'expertArray': this.govChecked
+        }).then(res => {
+          if (+res.code === 1) {
+            notice(1, '分配成功', 1)
+            this.getCompileList(this.currentPage, this.pageSize)
+          } else {
+            notice(0, '分配失败！', 0)
+          }
+        })
+      } else {
+        notice(0, '至少选择一位评审！', 0)
+      }
+    },
+    // 政府管理员统计评审结果
+    toGovStatic (row) {
+      this.$confirm('确定同意本次评审结果？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        govAdminStatic({
+          compileId: row.compileId
+        }).then(res => {
+          if (+res.code === 1) {
+            notice(1, '统计成功', 1)
+            this.getCompileList(this.currentPage, this.pageSize)
+          } else {
+            notice(0, '统计失败！', 0)
+          }
+        })
+      }).catch(() => {})
     },
     // 政府预审员退回
     toGovBack (row) {
@@ -311,7 +412,7 @@ export default {
         })
       }).catch(() => {})
     },
-    edit(row) {
+    edit (row) {
       this.$router.push({
         path: "compile/" + row.awardId,
         query: {
@@ -319,10 +420,10 @@ export default {
           compileId: row.compileId,
           cuid: row.createUserId
         }
-      });
+      })
     },
-    current_change(currentPage) {
-      this.getCompileList(currentPage, this.pageSize);
+    current_change (currentPage) {
+      this.getCompileList(currentPage, this.pageSize)
     }
   }
 };
