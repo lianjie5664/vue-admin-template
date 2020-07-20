@@ -26,7 +26,13 @@
       </el-table-column>
       <el-table-column label="分数">
         <template slot-scope="scope">
-          {{scope.row.total}}
+          <router-link
+            :to="{ path:'/review/professor',
+            query:{ awardId: scope.row.awardId,
+            reportUserId: scope.row.createUserId,
+            gradeTotalId: scope.row.gradeTotalId,
+            createUserId: scope.row.createUserId,
+            gradeUserId: scope.row.gradeUserId }}">{{scope.row.total}}</router-link>
         </template>
       </el-table-column>
       <el-table-column label="编制人">
