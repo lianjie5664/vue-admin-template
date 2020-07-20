@@ -221,7 +221,7 @@ export default {
   margin-top: 20px;
   overflow: hidden;
   .award-item {
-    width: 24%;
+    width: 23%;
     margin-bottom: 25px;
     margin-right: 20px;
     padding: 0 20px 20px 20px;
