@@ -30,11 +30,11 @@
               label="类目分值（分）">
             </el-table-column>
             <el-table-column
-              width="300"
+              width="280"
               align="center"
               label="得分系数">
               <template slot-scope="scope">
-                <el-row type="flex" v-if="scope.row.grade == 3 && scope.row.score != ''" >
+                <el-row type="flex" v-if="scope.row.grade == 3 && scope.row.score != ''">
                     <el-col :span="18">
                       <el-slider v-if="!scope.row.children"
                       v-model="scope.row.calculate"
@@ -47,6 +47,14 @@
                     <div>{{scope.row.calculate}}</div>
                   </el-col>
                 </el-row>
+              </template>
+            </el-table-column>
+            <el-table-column
+              width="120"
+              align="center"
+              label="得分值（分）">
+              <template slot-scope="scope">
+                <span v-if="scope.row.grade == 3 && scope.row.score != ''">{{scope.row.goal}}</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -176,9 +184,10 @@ export default {
   },
   components:{DynamiCpt,VueUeditorWrap},
   created () {
-    this.getAward().then(()=>{
-      this.getData()
-    })
+    // this.getAward().then(()=>{
+    //   this.getData()
+    // })
+    this.getData()
   },
   mounted(){
     window.addEventListener('scroll',this.initHeight);
@@ -245,7 +254,9 @@ export default {
       if(this.gradeUserId == ""){
         this.gradeUserId = this.$store.state.user.userId
       }
+      this.loading = true
       getReviewResult({gradeTotalId:this.gradeTotalId}).then(res => {
+        this.loading = false
         let data = res.data.scoreSituationArray
         if(data.length > 1){
           data.map((v)=>{
