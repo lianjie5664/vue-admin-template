@@ -39,12 +39,12 @@
 
       <el-table-column label="操作" width="230" align="center" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button type="primary" size="mini" plain>
+          <el-button type="primary" size="mini" plain v-show="roleEnname === 'com_self_reviewer'">
             <router-link :to="{path:'/creview/professor',query:{awardId:row.awardId, gradeTotalOwnId: row.gradeTotalOwnId}}">自评</router-link>
           </el-button>
-          <!-- <el-button size="mini" type="success" @click="handleDelAward(row)">
-                            评审结果
-                        </el-button> -->
+          <el-button v-show="roleEnname === 'com_self_reviewer'" type="primary" size="mini" plain @click="toComAduit(row)">提交自评结果</el-button>
+          <el-button v-show="roleEnname === 'com_admin'" type="primary" size="mini" plain @click="comAgree(row)">通过</el-button>
+          <el-button v-show="roleEnname === 'com_admin'" type="primary" size="mini" plain @click="comBack(row)">退回</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -58,7 +58,10 @@ import {
   getOwnList
 } from '@/api/review'
 import {
-  gradeOwnRole
+  gradeOwnRole,
+  expertToCom,
+  comAdminAgree,
+  comAdminBack
 } from '@/api/award'
 import {
   notice
@@ -102,6 +105,11 @@ export default {
       },
     }
   },
+  computed: {
+    roleEnname () {
+      return this.$store.getters.roleEnname
+    }
+  },
   created() {
     this.getStatusList()
     this.fetchList(this.currentPage, this.pageSize, this.statusVal)
@@ -128,6 +136,63 @@ export default {
         this.listLoading = false
         this.total = response.data.count
       })
+    },
+    // 企业管理员退回自评专家评审结果
+    comBack (row) {
+      this.$prompt('请输入退回理由', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then((val) => {
+        comAdminBack({
+          'gradeTotalOwnId': row.gradeTotalOwnId,
+          'backRemark': val.value
+        }).then(res => {
+          if (+res.code === 1) {
+            notice(1, '退回成功', 1)
+            this.fetchList(this.currentPage, this.pageSize, this.statusVal)
+          } else {
+            notice(0, '退回失败！', 0)
+          }
+        })
+      }).catch(() => {})
+    },
+    // 企业管理员审核通过自评专家评审结果
+    comAgree (row) {
+      this.$confirm('确定审核通过自评结果吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        comAdminAgree({
+          'gradeTotalOwnId': row.gradeTotalOwnId
+        }).then(res => {
+          if (+res.code === 1) {
+            notice(1, '审核成功', 1)
+            this.fetchList(this.currentPage, this.pageSize, this.statusVal)
+          } else {
+            notice(0, '审核失败！', 0)
+          }
+        })
+      }).catch(() => {})
+    },
+    // 企业自评专家提交评审结果
+    toComAduit (row) {
+      this.$confirm('确定提交自评结果吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        expertToCom({
+          gradeTotalOwnId: row.gradeTotalOwnId
+        }).then(res => {
+          if (+res.code === 1) {
+            notice(1, '提交成功', 1)
+            this.fetchList(this.currentPage, this.pageSize, this.statusVal)
+          } else {
+            notice(0, '提交失败！', 0)
+          }
+        })
+      }).catch(() => {})
     },
     showAwardForm() {
       this.awardVisble.v = true
