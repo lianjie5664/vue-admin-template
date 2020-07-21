@@ -318,3 +318,30 @@ export function comAdminStatic(data){
     data
   })
 }
+
+// 自评结果列表页面根据用户角色获取能够显示的状态
+export function gradeOwnRole(data) {
+  return request({
+    url: '/qaReportCompile/gradeTotalOwnListByRole',
+    method: 'post',
+    data
+  })
+}
+
+// 评审结果列表页面根据用户角色获取能够显示的状态
+export function gradeByRole(data) {
+  return request({
+    url: '/qaReportCompile/gradeTotalListByRole',
+    method: 'post',
+    data
+  })
+}
+
+// 报告编制列表页面根据用户角色获取能够显示的状态
+export function reportOwnRole(data) {
+  return request({
+    url: '/qaReportCompile/reportListByRole',
+    method: 'post',
+    data
+  })
+}

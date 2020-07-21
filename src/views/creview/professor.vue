@@ -16,12 +16,12 @@
             </el-table-column>
             <el-table-column
               prop="score"
-              width="150"
+              width="120"
               align="center"
               label="类目分值（分）">
             </el-table-column>
             <el-table-column
-              width="300"
+              width="280"
               align="center"
               label="得分系数">
               <template slot-scope="scope">
@@ -38,6 +38,14 @@
                     <div>{{scope.row.calculate}}</div>
                   </el-col>
                 </el-row>
+              </template>
+            </el-table-column>
+            <el-table-column
+              width="120"
+              align="center"
+              label="得分值（分）">
+              <template slot-scope="scope">
+                <span v-if="scope.row.grade == 3 && scope.row.score != ''">{{scope.row.goal}}</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -67,7 +75,7 @@
               </div>
               <div class="right">
                 <el-button type="success" @click="subScore" round :loading="btnLoading" v-show="!disabled" :disabled="disabled" size="small">提交评审</el-button>
-              </div> 
+              </div>
             </div>
             <div class="outer-box">
               <div class="score-box">
@@ -97,7 +105,7 @@
         </div>
       </div>
       <div v-else>
-        <dynami-cpt :name="dynamicpt.name" :aid="dynamicpt.aid" :awardId="dynamicpt.awardId"></dynami-cpt>   
+        <dynami-cpt :name="dynamicpt.name" :aid="dynamicpt.aid" :awardId="dynamicpt.awardId"></dynami-cpt>
       </div>
     </el-drawer>
     <!-- 提交评审提示 -->
@@ -131,6 +139,7 @@ export default {
       // },
       awardList: [], // 奖项列表
       awardId: this.$route.query.awardId,
+      gradeTotalOwnId: this.$route.query.gradeTotalOwnId,
       isFixed: false,
       loading: false, // 页面加载loading
       totalScore: 0,
@@ -161,9 +170,10 @@ export default {
   },
   components: { DynamiCpt, VueUeditorWrap },
   created() {
-    this.getAward().then(() => {
-      this.getData();
-    });
+    // this.getAward().then(() => {
+    //   this.getData();
+    // });
+    this.getData();
   },
   mounted() {
     window.addEventListener("scroll", this.initHeight);
@@ -230,54 +240,56 @@ export default {
       });
     },
     getData() {
-      getOwnReviewResult({ awardId: this.awardId }).then(res => {
-        // console.log(res)
-        let data = res.data.scoreSituationArray;
+      this.loading = true
+      getOwnReviewResult({ gradeTotalOwnId: this.gradeTotalOwnId }).then(res => {
+        this.loading = false
+        let data = res.data.scoreSituationArray
         if (data.length > 1) {
           data.map(v => {
-            v.calculate = Number(v.calculate);
-          });
+            v.calculate = Number(v.calculate)
+          })
         }
-        this.totalScore = res.data.total;
-        this.awardList = data;
-        let subArr = {};
-        subArr.awardId = this.awardId;
-        subArr.scoreSituation = data;
-        this.submitData = subArr;
+        this.totalScore = res.data.total
+        this.awardList = data
+        let subArr = {}
+        subArr.awardId = this.awardId
+        subArr.scoreSituation = data
+        this.submitData = subArr
       });
     },
     handleNumCon(row) {
       let cloneData = this.optionData;
       let filterCate = cloneData.filter(father => father.score != "");
       let subArr = {};
-      subArr.awardId = this.awardId;
-      subArr.scoreSituation = filterCate;
-      this.submitData = subArr;
-      this.disabled = false;
+      subArr.awardId = this.awardId
+      subArr.scoreSituation = filterCate
+      subArr.gradeTotalOwnId = this.gradeTotalOwnId
+      this.submitData = subArr
+      this.disabled = false
       // this.subScore(subArr)
     },
     subScore() {
       this.btnLoading = true;
       saveOwn(this.submitData).then(res => {
         if (res.code == 1) {
-          this.disabled = true;
-          this.getData();
-          this.btnLoading = false;
-          this.$message.success("自评成功！");
+          this.disabled = true
+          this.getData()
+          this.btnLoading = false
+          this.$message.success("自评成功！")
         }
       });
     },
     goBack() {
       if (!this.dialogVisible && !this.disabled) {
-        this.dialogVisible = true;
+        this.dialogVisible = true
       }
     },
     goBackOneStep() {
-      this.$router.back(-1);
+      this.$router.back(-1)
     },
     subGrade() {
-      this.subScore();
-      this.dialogVisible = false;
+      this.subScore()
+      this.dialogVisible = false
     }
   }
 };

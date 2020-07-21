@@ -1,5 +1,13 @@
 <template>
 <div class="app-container">
+  <el-select v-model="statusVal" placeholder="请选择状态" @change="initOption">
+    <el-option
+      v-for="item in statusList"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
   <div class="table">
     <el-table ref="multipleTable" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
       <el-table-column align="center" label="编号" width="70">
@@ -21,8 +29,11 @@
       <el-table-column label="描述">
         <template slot-scope="scope">{{ scope.row.awardDescription }}</template>
       </el-table-column>
-      <el-table-column label="状态" width="100px">
-        <template slot-scope="scope">{{allStatusList[scope.row.governStatus]}}</template>
+      <el-table-column label="政府状态" width="100px">
+        <template slot-scope="scope">{{govStatusList[scope.row.governStatus]}}</template>
+      </el-table-column>
+      <el-table-column label="企业状态" width="100px">
+        <template slot-scope="scope">{{comStatusList[scope.row.companyStatus]}}</template>
       </el-table-column>
       <el-table-column label="创建时间" width="160px" align="center">
         <template slot-scope="scope">{{ scope.row.createDate }}</template>
@@ -102,6 +113,7 @@ import {
   govAdminStatic,
   copExpert,
   comAdminStatic,
+  reportOwnRole
 } from '@/api/award'
 import {
   statusFilter
@@ -109,7 +121,7 @@ import {
 import {
   notice
 } from '@/utils/tools'
-import { allStatusList } from '@/config/setting'
+import { govStatusList, comStatusList } from '@/config/setting'
 export default {
   data() {
     return {
@@ -123,12 +135,16 @@ export default {
       allotList: [], // 评审专员列表
       govChecked: [], // 政府选中
       comChecked: [], // 企业选中
-      allStatusList: allStatusList,
+      govStatusList: govStatusList,
+      comStatusList: comStatusList,
       paramsId: '', // 传入弹框id
+      statusList: [],
+      statusVal: '',
     };
   },
   created() {
-    this.getCompileList(this.currentPage, this.pageSize)
+    this.getStatusList()
+    this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
     this.getUserList()
   },
   computed: {
@@ -137,6 +153,16 @@ export default {
     }
   },
   methods: {
+    getStatusList () {
+      reportOwnRole({}).then(res => {
+        if (res && res.data && res.data[0]) {
+          this.statusList = res.data
+        }
+      })
+    },
+    initOption () {
+      this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
+    },
     getUserList () {
       userList({roleEnname: this.roleEnname === 'com_admin' ? 'com_self_reviewer':'review_experts'}).then(res => {
         if (res && res.data && res.data.data && res.data.data[0]) {
@@ -150,11 +176,12 @@ export default {
         }
       })
     },
-    getCompileList(currentPage, pageSize) {
+    getCompileList(currentPage, pageSize, statusVal) {
       this.listLoading = true;
       getReportCompileList({
         pageNo: currentPage,
-        pageSize: pageSize
+        pageSize: pageSize,
+        status: statusVal
       }).then(response => {
         this.list = response.data.data
         this.total = response.data.count
@@ -186,7 +213,7 @@ export default {
         }).then(res => {
           if (res.code == 1) {
             notice(1, "删除成功！", 1);
-            this.getCompileList(this.currentPage, this.pageSize);
+            this.getCompileList(this.currentPage, this.pageSize, this.statusVal);
           } else {
             notice(0, "删除失败！", 0);
           }
@@ -243,7 +270,7 @@ export default {
         }).then(res => {
           if (+res.code === 1) {
             notice(1, '统计成功', 1)
-            this.getCompileList(this.currentPage, this.pageSize)
+            this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
           } else {
             notice(0, '统计失败！', 0)
           }
@@ -265,7 +292,7 @@ export default {
         }).then(res => {
           if (+res.code === 1) {
             notice(1, '分配成功', 1)
-            this.getCompileList(this.currentPage, this.pageSize)
+            this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
           } else {
             notice(0, '分配失败！', 0)
           }
@@ -289,7 +316,7 @@ export default {
         }).then(res => {
           if (+res.code === 1) {
             notice(1, '分配成功', 1)
-            this.getCompileList(this.currentPage, this.pageSize)
+            this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
           } else {
             notice(0, '分配失败！', 0)
           }
@@ -310,7 +337,7 @@ export default {
         }).then(res => {
           if (+res.code === 1) {
             notice(1, '统计成功', 1)
-            this.getCompileList(this.currentPage, this.pageSize)
+            this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
           } else {
             notice(0, '统计失败！', 0)
           }
@@ -329,7 +356,7 @@ export default {
         }).then(res => {
           if (+res.code === 1) {
             notice(1, '退回成功', 1)
-            this.getCompileList(this.currentPage, this.pageSize)
+            this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
           } else {
             notice(0, '退回失败！', 0)
           }
@@ -348,7 +375,7 @@ export default {
         }).then(res => {
           if (+res.code === 1) {
             notice(1, '审核成功', 1)
-            this.getCompileList(this.currentPage, this.pageSize)
+            this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
           } else {
             notice(0, '审核失败！', 0)
           }
@@ -367,7 +394,7 @@ export default {
         }).then(res => {
           if (+res.code === 1) {
             notice(1, '提交审核成功', 1)
-            this.getCompileList(this.currentPage, this.pageSize)
+            this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
           } else {
             notice(0, '提交审核失败！', 0)
           }
@@ -386,7 +413,7 @@ export default {
         }).then(res => {
           if (+res.code === 1) {
             notice(1, '退回成功', 1)
-            this.getCompileList(this.currentPage, this.pageSize)
+            this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
           } else {
             notice(0, '退回失败！', 0)
           }
@@ -405,7 +432,7 @@ export default {
         }).then(res => {
           if (+res.code === 1) {
             notice(1, '提交成功', 1)
-            this.getCompileList(this.currentPage, this.pageSize)
+            this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
           } else {
             notice(0, '提交失败！', 0)
           }
@@ -423,7 +450,7 @@ export default {
       })
     },
     current_change (currentPage) {
-      this.getCompileList(currentPage, this.pageSize)
+      this.getCompileList(currentPage, this.pageSize, this.statusVal)
     }
   }
 };

@@ -2,10 +2,10 @@
 <div class="app-container">
   <el-select v-model="statusVal" placeholder="请选择状态" @change="initOption">
     <el-option
-      v-for="(item, index) in statusList"
-      :key="index"
-      :label="item"
-      :value="index">
+      v-for="item in statusList"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
     </el-option>
   </el-select>
   <div class="table">
@@ -52,7 +52,7 @@
       </el-table-column>
       <el-table-column label="状态">
         <template slot-scope="scope">
-          {{allStatusList[scope.row.status]}}
+          {{govStatusList[scope.row.status]}}
         </template>
       </el-table-column>
 
@@ -87,23 +87,18 @@ import {
   govAdminBack,
   expertToCom,
   comAdminAgree,
-  comAdminBack
+  comAdminBack,
+  gradeByRole
 } from '@/api/award'
 import {
   notice
 } from '@/utils/tools'
-import { allStatusList } from '@/config/setting'
+import { govStatusList } from '@/config/setting'
 export default {
   data() {
     return {
-      allStatusList: allStatusList,
-      statusList: {
-        '103010007': '待评审',
-        '103010008': '已提交，待审核',
-        '103010009': '审核通过',
-        '103010010': '评审结果被退回',
-        '103010011': '评审结果已纳入统计',
-      },
+      govStatusList: govStatusList,
+      statusList: [],
       statusVal: '',
       pageSize: 10,
       total: 0,
@@ -138,6 +133,7 @@ export default {
     }
   },
   created() {
+    this.getStatusList()
     this.fetchList(this.currentPage, this.pageSize, this.statusVal)
   },
   computed: {
@@ -146,6 +142,13 @@ export default {
     }
   },
   methods: {
+    getStatusList () {
+      gradeByRole({}).then(res => {
+        if (res && res.data && res.data[0]) {
+          this.statusList = res.data
+        }
+      })
+    },
     // 企业管理员退回自评专家评审结果
     comBack (row) {
       this.$prompt('请输入退回理由', '提示', {

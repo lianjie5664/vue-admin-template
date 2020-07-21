@@ -27,7 +27,7 @@ export function getReviewResult(data) {
 
 export function getOwnList(data) {
   return request({
-    url: '/qaReportCompile/listForOwn',
+    url: '/qaGradeOwn/totalList',
     method: 'post',
     data
   })
@@ -48,7 +48,3 @@ export function getOwnReviewResult(data) {
     data
   })
 }
-
-
-
-
