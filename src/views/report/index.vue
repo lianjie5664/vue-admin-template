@@ -48,11 +48,12 @@
         <template slot-scope="{row}">
           <el-button type="success" size="mini" plain @click="export2Word(row)">导出</el-button>
           <el-dropdown @command="handleCommand" trigger="click">
-            <el-button type="primary" size="mini" plain>
+            <el-button type="primary" size="mini" plain v-if="roleEnname !== 'admin'">
               更多
               <i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item v-show="roleEnname === 'com_admin'" :command="{type:'comMyh',params: row}">提交顾问打分</el-dropdown-item> <!--提交顾问打分-->
               <el-dropdown-item v-show="roleEnname === 'com_admin'" :command="{type:'comStatic',params: row}">统计结果</el-dropdown-item> <!--企业管理员统计自评专家评审结果-->
               <el-dropdown-item v-show="roleEnname === 'com_admin'" :command="{type:'comAllot',params: row}">分配自评专家</el-dropdown-item> <!--企业审核负责人分配专家-->
               <el-dropdown-item v-show="roleEnname === 'gov_admin'" :command="{type:'govStatic',params: row}">统计结果</el-dropdown-item> <!--政府管理员统计评审结果-->
@@ -113,7 +114,8 @@ import {
   govAdminStatic,
   copExpert,
   comAdminStatic,
-  reportOwnRole
+  reportOwnRole,
+  myhExpert
 } from '@/api/award'
 import {
   statusFilter
@@ -255,8 +257,30 @@ export default {
         case 'comStatic':
           this.toComStatic(command.params)
           break;
+        case 'comMyh':
+          this.toComMyh(command.params)
+          break;
         default:
       }
+    },
+    // 企业管理员提交报告编制给MYH专家评审
+    toComMyh (row) {
+      this.$confirm('确定提交此报告给MYH专家评审？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        myhExpert({
+          compileId: row.compileId
+        }).then(res => {
+          if (+res.code === 1) {
+            notice(1, '提交成功', 1)
+            this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
+          } else {
+            notice(0, '提交失败！', 0)
+          }
+        })
+      }).catch(() => {})
     },
     // 企业管理员统计自评专家评审结果
     toComStatic (row) {

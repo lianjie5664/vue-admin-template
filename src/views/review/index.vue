@@ -56,7 +56,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" width="230" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" width="230" align="center" class-name="small-padding fixed-width" v-if="roleEnname !== 'admin'">
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" plain v-show="roleEnname === 'review_experts'">
             <router-link :to="{path:'/review/professor',

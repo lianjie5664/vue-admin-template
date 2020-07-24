@@ -22,8 +22,8 @@
       </el-table-column>
       <el-table-column label="分数">
         <template slot-scope="scope">
-          <router-link :to="{path:'/creview/professor',
-            query:{awardId: scope.row.awardId, gradeTotalOwnId: scope.row.gradeTotalOwnId}}">{{scope.row.total}}</router-link>
+          <router-link :to="{path:'/mreview/professor',
+            query:{awardId: scope.row.awardId, gradeTotalMyhId: scope.row.gradeTotalMyhId}}">{{scope.row.total}}</router-link>
         </template>
       </el-table-column>
       <el-table-column label="编制人">
@@ -36,15 +36,12 @@
           {{ scope.row.updateDate }}
         </template>
       </el-table-column>
-
       <el-table-column label="操作" width="230" align="center" class-name="small-padding fixed-width" v-if="roleEnname !== 'admin'">
         <template slot-scope="{row}">
-          <el-button type="primary" size="mini" plain v-show="roleEnname === 'com_self_reviewer'">
-            <router-link :to="{path:'/creview/professor',query:{awardId:row.awardId, gradeTotalOwnId: row.gradeTotalOwnId}}">自评</router-link>
+          <el-button type="primary" size="mini" plain v-show="roleEnname === 'myh_experts'">
+            <router-link :to="{path:'/mreview/professor',query:{awardId:row.awardId, gradeTotalMyhId: row.gradeTotalMyhId}}">顾问打分</router-link>
           </el-button>
-          <el-button v-show="roleEnname === 'com_self_reviewer'" type="primary" size="mini" plain @click="toComAduit(row)">提交自评结果</el-button>
-          <el-button v-show="roleEnname === 'com_admin'" type="primary" size="mini" plain @click="comAgree(row)">通过</el-button>
-          <el-button v-show="roleEnname === 'com_admin'" type="primary" size="mini" plain @click="comBack(row)">退回</el-button>
+          <el-button v-show="roleEnname === 'myh_experts'" type="primary" size="mini" plain @click="toComAduit(row)">提交打分结果</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -55,13 +52,11 @@
 </template>
 <script>
 import {
-  getOwnList
+  getGwList
 } from '@/api/review'
 import {
   gradeOwnRole,
-  expertToCom,
-  comAdminAgree,
-  comAdminBack
+  myhExpertAgree,
 } from '@/api/award'
 import {
   notice
@@ -76,9 +71,6 @@ export default {
       currentPage: 1,
       list: null,
       listLoading: false,
-      awardVisble: {
-        v: false
-      },
       selectedRow: '',
       formData: {
         awardList: [{
@@ -127,7 +119,7 @@ export default {
     },
     fetchList(currentPage, pageSize, statusVal) {
       this.listLoading = true
-      getOwnList({
+      getGwList({
         pageNo: currentPage,
         pageSize: pageSize,
         status: statusVal
@@ -137,53 +129,15 @@ export default {
         this.total = response.data.count
       })
     },
-    // 企业管理员退回自评专家评审结果
-    comBack (row) {
-      this.$prompt('请输入退回理由', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-      }).then((val) => {
-        comAdminBack({
-          'gradeTotalOwnId': row.gradeTotalOwnId,
-          'backRemark': val.value
-        }).then(res => {
-          if (+res.code === 1) {
-            notice(1, '退回成功', 1)
-            this.fetchList(this.currentPage, this.pageSize, this.statusVal)
-          } else {
-            notice(0, '退回失败！', 0)
-          }
-        })
-      }).catch(() => {})
-    },
-    // 企业管理员审核通过自评专家评审结果
-    comAgree (row) {
-      this.$confirm('确定审核通过自评结果吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        comAdminAgree({
-          'gradeTotalOwnId': row.gradeTotalOwnId
-        }).then(res => {
-          if (+res.code === 1) {
-            notice(1, '审核成功', 1)
-            this.fetchList(this.currentPage, this.pageSize, this.statusVal)
-          } else {
-            notice(0, '审核失败！', 0)
-          }
-        })
-      }).catch(() => {})
-    },
-    // 企业自评专家提交评审结果
+    // 顾问-MYH专家提交评审结果
     toComAduit (row) {
-      this.$confirm('确定提交自评结果吗？', '提示', {
+      this.$confirm('确定提交本次打分结果吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        expertToCom({
-          gradeTotalOwnId: row.gradeTotalOwnId
+        myhExpertAgree({
+          gradeTotalMyhId: row.gradeTotalMyhId
         }).then(res => {
           if (+res.code === 1) {
             notice(1, '提交成功', 1)
@@ -194,28 +148,16 @@ export default {
         })
       }).catch(() => {})
     },
-    showAwardForm() {
-      this.awardVisble.v = true
-    },
-    handleDel(row) {
-      this.$confirm('确定要删除吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-
-      }).catch(() => {});
-    },
     handleSelectionChange(selection) {
       if (selection.length > 1) {
-        let del_row = selection.shift();
-        this.$refs.multipleTable.toggleRowSelection(del_row, false);
+        let del_row = selection.shift()
+        this.$refs.multipleTable.toggleRowSelection(del_row, false)
       }
       if (selection.length != 0) {
         this.selectedRow = selection[0].id
       }
     },
-    current_change(currentPage) {
+    current_change (currentPage) {
       this.fetchList(currentPage, this.pageSize, this.statusVal)
     }
   }

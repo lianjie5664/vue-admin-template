@@ -48,3 +48,30 @@ export function getOwnReviewResult(data) {
     data
   })
 }
+
+// 顾问评审结果列表
+export function getGwList(data) {
+  return request({
+    url: '/qaGradeMyh/totalList',
+    method: 'post',
+    data
+  })
+}
+
+// 查询顾问评审详情
+export function getMyhResult(data) {
+  return request({
+    url: '/qaGradeMyh/get',
+    method: 'post',
+    data
+  })
+}
+
+// 保存/修改顾问打分
+export function saveMyh(data) {
+  return request({
+    url: '/qaGradeMyh/save',
+    method: 'post',
+    data
+  })
+}

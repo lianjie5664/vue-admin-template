@@ -345,3 +345,21 @@ export function reportOwnRole(data) {
     data
   })
 }
+
+// 顾问-MYH专家提交评审结果
+export function myhExpertAgree(data) {
+  return request({
+    url: '/qaReportCompile/myhExpertAgree',
+    method: 'post',
+    data
+  })
+}
+
+// 企业管理员提交报告编制给MYH专家评审
+export function myhExpert(data) {
+  return request({
+    url: '/qaReportCompile/adminAllotMyhExpert',
+    method: 'post',
+    data
+  })
+}
