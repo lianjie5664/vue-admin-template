@@ -72,12 +72,19 @@
           </el-row>
           <el-row >
             <el-col>
-              <div class="mb15">
-                <v-Distpicker :placeholders="distholders" @selected="onSelected"></v-Distpicker>
-                <el-form-item>
-                  <el-input placeholder="详细地址" class="mt15" v-model="formParams.detailAddress"></el-input>
-                </el-form-item>
-              </div>
+              <!-- <v-Distpicker :placeholders="distholders" @selected="onSelected"></v-Distpicker> -->
+              <el-form-item label="" prop="address">
+                <el-cascader
+                  :options="options"
+                  style="width:570px;"
+                  v-model="formParams.address"
+                  placeholder="请选择归属区域"
+                  :props="{ expandTrigger: 'hover' }"
+                ></el-cascader>
+              </el-form-item>
+              <el-form-item>
+                <el-input placeholder="详细地址" v-model="formParams.detailAddress"></el-input>
+              </el-form-item>
             </el-col>
           </el-row>
           <el-row>
@@ -104,6 +111,7 @@
 import './register.scss'
 import {industies} from '@/utils/industry'
 import VDistpicker from 'v-distpicker'
+import { regionData } from "element-china-area-data";
 import { register, sendcode } from '@/api/user'
 export default {
   components: { VDistpicker },
@@ -133,6 +141,7 @@ export default {
         city: '长沙市',
         area: '请选择区域'
       },
+      options:regionData,
       loading: false,
       logoImg: require('@/assets/imgs/logo.png'),
       timer:null,
@@ -163,16 +172,24 @@ export default {
         linkman: [{ required: true, message:'联系人不能为空'}],
         phone: [{ required: true, message:'手机号不能为空'}],
         email: [{ required: true, message:'邮箱不能为空'}],
-        remarks: [{ required: true, message:'简介不能为空'}]
+        remarks: [{ required: true, message:'简介不能为空'}],
+        address: [
+          {
+            required: true,
+            type: "array",
+            message: "归属地不能为空",
+            trigger: "blur"
+          }
+        ],
       }
     }
   },
   methods: {
-    onSelected (val) {
-      if (val && this.formParams.detailAddress) {
-        this.formParams.address = val.province.value + val.city.value + val.area.value + this.formParams.detailAddress
-      }
-    },
+    // onSelected (val) {
+    //   if (val && this.formParams.detailAddress) {
+    //     this.formParams.address = val.province.value + val.city.value + val.area.value + this.formParams.detailAddress
+    //   }
+    // },
     getCode () {
       if (this.formParams.phone) {
         const params = {
@@ -208,8 +225,8 @@ export default {
     toRegister () {
       this.$refs.registerForm.validate(valid => {
         if (valid) {
-          this.loading = true
           register(this.formParams).then(res => {
+            this.loading = true
             if (+res.code === 1) {
               this.loading = false
               this.$message({
@@ -224,9 +241,7 @@ export default {
               this.$message.error(res.msg)
             }
           })
-        } else {
-          return false
-        }
+        } 
       })
     }
   }

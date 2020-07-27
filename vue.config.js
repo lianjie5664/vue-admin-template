@@ -44,7 +44,7 @@ module.exports = {
       '/api': {
         // target: 'http://xmfapi.cecicloud.com/api',
         // target: 'http://192.168.0.103:8080/api',
-        target: 'http://localhost:8083/co_matur/api',
+        target: 'http://112.126.58.180:9090/em/api',
         ws: true, // 使用的是http协议则设置为false，https协议则设置为true
         secure:false,
         changeOrigin: true,

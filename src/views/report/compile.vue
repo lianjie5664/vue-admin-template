@@ -159,6 +159,7 @@ export default {
       this.loading = true
       getPoints({standardId:id}).then(res =>{
         if(res.code == 1){
+          debugger
           let result = res.data
           // 获取关键点列表
           let generaKeyPointList = result.keyPointsList
