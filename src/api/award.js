@@ -337,10 +337,19 @@ export function gradeByRole(data) {
   })
 }
 
-// 报告编制列表页面根据用户角色获取能够显示的状态
-export function reportOwnRole(data) {
+// 报告编制列表页面政府的状态
+export function reportGovRole(data) {
   return request({
-    url: '/qaReportCompile/reportListByRole',
+    url: '/qaReportCompile/reportGovListByRole',
+    method: 'post',
+    data
+  })
+}
+
+// 报告编制列表页面企业的状态
+export function reportComRole(data) {
+  return request({
+    url: '/qaReportCompile/reportComListByRole',
     method: 'post',
     data
   })
