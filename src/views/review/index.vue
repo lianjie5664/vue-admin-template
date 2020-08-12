@@ -1,6 +1,6 @@
 <template>
 <div class="app-container">
-  <el-select v-model="statusVal" placeholder="请选择状态" @change="initOption">
+  <el-select v-model="statusVal" placeholder="请选择状态" @change="initOption" clearable>
     <el-option
       v-for="item in statusList"
       :key="item.value"
