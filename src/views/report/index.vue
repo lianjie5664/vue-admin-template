@@ -1,6 +1,6 @@
 <template>
 <div class="app-container">
-  <el-select v-model="governStatus" placeholder="请选择政府流程状态" @change="initOption" clearable>
+  <el-select v-model="governStatus" placeholder="请选择政府流程状态" @change="initOption" clearable class="mr10">
     <el-option
       v-for="item in govStatusRole"
       :key="item.value"

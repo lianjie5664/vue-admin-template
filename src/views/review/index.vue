@@ -58,16 +58,18 @@
 
       <el-table-column label="操作" width="230" align="center" class-name="small-padding fixed-width" v-if="roleEnname !== 'admin'">
         <template slot-scope="{row}">
-          <el-button type="primary" size="mini" plain v-show="roleEnname === 'review_experts'">
+          <el-button type="primary" size="mini" plain v-show="roleEnname === 'review_experts' && (+row.status === 103020007 || +row.status === 103020010)">
             <router-link :to="{path:'/review/professor',
                             query:{awardId:row.awardId,
                             reportUserId:row.createUserId,
                             gradeTotalId: row.gradeTotalId,
                             createUserId:row.createUserId,gradeUserId:row.gradeUserId}}">评审</router-link>
           </el-button>
-          <el-button v-show="roleEnname === 'review_experts'" type="primary" size="mini" plain @click="toAduit(row)">提交评审结果</el-button>
-          <el-button v-show="roleEnname === 'gov_admin'" type="primary" size="mini" plain @click="toAgree(row)">审核通过</el-button>
-          <el-button v-show="roleEnname === 'gov_admin'" type="primary" size="mini" plain @click="toBack(row)">审核退回</el-button>
+          <el-button v-show="roleEnname === 'review_experts' && +row.status === 103020007" type="primary" size="mini" plain @click="toAduit(row)">提交评审结果</el-button>
+          <el-button v-show="roleEnname === 'gov_admin' && +row.status === 103020008" type="primary" size="mini" plain @click="toAgree(row)">审核通过</el-button>
+          <el-button v-show="roleEnname === 'gov_admin' && +row.status === 103020009" type="primary" size="mini" plain @click="toBack(row)">审核退回</el-button>
+          <el-button size="mini" disabled v-show="+row.status !== 103020007 || +row.status !== 103020008 || +row.status !== 103020009 || +row.status !== 103020010">暂无</el-button>
+
           <el-button v-show="roleEnname === 'com_self_reviewer'" type="primary" size="mini" plain @click="toComAduit(row)">提交自评结果</el-button>
           <el-button v-show="roleEnname === 'com_admin'" type="primary" size="mini" plain @click="comAgree(row)">通过</el-button>
           <el-button v-show="roleEnname === 'com_admin'" type="primary" size="mini" plain @click="comBack(row)">退回</el-button>
