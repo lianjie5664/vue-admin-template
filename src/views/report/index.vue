@@ -1,8 +1,16 @@
 <template>
 <div class="app-container">
-  <el-select v-model="statusVal" placeholder="请选择状态" @change="initOption">
+  <el-select v-model="governStatus" placeholder="请选择政府流程状态" @change="initOption" clearable class="mr10">
     <el-option
-      v-for="item in statusList"
+      v-for="item in govStatusRole"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
+  <el-select v-model="companyStatus" placeholder="请选择企业流程状态" @change="initOption" clearable>
+    <el-option
+      v-for="item in comStatusRole"
       :key="item.value"
       :label="item.label"
       :value="item.value">
@@ -52,10 +60,7 @@
       <el-table-column label="更新时间" width="160" align="center">
         <template slot-scope="scope">{{ scope.row.updateDate }}</template>
       </el-table-column>
-      <!-- <el-table-column label="状态" align="center">
-          <template slot-scope="scope">{{ scope.row.status }}</template>
-        </el-table-column> -->
-      <el-table-column label="操作" width="200" fixed="right" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" width="160" align="center" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="success" size="mini" plain @click="export2Word(row)">导出</el-button>
           <el-dropdown @command="handleCommand" trigger="click" v-if="roleEnname !== 'admin'">
@@ -125,7 +130,8 @@ import {
   govAdminStatic,
   copExpert,
   comAdminStatic,
-  reportOwnRole,
+  reportGovRole,
+  reportComRole,
   myhExpert
 } from '@/api/award'
 import {
@@ -151,13 +157,15 @@ export default {
       govStatusList: govStatusList,
       comStatusList: comStatusList,
       paramsId: '', // 传入弹框id
-      statusList: [],
-      statusVal: '',
+      govStatusRole: [],
+      comStatusRole: [],
+      governStatus: '',
+      companyStatus: ''
     };
   },
   created() {
     this.getStatusList()
-    this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
+    this.getCompileList(this.currentPage, this.pageSize, this.governStatus, this.companyStatus)
     this.getUserList()
   },
   computed: {
@@ -167,14 +175,19 @@ export default {
   },
   methods: {
     getStatusList () {
-      reportOwnRole({}).then(res => {
+      reportGovRole({}).then(res => {
         if (res && res.data && res.data[0]) {
-          this.statusList = res.data
+          this.govStatusRole = res.data
+        }
+      })
+      reportComRole({}).then(res => {
+        if (res && res.data && res.data[0]) {
+          this.comStatusRole = res.data
         }
       })
     },
     initOption () {
-      this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
+      this.getCompileList(this.currentPage, this.pageSize, this.governStatus, this.companyStatus)
     },
     getUserList () {
       userList({roleEnname: this.roleEnname === 'com_admin' ? 'com_self_reviewer':'review_experts'}).then(res => {
@@ -189,12 +202,13 @@ export default {
         }
       })
     },
-    getCompileList(currentPage, pageSize, statusVal) {
+    getCompileList(currentPage, pageSize, governStatus, companyStatus) {
       this.listLoading = true;
       getReportCompileList({
         pageNo: currentPage,
         pageSize: pageSize,
-        status: statusVal
+        governStatus: governStatus,
+        companyStatus: companyStatus
       }).then(response => {
         this.list = response.data.data
         this.total = response.data.count
@@ -225,13 +239,13 @@ export default {
           compileId: row.compileId
         }).then(res => {
           if (res.code == 1) {
-            notice(1, "删除成功！", 1);
-            this.getCompileList(this.currentPage, this.pageSize, this.statusVal);
+            notice(1, "删除成功！", 1)
+            this.getCompileList(this.currentPage, this.pageSize, this.governStatus, this.companyStatus)
           } else {
-            notice(0, "删除失败！", 0);
+            notice(0, "删除失败！", 0)
           }
-        });
-      }).catch(() => {});
+        })
+      }).catch(() => {})
     },
     handleCommand(command) {
       switch (command.type) {
@@ -286,7 +300,7 @@ export default {
         }).then(res => {
           if (+res.code === 1) {
             notice(1, '提交成功', 1)
-            this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
+            this.getCompileList(this.currentPage, this.pageSize, this.governStatus, this.companyStatus)
           } else {
             notice(0, '提交失败！', 0)
           }
@@ -305,7 +319,7 @@ export default {
         }).then(res => {
           if (+res.code === 1) {
             notice(1, '统计成功', 1)
-            this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
+            this.getCompileList(this.currentPage, this.pageSize, this.governStatus, this.companyStatus)
           } else {
             notice(0, '统计失败！', 0)
           }
@@ -327,7 +341,7 @@ export default {
         }).then(res => {
           if (+res.code === 1) {
             notice(1, '分配成功', 1)
-            this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
+            this.getCompileList(this.currentPage, this.pageSize, this.governStatus, this.companyStatus)
           } else {
             notice(0, '分配失败！', 0)
           }
@@ -351,7 +365,7 @@ export default {
         }).then(res => {
           if (+res.code === 1) {
             notice(1, '分配成功', 1)
-            this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
+            this.getCompileList(this.currentPage, this.pageSize, this.governStatus, this.companyStatus)
           } else {
             notice(0, '分配失败！', 0)
           }
@@ -372,7 +386,7 @@ export default {
         }).then(res => {
           if (+res.code === 1) {
             notice(1, '统计成功', 1)
-            this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
+            this.getCompileList(this.currentPage, this.pageSize, this.governStatus, this.companyStatus)
           } else {
             notice(0, '统计失败！', 0)
           }
@@ -391,7 +405,7 @@ export default {
         }).then(res => {
           if (+res.code === 1) {
             notice(1, '退回成功', 1)
-            this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
+            this.getCompileList(this.currentPage, this.pageSize, this.governStatus, this.companyStatus)
           } else {
             notice(0, '退回失败！', 0)
           }
@@ -410,7 +424,7 @@ export default {
         }).then(res => {
           if (+res.code === 1) {
             notice(1, '审核成功', 1)
-            this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
+            this.getCompileList(this.currentPage, this.pageSize, this.governStatus, this.companyStatus)
           } else {
             notice(0, '审核失败！', 0)
           }
@@ -429,7 +443,7 @@ export default {
         }).then(res => {
           if (+res.code === 1) {
             notice(1, '提交审核成功', 1)
-            this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
+            this.getCompileList(this.currentPage, this.pageSize, this.governStatus, this.companyStatus)
           } else {
             notice(0, '提交审核失败！', 0)
           }
@@ -448,7 +462,7 @@ export default {
         }).then(res => {
           if (+res.code === 1) {
             notice(1, '退回成功', 1)
-            this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
+            this.getCompileList(this.currentPage, this.pageSize, this.governStatus, this.companyStatus)
           } else {
             notice(0, '退回失败！', 0)
           }
@@ -467,7 +481,7 @@ export default {
         }).then(res => {
           if (+res.code === 1) {
             notice(1, '提交成功', 1)
-            this.getCompileList(this.currentPage, this.pageSize, this.statusVal)
+            this.getCompileList(this.currentPage, this.pageSize, this.governStatus, this.companyStatus)
           } else {
             notice(0, '提交失败！', 0)
           }
@@ -485,7 +499,7 @@ export default {
       })
     },
     current_change (currentPage) {
-      this.getCompileList(currentPage, this.pageSize, this.statusVal)
+      this.getCompileList(currentPage, this.pageSize, this.governStatus, this.companyStatus)
     }
   }
 };

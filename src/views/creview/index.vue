@@ -31,9 +31,9 @@
           {{ scope.row.companyName }}
         </template>
       </el-table-column>
-      <el-table-column label="状态">
+      <el-table-column label="评审人">
         <template slot-scope="scope">
-          {{comStatusList[scope.row.status]}}
+          {{ scope.row.gradeUserName }}
         </template>
       </el-table-column>
       <el-table-column label="评审时间">
@@ -41,15 +41,20 @@
           {{ scope.row.updateDate }}
         </template>
       </el-table-column>
-
+      <el-table-column label="状态">
+        <template slot-scope="scope">
+          {{comStatusList[scope.row.status]}}
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="230" align="center" class-name="small-padding fixed-width" v-if="roleEnname !== 'admin'">
         <template slot-scope="{row}">
-          <el-button type="primary" size="mini" plain v-show="roleEnname === 'com_self_reviewer'">
+          <el-button type="primary" size="mini" plain v-show="roleEnname === 'com_self_reviewer' && (+row.status === 103020003 || +row.status === 103020006)">
             <router-link :to="{path:'/creview/professor',query:{awardId:row.awardId, gradeTotalOwnId: row.gradeTotalOwnId}}">自评</router-link>
           </el-button>
-          <el-button v-show="roleEnname === 'com_self_reviewer'" type="primary" size="mini" plain @click="toComAduit(row)">提交自评结果</el-button>
-          <el-button v-show="roleEnname === 'com_admin'" type="primary" size="mini" plain @click="comAgree(row)">通过</el-button>
-          <el-button v-show="roleEnname === 'com_admin'" type="primary" size="mini" plain @click="comBack(row)">退回</el-button>
+          <el-button v-show="roleEnname === 'com_self_reviewer' && +row.status === 103020003" type="primary" size="mini" plain @click="toComAduit(row)">提交自评结果</el-button>
+          <el-button v-show="roleEnname === 'com_admin' && +row.status === 103020004" type="primary" size="mini" plain @click="comAgree(row)">通过</el-button>
+          <el-button v-show="roleEnname === 'com_admin' && +row.status === 103020005" type="primary" size="mini" plain @click="comBack(row)">退回</el-button>
+          <el-button size="mini" disabled v-show="+row.status !== 103020003 || +row.status !== 103020004 || +row.status !== 103020005 || +row.status !== 103020006">暂无</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -75,7 +80,7 @@ import { comStatusList } from '@/config/setting'
 export default {
   data() {
     return {
-      comStatusList:comStatusList,
+      comStatusList: comStatusList,
       statusList: [],
       statusVal: '',
       pageSize: 10,
