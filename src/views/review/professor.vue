@@ -273,6 +273,7 @@ export default {
       })
     },
     handleNumCon (row) {
+      debugger
       let cloneData = this.optionData
       let filterCate =  cloneData.filter(father => father.score != "")
       let subArr = {}

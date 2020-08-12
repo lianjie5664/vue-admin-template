@@ -31,6 +31,11 @@
           {{ scope.row.companyName }}
         </template>
       </el-table-column>
+      <el-table-column label="状态">
+        <template slot-scope="scope">
+          {{comStatusList[scope.row.status]}}
+        </template>
+      </el-table-column>
       <el-table-column label="评审时间">
         <template slot-scope="scope">
           {{ scope.row.updateDate }}
@@ -66,9 +71,11 @@ import {
 import {
   notice
 } from '@/utils/tools'
+import { comStatusList } from '@/config/setting'
 export default {
   data() {
     return {
+      comStatusList:comStatusList,
       statusList: [],
       statusVal: '',
       pageSize: 10,

@@ -56,7 +56,7 @@
               </el-col>
             </el-row>
           </el-tab-pane>
-          <el-tab-pane label="报告编制组件配置" name="second">
+          <el-tab-pane v-if="roleEnname == 'admin'" label="报告编制组件配置" name="second">
             <el-alert
               style="margin-bottom:12px;"
               title="此处为指标库的动态表单配置，针对无关键点的自定义表单，若已配置过关键点，则无需配置此处！"
@@ -227,7 +227,12 @@ export default {
     tableData(newVal) {
       this.formData = newVal;
     }
-  }
+  },
+  computed: {
+    roleEnname () {
+      return this.$store.getters.roleEnname
+    }
+  },
 };
 </script>
 

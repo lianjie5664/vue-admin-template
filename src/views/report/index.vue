@@ -9,8 +9,19 @@
     </el-option>
   </el-select>
   <div class="table">
-    <el-table ref="multipleTable" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
-      <el-table-column align="center" label="编号" width="70">
+    <el-table ref="multipleTable" 
+      v-loading="listLoading" 
+      :data="list" 
+      element-loading-text="Loading" 
+      border 
+      fit 
+      highlight-current-row>
+      <el-table-column type="expand">
+          <template slot-scope="props">
+            {{ props.row.compileTime }}
+          </template>
+      </el-table-column>
+      <el-table-column align="center" fixed label="编号" width="70">
         <template slot-scope="scope">{{ scope.$index + 1 }}</template>
       </el-table-column>
       <el-table-column label="所属年度" width="90px" align="center">
@@ -18,37 +29,37 @@
           <span>{{ scope.row.compileTime }} 年</span>
         </template>
       </el-table-column>
-      <el-table-column label="奖项名称">
+      <el-table-column label="奖项名称" width="250">
         <template slot-scope="scope">{{ scope.row.awardName }}</template>
       </el-table-column>
-      <el-table-column label="地区" width="120px">
+      <el-table-column label="地区" width="120">
         <template slot-scope="scope">
           <span>{{ scope.row.awardArea }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="描述">
+      <el-table-column label="描述" width="200">
         <template slot-scope="scope">{{ scope.row.awardDescription }}</template>
       </el-table-column>
-      <el-table-column label="政府状态" width="100px">
+      <el-table-column label="政府审核状态" width="350">
         <template slot-scope="scope">{{govStatusList[scope.row.governStatus]}}</template>
       </el-table-column>
-      <el-table-column label="企业状态" width="100px">
+      <el-table-column label="企业审核状态" width="300">
         <template slot-scope="scope">{{comStatusList[scope.row.companyStatus]}}</template>
       </el-table-column>
-      <el-table-column label="创建时间" width="160px" align="center">
+      <el-table-column label="创建时间" width="160" align="center">
         <template slot-scope="scope">{{ scope.row.createDate }}</template>
       </el-table-column>
-      <el-table-column label="更新时间" width="160px" align="center">
+      <el-table-column label="更新时间" width="160" align="center">
         <template slot-scope="scope">{{ scope.row.updateDate }}</template>
       </el-table-column>
       <!-- <el-table-column label="状态" align="center">
           <template slot-scope="scope">{{ scope.row.status }}</template>
         </el-table-column> -->
-      <el-table-column label="操作" width="160" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" width="200" fixed="right" align="center" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="success" size="mini" plain @click="export2Word(row)">导出</el-button>
-          <el-dropdown @command="handleCommand" trigger="click">
-            <el-button type="primary" size="mini" plain v-if="roleEnname !== 'admin'">
+          <el-dropdown @command="handleCommand" trigger="click" v-if="roleEnname !== 'admin'">
+            <el-button type="primary" size="mini" plain>
               更多
               <i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
