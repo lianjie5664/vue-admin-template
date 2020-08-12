@@ -372,3 +372,12 @@ export function myhExpert(data) {
     data
   })
 }
+
+// MYH显示的状态
+export function gradeMyhRole(data) {
+  return request({
+    url: '/qaReportCompile/gradeTotalMyhListByRole',
+    method: 'post',
+    data
+  })
+}

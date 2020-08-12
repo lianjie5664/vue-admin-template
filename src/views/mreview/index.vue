@@ -1,6 +1,6 @@
 <template>
 <div class="app-container">
-  <el-select v-model="statusVal" placeholder="请选择状态" @change="initOption">
+  <el-select v-model="statusVal" placeholder="请选择状态" @change="initOption" clearable>
     <el-option
       v-for="item in statusList"
       :key="item.value"
@@ -38,10 +38,11 @@
       </el-table-column>
       <el-table-column label="操作" width="230" align="center" class-name="small-padding fixed-width" v-if="roleEnname !== 'admin'">
         <template slot-scope="{row}">
-          <el-button type="primary" size="mini" plain v-show="roleEnname === 'myh_experts'">
+          <el-button type="primary" size="mini" plain v-show="roleEnname === 'myh_experts' && +row.status === 103030003">
             <router-link :to="{path:'/mreview/professor',query:{awardId:row.awardId, gradeTotalMyhId: row.gradeTotalMyhId}}">顾问打分</router-link>
           </el-button>
-          <el-button v-show="roleEnname === 'myh_experts'" type="primary" size="mini" plain @click="toComAduit(row)">提交打分结果</el-button>
+          <el-button v-show="roleEnname === 'myh_experts' && +row.status === 103030003" type="primary" size="mini" plain @click="toComAduit(row)">提交打分结果</el-button>
+          <el-button size="mini" disabled  v-show="+row.status !== 103030003">暂无</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -55,7 +56,7 @@ import {
   getGwList
 } from '@/api/review'
 import {
-  gradeOwnRole,
+  gradeMyhRole,
   myhExpertAgree,
 } from '@/api/award'
 import {
@@ -108,7 +109,7 @@ export default {
   },
   methods: {
     getStatusList () {
-      gradeOwnRole({}).then(res => {
+      gradeMyhRole({}).then(res => {
         if (res && res.data && res.data[0]) {
           this.statusList = res.data
         }
