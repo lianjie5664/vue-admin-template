@@ -40,7 +40,7 @@
       <el-table-column label="政府状态" width="100px">
         <template slot-scope="scope">{{govStatusList[scope.row.governStatus]}}</template>
       </el-table-column>
-      <el-table-column label="企业状态" width="100px">
+      <el-table-column label="企业状态" width="100px" v-show="roleEnname !== 'gov_audit' || roleEnname !== 'gov_admin' || roleEnname !== 'gov_inter' || roleEnname !== 'review_experts'">
         <template slot-scope="scope">{{comStatusList[scope.row.companyStatus]}}</template>
       </el-table-column>
       <el-table-column label="创建时间" width="160px" align="center">
