@@ -21,7 +21,13 @@
       </el-table-column>
       <el-table-column label="奖项类型">
         <template slot-scope="scope">
-          {{ scope.row.awardName }}
+          <router-link
+            :to="{ path:'/review/professor',
+            query:{ awardId: scope.row.awardId,
+            reportUserId: scope.row.createUserId,
+            gradeTotalId: scope.row.gradeTotalId,
+            createUserId: scope.row.createUserId,
+            gradeUserId: scope.row.gradeUserId }}">{{scope.row.awardName}}</router-link>
         </template>
       </el-table-column>
       <el-table-column label="分数">
@@ -68,7 +74,7 @@
           <el-button v-show="roleEnname === 'review_experts' && +row.status === 103020007" type="primary" size="mini" plain @click="toAduit(row)">提交评审结果</el-button>
           <el-button v-show="roleEnname === 'gov_admin' && +row.status === 103020008" type="primary" size="mini" plain @click="toAgree(row)">审核通过</el-button>
           <el-button v-show="roleEnname === 'gov_admin' && +row.status === 103020009" type="primary" size="mini" plain @click="toBack(row)">审核退回</el-button>
-          <el-button size="mini" disabled v-show="+row.status !== 103020007 || +row.status !== 103020008 || +row.status !== 103020009 || +row.status !== 103020010">暂无</el-button>
+          <!-- <el-button size="mini" disabled v-show="+row.status !== 103020007 || +row.status !== 103020008 || +row.status !== 103020009 || +row.status !== 103020010">暂无</el-button> -->
 
           <el-button v-show="roleEnname === 'com_self_reviewer'" type="primary" size="mini" plain @click="toComAduit(row)">提交自评结果</el-button>
           <el-button v-show="roleEnname === 'com_admin'" type="primary" size="mini" plain @click="comAgree(row)">通过</el-button>

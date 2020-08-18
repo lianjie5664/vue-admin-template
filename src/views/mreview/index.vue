@@ -17,7 +17,8 @@
       </el-table-column>
       <el-table-column label="奖项类型">
         <template slot-scope="scope">
-          {{ scope.row.awardName }}
+          <router-link :to="{path:'/mreview/professor',
+            query:{awardId: scope.row.awardId, gradeTotalMyhId: scope.row.gradeTotalMyhId}}">{{ scope.row.awardName }}</router-link>
         </template>
       </el-table-column>
       <el-table-column label="分数">
@@ -42,7 +43,7 @@
             <router-link :to="{path:'/mreview/professor',query:{awardId:row.awardId, gradeTotalMyhId: row.gradeTotalMyhId}}">顾问打分</router-link>
           </el-button>
           <el-button v-show="roleEnname === 'myh_experts' && +row.status === 103030003" type="primary" size="mini" plain @click="toComAduit(row)">提交打分结果</el-button>
-          <el-button size="mini" disabled  v-show="+row.status !== 103030003">暂无</el-button>
+          <!-- <el-button size="mini" disabled v-show="+row.status !== 103030003">暂无</el-button> -->
         </template>
       </el-table-column>
     </el-table>
