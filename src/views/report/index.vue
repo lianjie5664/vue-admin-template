@@ -29,10 +29,15 @@
           <span>{{ scope.row.compileTime }} 年</span>
         </template>
       </el-table-column>
+      <el-table-column label="企业名称" v-show="roleEnname == 'gov_admin'">
+        <template slot-scope="scope">
+          <span>{{ scope.row.companyName }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="奖项名称">
         <template slot-scope="scope">{{ scope.row.awardName }}</template>
       </el-table-column>
-      <el-table-column label="地区" width="120px">
+      <el-table-column label="地区" width="90px">
         <template slot-scope="scope">
           <span>{{ scope.row.awardArea }}</span>
         </template>
@@ -118,7 +123,7 @@ import {
   govInterAgree,
   govInterBack,
   govExpert,
-  userList,
+  getReList,
   govAdminStatic,
   copExpert,
   comAdminStatic,
@@ -182,7 +187,7 @@ export default {
       this.getCompileList(this.currentPage, this.pageSize, this.governStatus, this.companyStatus)
     },
     getUserList () {
-      userList({roleEnname: this.roleEnname === 'com_admin' ? 'com_self_reviewer':'review_experts'}).then(res => {
+      getReList({enName: this.roleEnname === 'com_admin' ? 'com_self_reviewer':'review_experts'}).then(res => {
         if (res && res.data && res.data.data && res.data.data[0]) {
           let newdata = res.data.data
           newdata.forEach(item => {
@@ -209,16 +214,12 @@ export default {
     },
     export2Word(row) {
       let data = {
+        compileId: row.compileId,
         createUserId: row.createUserId,
         awardId: row.awardId,
         filename: row.compileTime + '年' + row.createUserName + ' - ' + row.awardName
       };
-      exportWord(data).then(res => {
-        // console.log(res)
-        // if(res.code == 1){
-        //     alert('daochuchenggong!')
-        // }
-      });
+      exportWord(data).then(res => {})
     },
     // 删除编制项
     handleDelRecord(row) {

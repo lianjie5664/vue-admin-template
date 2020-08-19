@@ -25,9 +25,19 @@ export function getReviewResult(data) {
   })
 }
 
-export function getOwnList(data) {
+// 查询企业评审列表
+export function getNewOwnList(data) {
   return request({
     url: '/qaGradeOwn/totalList',
+    method: 'post',
+    data
+  })
+}
+
+// 查询企业自评专家评审列表
+export function getOwnList(data) {
+  return request({
+    url: '/qaReportCompile/gradeOwnList',
     method: 'post',
     data
   })

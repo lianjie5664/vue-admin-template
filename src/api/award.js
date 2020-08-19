@@ -114,14 +114,23 @@ export function savaQaRept(data) {
 }
 
 //评审列表
-
-export function reportList(data) {
+export function reportNewList(data) {
   return request({
     url: '/qaGrade/totalList',
     method: 'post',
     data
   })
 }
+
+//查询政府专家评审列表
+export function reportList(data) {
+  return request({
+    url: '/qaReportCompile/gradeList',
+    method: 'post',
+    data
+  })
+}
+
 // 获取编制详情
 export function getReptCompileDetail(data) {
   return request({
@@ -131,9 +140,7 @@ export function getReptCompileDetail(data) {
   })
 }
 
-
 // 获取个人编制列表
-
 export function getReportCompileList(data){
   return request({
     url: '/qaReportCompile/reportCompileList',
@@ -230,9 +237,9 @@ export function govExpert(data){
 }
 
 // 获取评审专家列表
-export function userList(data){
+export function getReList(data){
   return request({
-    url: '/user/list',
+    url: '/user/listByLoginAndRole',
     method: 'post',
     data
   })

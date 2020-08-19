@@ -17,14 +17,14 @@
       </el-table-column>
       <el-table-column label="奖项类型">
         <template slot-scope="scope">
-          <router-link :to="{path:'/creview/professor',
-            query:{awardId: scope.row.awardId, gradeTotalOwnId: scope.row.gradeTotalOwnId}}">{{scope.row.awardName}}</router-link>
+          <router-link :to="{path:'/creview/newlist',
+            query:{compileId: scope.row.compileId}}">{{scope.row.awardName}}</router-link>
         </template>
       </el-table-column>
       <el-table-column label="分数">
         <template slot-scope="scope">
           <router-link :to="{path:'/creview/professor',
-            query:{awardId: scope.row.awardId, gradeTotalOwnId: scope.row.gradeTotalOwnId}}">{{scope.row.total}}</router-link>
+            query:{compileId: scope.row.compileId}}">{{scope.row.total}}</router-link>
         </template>
       </el-table-column>
       <el-table-column label="编制人">
@@ -47,17 +47,6 @@
           {{comStatusList[scope.row.status]}}
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="230" align="center" class-name="small-padding fixed-width" v-if="roleEnname !== 'admin'">
-        <template slot-scope="{row}">
-          <el-button type="primary" size="mini" plain v-show="roleEnname === 'com_self_reviewer' && (+row.status === 103020003 || +row.status === 103020006)">
-            <router-link :to="{path:'/creview/professor',query:{awardId:row.awardId, gradeTotalOwnId: row.gradeTotalOwnId}}">自评</router-link>
-          </el-button>
-          <el-button v-show="roleEnname === 'com_self_reviewer' && +row.status === 103020003" type="primary" size="mini" plain @click="toComAduit(row)">提交自评结果</el-button>
-          <el-button v-show="roleEnname === 'com_admin' && +row.status === 103020004" type="primary" size="mini" plain @click="comAgree(row)">通过</el-button>
-          <el-button v-show="roleEnname === 'com_admin' && +row.status === 103020004" type="primary" size="mini" plain @click="comBack(row)">退回</el-button>
-          <!-- <el-button size="mini" disabled v-if="+row.status !== 103020003 || +row.status !== 103020004 || +row.status !== 103020005 || +row.status !== 103020006">暂无</el-button> -->
-        </template>
-      </el-table-column>
     </el-table>
     <el-pagination class="pageStyle" :page-size="pageSize" layout="total,prev, pager, next" @current-change="current_change" :total="total">
     </el-pagination>
@@ -70,13 +59,7 @@ import {
 } from '@/api/review'
 import {
   gradeOwnRole,
-  expertToCom,
-  comAdminAgree,
-  comAdminBack
 } from '@/api/award'
-import {
-  notice
-} from '@/utils/tools'
 import { comStatusList } from '@/config/setting'
 export default {
   data() {
@@ -93,29 +76,6 @@ export default {
         v: false
       },
       selectedRow: '',
-      formData: {
-        awardList: [{
-          type: 'Input',
-          label: '奖项名称',
-          prop: 'name',
-          placeholder: '请输入奖项名称',
-          value: ''
-        },
-        {
-          type: 'Input',
-          label: '所在地区',
-          prop: 'area',
-          placeholder: '请输入所在地区',
-          value: ''
-        },
-        {
-          type: 'TextArea',
-          label: '奖项描述',
-          prop: 'description',
-          placeholder: '请输入奖项描述',
-          value: ''
-        }]
-      },
     }
   },
   computed: {
@@ -149,75 +109,6 @@ export default {
         this.listLoading = false
         this.total = response.data.count
       })
-    },
-    // 企业管理员退回自评专家评审结果
-    comBack (row) {
-      this.$prompt('请输入退回理由', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-      }).then((val) => {
-        comAdminBack({
-          'gradeTotalOwnId': row.gradeTotalOwnId,
-          'backRemark': val.value
-        }).then(res => {
-          if (+res.code === 1) {
-            notice(1, '退回成功', 1)
-            this.fetchList(this.currentPage, this.pageSize, this.statusVal)
-          } else {
-            notice(0, '退回失败！', 0)
-          }
-        })
-      }).catch(() => {})
-    },
-    // 企业管理员审核通过自评专家评审结果
-    comAgree (row) {
-      this.$confirm('确定审核通过自评结果吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        comAdminAgree({
-          'gradeTotalOwnId': row.gradeTotalOwnId
-        }).then(res => {
-          if (+res.code === 1) {
-            notice(1, '审核成功', 1)
-            this.fetchList(this.currentPage, this.pageSize, this.statusVal)
-          } else {
-            notice(0, '审核失败！', 0)
-          }
-        })
-      }).catch(() => {})
-    },
-    // 企业自评专家提交评审结果
-    toComAduit (row) {
-      this.$confirm('确定提交自评结果吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        expertToCom({
-          gradeTotalOwnId: row.gradeTotalOwnId
-        }).then(res => {
-          if (+res.code === 1) {
-            notice(1, '提交成功', 1)
-            this.fetchList(this.currentPage, this.pageSize, this.statusVal)
-          } else {
-            notice(0, '提交失败！', 0)
-          }
-        })
-      }).catch(() => {})
-    },
-    showAwardForm() {
-      this.awardVisble.v = true
-    },
-    handleDel(row) {
-      this.$confirm('确定要删除吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-
-      }).catch(() => {});
     },
     handleSelectionChange(selection) {
       if (selection.length > 1) {
