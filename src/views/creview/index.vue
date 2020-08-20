@@ -1,13 +1,13 @@
 <template>
 <div class="app-container">
-  <el-select v-model="statusVal" placeholder="请选择状态" @change="initOption" clearable>
+  <!-- <el-select v-model="statusVal" placeholder="请选择状态" @change="initOption" clearable>
     <el-option
       v-for="item in statusList"
       :key="item.value"
       :label="item.label"
       :value="item.value">
     </el-option>
-  </el-select>
+  </el-select> -->
   <div class="table">
     <el-table ref="multipleTable" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
       <el-table-column align="center" label="编号" width="95">
@@ -23,28 +23,29 @@
       </el-table-column>
       <el-table-column label="分数">
         <template slot-scope="scope">
-          <router-link :to="{path:'/creview/professor',
-            query:{compileId: scope.row.compileId}}">{{scope.row.total}}</router-link>
+          <router-link :to="{path:'/creview/newlist',
+            query:{compileId: scope.row.compileId}}">{{scope.row.total || '暂无'}}</router-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="企业名称">
+        <template slot-scope="scope">
+          <router-link :to="{path:'/creview/newlist',
+            query:{compileId: scope.row.compileId}}">{{scope.row.companyName}}</router-link>
         </template>
       </el-table-column>
       <el-table-column label="编制人">
         <template slot-scope="scope">
-          {{ scope.row.companyName }}
+          {{ scope.row.createUserName }}
         </template>
       </el-table-column>
-      <el-table-column label="评审人">
+      <el-table-column label="创建时间">
         <template slot-scope="scope">
-          {{ scope.row.gradeUserName }}
-        </template>
-      </el-table-column>
-      <el-table-column label="评审时间">
-        <template slot-scope="scope">
-          {{ scope.row.updateDate }}
+          {{ scope.row.createDate }}
         </template>
       </el-table-column>
       <el-table-column label="状态">
         <template slot-scope="scope">
-          {{comStatusList[scope.row.status]}}
+          {{comStatusList[scope.row.companyStatus]}}
         </template>
       </el-table-column>
     </el-table>
