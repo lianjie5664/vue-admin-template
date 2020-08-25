@@ -42,22 +42,22 @@
           <span>{{ scope.row.awardArea }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="描述">
+      <el-table-column label="描述" width="200">
         <template slot-scope="scope">{{ scope.row.awardDescription }}</template>
       </el-table-column>
-      <el-table-column label="政府状态" width="100px">
+      <el-table-column label="政府状态" width="200">
         <template slot-scope="scope">{{govStatusList[scope.row.governStatus]}}</template>
       </el-table-column>
-      <el-table-column label="企业状态" width="100px" v-show="roleEnname == 'com_compiler' || roleEnname == 'com_self_reviewer' || roleEnname == 'com_admin' || roleEnname == 'myh_experts' || roleEnname == 'admin'">
+      <el-table-column label="企业状态" width="200" v-show="roleEnname == 'com_compiler' || roleEnname == 'com_self_reviewer' || roleEnname == 'com_admin' || roleEnname == 'myh_experts' || roleEnname == 'admin'">
         <template slot-scope="scope">{{comStatusList[scope.row.companyStatus]}}</template>
       </el-table-column>
-      <el-table-column label="创建时间" width="160px" align="center">
+      <el-table-column label="创建时间" width="100" align="center">
         <template slot-scope="scope">{{ scope.row.createDate }}</template>
       </el-table-column>
-      <el-table-column label="更新时间" width="160px" align="center">
+      <el-table-column label="更新时间" width="100" align="center">
         <template slot-scope="scope">{{ scope.row.updateDate }}</template>
       </el-table-column>
-      <el-table-column label="操作" width="160" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" width="160" align="center" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="{row}">
           <el-button type="success" size="mini" plain @click="export2Word(row)">导出</el-button>
           <el-dropdown @command="handleCommand" trigger="click" v-if="roleEnname !== 'admin'">

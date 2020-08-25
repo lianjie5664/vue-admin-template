@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
-      <el-col :span="12" align="left">
+      <!-- <el-col :span="12" align="left">
         填报年份：
         <el-date-picker
           v-model="year"
@@ -11,8 +11,8 @@
           :picker-options="pickerOptions"
           placeholder="请选择填报年份"
         ></el-date-picker>
-      </el-col>
-      <el-col :span="12" align="right">
+      </el-col> -->
+      <el-col :span="24" align="right">
         <el-button
           type="primary"
           icon="el-icon-plus"
@@ -33,7 +33,7 @@
           type="danger"
           size="small"
           icon="el-icon-delete"
-          @click="handleDelAward(item)"
+          @click="handleDelAward"
           plain
           v-hasPermi="['lib:list:delete']"
         >删除</el-button>
@@ -49,7 +49,7 @@
         <p class="title">{{item.name}}</p>
         <p class="desc">{{item.description}}</p>
         <div class="options">
-          <el-button type="primary" size="small" plain v-hasPermi="['btn:lib:config']">
+          <el-button type="primary" size="small" plain v-hasPermi="['lib:enter']">
             <router-link :to="'enter/'+ item.id">配置奖项</router-link>
           </el-button>
           <el-button
@@ -109,7 +109,7 @@ export default {
       isactive: 0,
       total: 0,
       pageSize: 12,
-      year: "",
+      year: new Date().getFullYear(),
       pickerOptions: {
         disabledDate(time) {
           return (
@@ -121,7 +121,7 @@ export default {
     };
   },
   created() {
-    this.fetchList();
+    this.fetchList(1);
   },
   methods: {
     select(idx) {
@@ -129,15 +129,16 @@ export default {
       this.selectRow = this.allRow[idx];
       this.activeRow = this.allRow[idx];
     },
-    fetchList() {
+    fetchList(pageNo) {
       this.listLoading = true;
-      fetchAwardList().then(response => {
+      fetchAwardList({pageNo:pageNo,pageSize:this.pageSize}).then(response => {
         let { data, count } = response.data;
         this.listLoading = false;
         this.selectRow = data[0];
         this.activeRow = data[0];
         this.allRow = data;
         this.total = count;
+        this.isactive = 0;
       });
     },
     showAwardForm() {
@@ -150,23 +151,23 @@ export default {
         if (res.code == 1) {
           this.awardVisble = false;
           notice(1, "奖项添加成功！", 1);
-          this.fetchList();
+          this.fetchList(1);
         } else {
           notice(1, "奖项添加成功！", 1);
         }
       });
     },
-    handleDelAward(row) {
+    handleDelAward() {
       this.$confirm("确定要删除吗?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(() => {
-          deleteAward({ id: row.id }).then(res => {
+          deleteAward({ id: this.selectRow.id }).then(res => {
             if (res.code == 1) {
               notice(1, "奖项删除成功！", 1);
-              this.fetchList();
+              this.fetchList(1);
             } else {
               notice(0, "奖项删除失败！", 0);
             }
@@ -211,25 +212,68 @@ export default {
       }
     },
     current_change(currentPage) {
-      this.fetchList(currentPage, this.pageSize);
+      this.fetchList(currentPage);
     }
   }
 };
 </script>
 <style lang="less" scoped>
 .table {
-  margin-top: 20px;
+  padding: 20px 0;
   overflow: hidden;
-  .award-item {
-    width: 23%;
+  // white-space: nowrap;
+  display:flex;
+  display: -webkit-flex;
+  // justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  @media screen and (min-width: 1200px){
+    .award-item {
+    width: 23.5%;
     margin-bottom: 25px;
     margin-right: 20px;
     padding: 0 20px 20px 20px;
     border: solid 1px #f1f1f1;
-    float: left;
     border-radius: 8px;
     box-shadow: 0 2px 10px 0 rgba(70, 130, 242, 0.2);
     &:nth-child(4n) {
+      margin-right: 0;
+    }
+    .title {
+      width: 100%;
+      font-size: 22px;
+      font-weight: 440;
+      margin-bottom: 14px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .desc {
+      margin-top: 2%;
+      margin-bottom: 0;
+      opacity: 0.5;
+      font-size: 16px;
+      // color: #6a7b8c;
+      max-height: 30px;
+      min-height:30px;
+    }
+    .options {
+      width: 100%;
+      margin-top: 15px;
+      display: flex;
+    }
+  }
+  }
+  @media screen and (max-width: 1200px){
+    .award-item {
+    width: 32%;
+    margin-bottom: 25px;
+    margin-right: 20px;
+    padding: 0 20px 20px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px 0 rgba(70, 130, 242, 0.2);
+    &:nth-child(3n) {
       margin-right: 0;
     }
     .title {
@@ -249,6 +293,7 @@ export default {
       font-size: 16px;
       // color: #6a7b8c;
       max-height: 30px;
+      min-height:30px;
     }
     .options {
       width: 100%;
@@ -256,6 +301,44 @@ export default {
       display: flex;
     }
   }
+  }
+  // .award-item {
+  //   width: 23.8%;
+  //   margin-bottom: 25px;
+  //   margin-right: 20px;
+  //   padding: 0 20px 20px 20px;
+  //   border: solid 1px #f1f1f1;
+  //   // display: inline-block;
+  //   border-radius: 8px;
+  //   box-shadow: 0 2px 10px 0 rgba(70, 130, 242, 0.2);
+  //   &:nth-child(4n) {
+  //     margin-right: 0;
+  //   }
+  //   .title {
+  //     width: 100%;
+  //     font-size: 22px;
+  //     // color: #000;
+  //     font-weight: 440;
+  //     margin-bottom: 14px;
+  //     overflow: hidden;
+  //     white-space: nowrap;
+  //     text-overflow: ellipsis;
+  //   }
+  //   .desc {
+  //     margin-top: 2%;
+  //     margin-bottom: 0;
+  //     opacity: 0.5;
+  //     font-size: 16px;
+  //     // color: #6a7b8c;
+  //     max-height: 30px;
+  //     min-height:30px;
+  //   }
+  //   .options {
+  //     width: 100%;
+  //     margin-top: 15px;
+  //     display: flex;
+  //   }
+  // }
   .addclass {
     // border: solid 1px #273EB0;
     color: #fff;
