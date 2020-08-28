@@ -166,8 +166,8 @@ export function exportWord(data){
 // 生成一条奖项记录
 export function genRecord(data){
   return request({
-    // url: '/qaReportCompile/insert',
-    url: '/qaStandard/findListByAwardId',
+    url: '/qaReportCompile/insert',
+    // url: '/qaStandard/findListByAwardId',
     method: 'post',
     data,
   })

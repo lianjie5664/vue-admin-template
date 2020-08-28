@@ -6,7 +6,7 @@
                     <el-col :span="24">
                       <div style="height:calc(100vh - 100px);padding:4px;box-shadow: 0 0 10px 2px rgba(30,13,4,.15);">
                         <el-scrollbar style="height: 100%;"> <!-- 滚动条 -->
-                          <el-table :data="statisticDatas" class="tableStyle" v-loading="leftTb" style="width:100% !important;" 
+                          <el-table :data="statisticDatas" class="tableStyle" v-loading="leftTb" style="width:100% !important;"
                                     size="medium" :row-style="selectedHighlight" :row-class-name="rowClassNameHandler" @row-click="selectRow">
                               <el-table-column label="指标名称" align="left" show-overflow-tooltip>
                                   <template slot-scope="scope">
@@ -26,7 +26,7 @@
             </el-col>
             <el-col :span="12">
                 <el-row :gutter="20" class="mt15" v-loading="loading">
-                  <div style="height:calc(100vh - 100px);border: solid 1px rgba(216, 216, 216, 0.5);position:relative;box-shadow: 0 0 10px 2px rgba(30,13,4,.15);" 
+                  <div style="height:calc(100vh - 100px);border: solid 1px rgba(216, 216, 216, 0.5);position:relative;box-shadow: 0 0 10px 2px rgba(30,13,4,.15);"
                     v-if="multiplePoints.keyPointsList != false">
                     <el-scrollbar style="height: 100%;"> <!-- 滚动条 -->
                       <div class="parentTitle">{{currentTitle}}</div>
@@ -46,7 +46,7 @@
                           </div>
                           <div style="height:60px;"></div>
                           <div class="opt">
-                              <el-button type="primary" icon="el-icon-position" v-if="multiplePoints.keyPointsList != undefined" @click="savePoints">提交保存</el-button>
+                              <el-button type="primary" icon="el-icon-position" v-if="multiplePoints.keyPointsList != undefined" @click="savePoints">提交2222保存</el-button>
                           </div>
                       </el-col>
                     </el-scrollbar><!-- /滚动条 -->
@@ -56,7 +56,7 @@
                       <div class="parentTitle">{{currentTitle}}</div>
                       <img src="../../assets/imgs/noData.png" class="imgs" alt="" v-show="noDataVisible">
                       <el-col :span="24">
-                        <dynamic-form 
+                        <dynamic-form
                           :dynamicValidateForm="dynamicValidateForm"
                           :myConfig="myConfig"
                           @submit="handleSaveQaRept"
@@ -73,7 +73,7 @@
     </div>
 </template>
 <script>
-import { findListByAward,getPoints,savaQaRept} from '@/api/award' 
+import { findListByAward,getPoints,savaQaRept} from '@/api/award'
 import DynamicForm from '@/components/Dynamic/form'
 import VueUeditorWrap from 'vue-ueditor-wrap'
 import {notice} from '@/utils/tools'
@@ -111,13 +111,13 @@ export default {
         }
     }
   },
- 
+
   mounted() {
     let self = this
     self.loadStatisticData()
   },
   created(){
-     
+
   },
   methods: {
     selectRow(row){
@@ -189,7 +189,7 @@ export default {
     },
     _processLevelStatisticData(dataArray) {
       let self = this
- 
+
       let resultArray = [] // 一级栏目
       let level = 1
       for (let i = 0; i < dataArray.length; i++) {
@@ -203,22 +203,22 @@ export default {
       }
       return resultArray
     },
- 
+
     _loadChildrenData(resultArray, originArray, item, level) {
       let self = this
       let score = 0
- 
+
       for (let i = 0; i < originArray.length; i++) {
         let originItem = originArray[i]
         // 判断是否是item项的子项
         if (originItem.parentId === item.id.toString()) {
           item['hasChildren'] = true
           item['showChildren'] = true
- 
+
           originItem['level'] = level
           originItem['visible'] = true // 子项默认隐藏
           originItem['hiddenByCategory'] = false
- 
+
           resultArray.push(originItem)
           self._loadChildrenData(
             resultArray,
@@ -231,7 +231,7 @@ export default {
       }
 
     },
- 
+
     loadStatisticData() {
       let self = this
       let params = {
@@ -261,14 +261,14 @@ export default {
       }
       return className
     },
- 
+
     onExpand(row) {
       let self = this
       let isShowChildren = !row['showChildren']
       row['showChildren'] = isShowChildren
       self._loadAllSubItems(row, true, isShowChildren)
     },
- 
+
     _loadAllSubItems(item, isFirstLevlChildren, isShowChilren) {
       let self = this
       let dataArray = []
@@ -279,7 +279,7 @@ export default {
             tempItem['visible'] = !tempItem['visible']
           }
           tempItem['hiddenByCategory'] = !isShowChilren
- 
+
           dataArray.push(tempItem)
           let subItemArray = self._loadAllSubItems(
             tempItem,
@@ -358,6 +358,6 @@ export default {
     left: 50%;
     transform: translate(-50%, -50%);
   }
-    
+
   }
 </style>

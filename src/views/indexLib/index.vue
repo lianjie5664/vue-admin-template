@@ -44,8 +44,7 @@
         v-for="(item,index) in allRow"
         :key="index"
         :class="{'award-item':true,'addclass':isactive == index}"
-        @click="select(index,item.id)"
-      >
+        @click="select(index,item.id)">
         <p class="title">{{item.name}}</p>
         <p class="desc">{{item.description}}</p>
         <div class="options">
@@ -58,15 +57,13 @@
             size="small"
             :disabled="fillLoading"
             plain
-            @click="jump2Fill(item)"
-          >我要填报</el-button>
+            @click="jump2Fill(item)">我要填报</el-button>
           <el-tooltip
             class="item"
             v-else
             effect="dark"
             content="您当年已填报过该奖项，请到报告编制查看。"
-            placement="top-start"
-          >
+            placement="top-start">
             <el-button type="danger" size="small" plain>已填报</el-button>
           </el-tooltip>
         </div>
@@ -189,12 +186,6 @@ export default {
       this.selectRow = this.activeRow;
       this.awardVisble = true;
     },
-    // hasFilled() {
-    //   genRecord({}).then((res) =>{
-    //     console.log(res)
-    //   })
-    //   return true;
-    // },
     jump2Fill(item) {
       if (this.year) {
         this.fillLoading = true
@@ -208,7 +199,7 @@ export default {
           }
         })
       } else {
-        this.$message.error("请选择填报年份！");
+        this.$message.error("请选择填报年份！")
       }
     },
     current_change(currentPage) {
